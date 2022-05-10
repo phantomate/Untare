@@ -33,7 +33,31 @@ abstract class ApiService {
   Future httpPut(String url, data) async {
     String? baseUrl = box.get('url');
     Map<String, String> headers = await getHeaders();
-    Response response = await put(Uri.parse(baseUrl! + url), body: jsonEncode(data), headers: headers);
+    Response response = await put(Uri.parse(baseUrl! + url), body: data, headers: headers);
+
+    if (response.statusCode == 403) {
+      box.clear();
+    }
+
+    return response;
+  }
+
+  Future httpPatch(String url, data) async {
+    String? baseUrl = box.get('url');
+    Map<String, String> headers = await getHeaders();
+    Response response = await patch(Uri.parse(baseUrl! + url), body: jsonEncode(data), headers: headers);
+
+    if (response.statusCode == 403) {
+      box.clear();
+    }
+
+    return response;
+  }
+
+  Future httpDelete(String url) async {
+    String? baseUrl = box.get('url');
+    Map<String, String> headers = await getHeaders();
+    Response response = await delete(Uri.parse(baseUrl! + url), headers: headers);
 
     if (response.statusCode == 403) {
       box.clear();
