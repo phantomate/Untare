@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tare/blocs/recipe/recipe_bloc.dart';
+import 'package:tare/blocs/recipe/recipe_event.dart';
+import 'package:tare/components/bottom_sheets/meal_plan_upsert_bottom_sheet_component.dart';
+import 'package:tare/components/bottom_sheets/recipe_shopping_list_bottom_sheet_component.dart';
 import 'package:tare/models/recipe.dart';
 import 'package:tare/pages/recipe_upsert_page.dart';
 
 Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe recipe) {
+  RecipeBloc _recipeBloc = BlocProvider.of<RecipeBloc>(context);
+
   return Container(
-    alignment: Alignment.centerLeft,
+    alignment: Alignment.center,
     padding: const EdgeInsets.only(left: 12, right: 12),
-    child: ListView(
-      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+    child: Column(
       children: [
         TextButton.icon(
           onPressed: () {
@@ -19,7 +25,7 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
             );
           },
           icon: Icon(
-            Icons.edit,
+            Icons.edit_outlined,
             color: Colors.black87,
           ),
           label: Text(
@@ -33,13 +39,14 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
         TextButton.icon(
           onPressed: () {
             Navigator.pop(btsContext);
+            mealPlanUpsertBottomSheet(context, recipe: recipe, referer: 'recipe');
           },
           icon: Icon(
             Icons.calendar_today_outlined,
             color: Colors.black87,
           ),
           label: Text(
-            'Add to Meal-Plan',
+            'Add to meal plan',
             style: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.bold
@@ -49,13 +56,14 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
         TextButton.icon(
           onPressed: () {
             Navigator.pop(btsContext);
+            recipeShoppingListBottomSheet(context, recipe);
           },
           icon: Icon(
             Icons.add_shopping_cart_outlined,
             color: Colors.black87,
           ),
           label: Text(
-            'Add to Shopping-List',
+            'Add to shopping list',
             style: TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.bold
@@ -65,6 +73,7 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
         TextButton.icon(
           onPressed: () {
             Navigator.pop(btsContext);
+            _recipeBloc.add(DeleteRecipe(recipe: recipe));
           },
           icon: Icon(
             Icons.delete_outline,

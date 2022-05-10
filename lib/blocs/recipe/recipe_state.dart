@@ -17,6 +17,25 @@ class RecipeUpdated extends RecipeState {
   RecipeUpdated({required this.recipe});
 }
 
+class RecipeCreated extends RecipeState {
+  final Recipe recipe;
+  RecipeCreated({required this.recipe});
+}
+
+class RecipeDeleted extends RecipeState {
+  final Recipe recipe;
+  RecipeDeleted({required this.recipe});
+}
+
+class RecipeAddedIngredientsToShoppingList extends RecipeState {}
+
+class RecipeListLoading extends RecipeState {}
+
+class RecipeListFetched extends RecipeState {
+  final List<Recipe> recipes;
+  RecipeListFetched({required this.recipes});
+}
+
 class RecipeError extends RecipeState {
   final String error;
 

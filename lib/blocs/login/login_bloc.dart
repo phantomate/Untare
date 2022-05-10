@@ -22,7 +22,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       box.put('url', event.url);
 
       final apiRecipe = new ApiRecipe();
-      final response = await apiRecipe.getRecipes('', false, 1, 1, null);
+      final response = await apiRecipe.getRecipeList('', false, 1, 1, null);
 
       if (response.isNotEmpty) {
         authenticationBloc.add(UserLoggedIn(token: event.token, url: event.url));

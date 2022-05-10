@@ -40,7 +40,7 @@ class _RecipeDetailIngredientsWidgetState extends State<RecipeDetailIngredientsW
   @override
   Widget build(BuildContext context) {
     List<TableRow> ingredientsList = [];
-    List<dynamic> recipeIngredients = widget.recipe.steps!.first.ingredients;
+    List<dynamic> recipeIngredients = (widget.recipe.steps != null) ? widget.recipe.steps!.first.ingredients : [];
     ingredientsList.addAll(recipeIngredients.map((item) => ingredientComponent(item, servings, newServings)).toList());
 
     if (ingredientsList.isNotEmpty) {
@@ -96,7 +96,7 @@ class _RecipeDetailIngredientsWidgetState extends State<RecipeDetailIngredientsW
 }
 
 TableRow ingredientComponent(Ingredient ingredient, int initServing, int newServing) {
-  String amount = (ingredient.amount > 0) ? ((ingredient.amount * (newServing/initServing)).ceil().toString() + ' ') : '';
+  String amount = (ingredient.amount > 0) ? ((ingredient.amount * (((newServing/initServing))*100).ceil()/100).toString() + ' ') : '';
   String unit = (ingredient.unit != null) ? (ingredient.unit!.name + ' ') : '';
   String food = (ingredient.food != null) ? (ingredient.food!.name + ' ') : '';
   String note = (ingredient.note != null && ingredient.note != '') ? ('(' + ingredient.note! + ')') : '';

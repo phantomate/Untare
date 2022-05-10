@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:tare/components/form_fields/food_type_ahead_form_field.dart';
+import 'package:tare/components/form_fields/note_text_form_field.dart';
+import 'package:tare/components/form_fields/quantity_text_form_field.dart';
+import 'package:tare/components/form_fields/unit_type_ahead_form_field.dart';
 import 'package:tare/constants/colors.dart';
-import 'package:tare/models/food.dart';
 import 'package:tare/models/ingredient.dart';
 import 'package:tare/models/recipe.dart';
 import 'package:tare/models/step.dart';
-import 'package:tare/models/unit.dart';
-import 'package:tare/services/api/api_food.dart';
-import 'package:tare/services/api/api_unit.dart';
 import 'package:flutter_dialogs/flutter_dialogs.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -51,14 +49,14 @@ class _RecipeUpsertIngredientsWidgetState extends State<RecipeUpsertIngredientsW
     });
 
     // Remove entries from form when dismissing
-    widget.formKey.currentState!.removeInternalFieldValue('amount$dismissIndex', isSetState: true);
+    widget.formKey.currentState!.removeInternalFieldValue('quantity$dismissIndex', isSetState: true);
     widget.formKey.currentState!.removeInternalFieldValue('unit$dismissIndex', isSetState: true);
     widget.formKey.currentState!.removeInternalFieldValue('food$dismissIndex', isSetState: true);
     widget.formKey.currentState!.removeInternalFieldValue('note$dismissIndex', isSetState: true);
     widget.formKey.currentState!.save();
 
     // Remove dynamically created global keys
-    formFieldKeyMap.remove('amount$dismissIndex');
+    formFieldKeyMap.remove('quantity$dismissIndex');
     formFieldKeyMap.remove('unit$dismissIndex');
     formFieldKeyMap.remove('food$dismissIndex');
     formFieldKeyMap.remove('note$dismissIndex');
@@ -85,7 +83,7 @@ class _RecipeUpsertIngredientsWidgetState extends State<RecipeUpsertIngredientsW
                   index = recipe!.steps.first.ingredients.length;
                 }
 
-                formFieldKeyMap['amount$index'] = GlobalKey<FormBuilderFieldState>();
+                formFieldKeyMap['quantity$index'] = GlobalKey<FormBuilderFieldState>();
                 formFieldKeyMap['unit$index'] = GlobalKey<FormBuilderFieldState>();
                 formFieldKeyMap['food$index'] = GlobalKey<FormBuilderFieldState>();
                 formFieldKeyMap['note$index'] = GlobalKey<FormBuilderFieldState>();
@@ -97,12 +95,12 @@ class _RecipeUpsertIngredientsWidgetState extends State<RecipeUpsertIngredientsW
         )
     );
 
-    if (recipe != null) {
+    if (recipe != null && recipe!.steps != null) {
       List<Ingredient> ingredients = recipe!.steps!.first.ingredients;
 
       for (int i = 0; i < ingredients.length; i++) {
         // Create global keys to provide the state of the dynamically created form fields to the formBuilder
-        formFieldKeyMap['amount$i'] = GlobalKey<FormBuilderFieldState>();
+        formFieldKeyMap['quantity$i'] = GlobalKey<FormBuilderFieldState>();
         formFieldKeyMap['unit$i'] = GlobalKey<FormBuilderFieldState>();
         formFieldKeyMap['food$i'] = GlobalKey<FormBuilderFieldState>();
         formFieldKeyMap['note$i'] = GlobalKey<FormBuilderFieldState>();
@@ -164,8 +162,8 @@ class _RecipeUpsertIngredientsWidgetState extends State<RecipeUpsertIngredientsW
               ),
               child: ListTile(
                   dense: true,
-                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                  contentPadding: const EdgeInsets.fromLTRB(5, 2, 5, 2),
+                  visualDensity: VisualDensity(horizontal: 0, vertical: -3),
+                  contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                   title: Wrap(
                     children: [Text(amount, style: TextStyle(fontWeight: FontWeight.bold)),
                       Text(unit, style: TextStyle(fontWeight: FontWeight.bold)),
@@ -198,28 +196,21 @@ class _RecipeUpsertIngredientsWidgetState extends State<RecipeUpsertIngredientsW
           BasicDialogAction(
             title: Text("OK"),
             onPressed: () {
-              // Set form field values from dynamically added form field (this is stupid but it works)
-              widget.formKey.currentState!.setInternalFieldValue('amount$itemIndex', formFieldKeyMap['amount$itemIndex']!.currentState!.value, isSetState: true);
-              widget.formKey.currentState!.setInternalFieldValue('unit$itemIndex', formFieldKeyMap['unit$itemIndex']!.currentState!.value, isSetState: true);
-              widget.formKey.currentState!.setInternalFieldValue('food$itemIndex', formFieldKeyMap['food$itemIndex']!.currentState!.value, isSetState: true);
-              widget.formKey.currentState!.setInternalFieldValue('note$itemIndex', formFieldKeyMap['note$itemIndex']!.currentState!.value, isSetState: true);
+              // Save dynamically generated form fields. On save code can be found in form field
+              formFieldKeyMap['food$itemIndex']!.currentState!.save();
+              formFieldKeyMap['unit$itemIndex']!.currentState!.save();
+              formFieldKeyMap['quantity$itemIndex']!.currentState!.save();
+              formFieldKeyMap['note$itemIndex']!.currentState!.save();
 
               widget.formKey.currentState!.save();
-              // Do own validation, because the package validation doesn't work on dynamically generated fields
-              if (formFieldKeyMap['food$itemIndex']!.currentState!.value == null) {
-                formFieldKeyMap['food$itemIndex']!.currentState!.invalidate('');
-              } else if (formFieldKeyMap['amount$itemIndex']!.currentState!.value != null &&
-                  double.tryParse(formFieldKeyMap['amount$itemIndex']!.currentState!.value) == null) {
-                formFieldKeyMap['amount$itemIndex']!.currentState!.invalidate('');
-              } else {
-                // Set index to identify added fields
-                widget.formKey.currentState!.setInternalFieldValue('index', itemIndex, isSetState: true);
-                setState(() {
-                  recipe = widget.rebuildRecipe();
-                });
+              
+              // Set index to identify added fields
+              widget.formKey.currentState!.setInternalFieldValue('index', itemIndex, isSetState: true);
+              setState(() {
+                recipe = widget.rebuildRecipe();
+              });
 
-                Navigator.pop(slideContext);
-              }
+              Navigator.pop(slideContext);
             },
           ),
         ],
@@ -230,9 +221,6 @@ class _RecipeUpsertIngredientsWidgetState extends State<RecipeUpsertIngredientsW
 
 
 Widget buildDialogFormFields(Ingredient? ingredient, int itemIndex, formKey, Map<String, GlobalKey> formFieldKeyMap) {
-  final ApiUnit _apiUnit = ApiUnit();
-  final ApiFood _apiFood = ApiFood();
-
   return Container(
       width: 350,
       constraints: BoxConstraints(
@@ -244,104 +232,21 @@ Widget buildDialogFormFields(Ingredient? ingredient, int itemIndex, formKey, Map
             children: [
               Container(
                   width: 90,
-                  child: FormBuilderTextField(
-                    key: formFieldKeyMap['amount$itemIndex'],
-                    name: 'amount$itemIndex',
-                    initialValue: ingredient?.amount.toString(),
-                    decoration: InputDecoration(
-                      labelText: 'Amount',
-                      labelStyle: TextStyle(
-                        color: Colors.black26,
-                      ),
-                      isDense: true,
-                      contentPadding: const EdgeInsets.all(10),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: FormBuilderValidators.compose([
-                      FormBuilderValidators.numeric()
-                    ]),
-                    keyboardType: TextInputType.number,
-                  )
+                  child: quantityTextFormField((ingredient != null) ? ingredient.amount : null, formKey, index: itemIndex, dynamicKey: formFieldKeyMap['quantity$itemIndex'])
               ),
               SizedBox(width: 10),
               Flexible(
-                child: FormBuilderTypeAhead<Unit>(
-                  name: 'unit$itemIndex',
-                  key: formFieldKeyMap['unit$itemIndex'],
-                  initialValue: ingredient?.unit,
-                  selectionToTextTransformer: (unit) => unit.name,
-                  decoration: const InputDecoration(
-                    labelText: 'Unit',
-                    labelStyle: TextStyle(
-                      color: Colors.black26,
-                    ),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.all(10),
-                    border: OutlineInputBorder(),
-                  ),
-                  itemBuilder: (context, unit) {
-                    return ListTile(title: Text(unit.name));
-                  },
-                  suggestionsCallback: (query) async {
-                    List<Unit> units = await _apiUnit.getUnits(query, 1, 25);
-                    if (units.isEmpty) {
-                      units.add(Unit(id: null, name: query, description: ''));
-                    }
-                    return units;
-                  },
-                  hideOnEmpty: true,
-                ),
+                child: unitTypeAheadFormField((ingredient != null) ? ingredient.unit : null, formKey, index: itemIndex, dynamicKey: formFieldKeyMap['unit$itemIndex'])
               ),
             ],
           ),
           SizedBox(height: 10),
           Flexible(
-              child: FormBuilderTypeAhead<Food>(
-                name: 'food$itemIndex',
-                key: formFieldKeyMap['food$itemIndex'],
-                initialValue: ingredient?.food,
-                selectionToTextTransformer: (food) => food.name,
-                decoration: const InputDecoration(
-                  labelText: 'Food',
-                  labelStyle: TextStyle(
-                    color: Colors.black26,
-                  ),
-                  isDense: true,
-                  contentPadding: const EdgeInsets.all(10),
-                  border: OutlineInputBorder(),
-                ),
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required()
-                ]),
-                itemBuilder: (context, food) {
-                  return ListTile(title: Text(food.name));
-                },
-                suggestionsCallback: (query) async {
-                  List<Food> foods = await _apiFood.getFoods(query, 1, 25);
-                  if (foods.isEmpty) {
-                    foods.add(Food(id: null, name: query, description: ''));
-                  }
-                  return foods;
-                },
-                hideOnEmpty: true,
-              )
+              child: foodTypeAheadFormField((ingredient != null) ? ingredient.food : null, formKey, index: itemIndex, dynamicKey: formFieldKeyMap['food$itemIndex'])
           ),
           SizedBox(height: 10),
           Flexible(
-              child: FormBuilderTextField(
-                name: 'note$itemIndex',
-                key: formFieldKeyMap['note$itemIndex'],
-                initialValue: ingredient?.note,
-                decoration: InputDecoration(
-                    labelText: 'Note',
-                    labelStyle: TextStyle(
-                      color: Colors.black26,
-                    ),
-                    border: OutlineInputBorder(),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.all(10)
-                ),
-              )
+              child: noteTextFormField((ingredient != null) ? ingredient.note : null, formKey, index: itemIndex, dynamicKey: formFieldKeyMap['note$itemIndex'])
           )
         ],
       )

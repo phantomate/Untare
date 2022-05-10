@@ -87,7 +87,7 @@ class Recipe {
   Map<String, dynamic> toJson() {
     List<Map<String,dynamic>> steps = [];
 
-    if (this.steps.isNotEmpty) {
+    if (this.steps != null && this.steps.isNotEmpty) {
       this.steps.forEach((StepModel step) {
         steps.add(step.toJson());
       });
@@ -103,7 +103,7 @@ class Recipe {
       'waiting_time': this.waitingTime ?? 0,
       'internal': this.internal,
       'servings': this.servings ?? 0,
-      'servings_text': this.servingsText
+      'servings_text': this.servingsText ?? ''
     };
   }
 

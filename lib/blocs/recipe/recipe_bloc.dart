@@ -9,8 +9,27 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   final ApiRecipe apiRecipe;
 
   RecipeBloc({required this.apiRecipe}) : super(RecipeInitial()) {
-    on<FetchRecipe>(_onFetchRecipe);
+    on<FetchRecipeList>(_onFetchRecipeList);    on<FetchRecipe>(_onFetchRecipe);
     on<UpdateRecipe>(_onUpdateRecipe);
+    on<CreateRecipe>(_onCreateRecipe);
+    on<DeleteRecipe>(_onDeleteRecipe);
+    on<AddIngredientsToShoppingList>(_onAddIngredientsToShoppingList);
+  }
+
+  Future<void> _onFetchRecipeList(FetchRecipeList event, Emitter<RecipeState> emit) async {
+    emit(RecipeListLoading());
+    try {
+      List<Recipe> recipes = await apiRecipe.getRecipeList(event.query, event.random, event.page, event.pageSize, event.sortOrder);
+      emit(RecipeListFetched(recipes: recipes));
+    } on ApiException catch (e) {
+      if (e.statusCode == 401) {
+        emit(RecipeUnauthorized());
+      } else {
+        emit(RecipeError(error: e.message ?? e.toString()));
+      }
+    } catch (e) {
+      emit(RecipeError(error: e.toString()));
+    }
   }
 
   Future<void> _onFetchRecipe(FetchRecipe event, Emitter<RecipeState> emit) async {
@@ -41,6 +60,57 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       Recipe? recipe = await apiRecipe.updateRecipe(event.recipe);
 
       emit(RecipeUpdated(recipe: recipe));
+
+    } on ApiException catch (e) {
+      if (e.statusCode == 401) {
+        emit(RecipeUnauthorized());
+      } else {
+        emit(RecipeError(error: e.message ?? e.toString()));
+      }
+    } catch (e) {
+      emit(RecipeError(error: e.toString()));
+    }
+  }
+
+  Future<void> _onCreateRecipe(CreateRecipe event, Emitter<RecipeState> emit) async {
+    try {
+      Recipe? recipe = await apiRecipe.createRecipe(event.recipe);
+
+      emit(RecipeCreated(recipe: recipe));
+
+    } on ApiException catch (e) {
+      if (e.statusCode == 401) {
+        emit(RecipeUnauthorized());
+      } else {
+        emit(RecipeError(error: e.message ?? e.toString()));
+      }
+    } catch (e) {
+      emit(RecipeError(error: e.toString()));
+    }
+  }
+
+  Future<void> _onDeleteRecipe(DeleteRecipe event, Emitter<RecipeState> emit) async {
+    try {
+      Recipe? recipe = await apiRecipe.deleteRecipe(event.recipe);
+
+      emit(RecipeDeleted(recipe: recipe));
+
+    } on ApiException catch (e) {
+      if (e.statusCode == 401) {
+        emit(RecipeUnauthorized());
+      } else {
+        emit(RecipeError(error: e.message ?? e.toString()));
+      }
+    } catch (e) {
+      emit(RecipeError(error: e.toString()));
+    }
+  }
+
+  Future<void> _onAddIngredientsToShoppingList(AddIngredientsToShoppingList event, Emitter<RecipeState> emit) async {
+    try {
+      Recipe? recipe = await apiRecipe.addIngredientsToShoppingList(event.recipeId, event.ingredientIds, event.servings);
+
+      emit(RecipeAddedIngredientsToShoppingList());
 
     } on ApiException catch (e) {
       if (e.statusCode == 401) {
