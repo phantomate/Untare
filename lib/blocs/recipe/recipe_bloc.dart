@@ -58,6 +58,9 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     emit(RecipeLoading());
     try {
       Recipe? recipe = await apiRecipe.updateRecipe(event.recipe);
+      if (event.image != null) {
+        recipe = await apiRecipe.updateImage(recipe, event.image);
+      }
 
       emit(RecipeUpdated(recipe: recipe));
 
@@ -75,6 +78,9 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   Future<void> _onCreateRecipe(CreateRecipe event, Emitter<RecipeState> emit) async {
     try {
       Recipe? recipe = await apiRecipe.createRecipe(event.recipe);
+      if (event.image != null) {
+        recipe = await apiRecipe.updateImage(recipe, event.image);
+      }
 
       emit(RecipeCreated(recipe: recipe));
 

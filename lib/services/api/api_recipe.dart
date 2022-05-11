@@ -1,17 +1,13 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:http/http.dart';
 import 'package:tare/exceptions/api_exception.dart';
 import 'package:tare/exceptions/mapping_exception.dart';
 import 'package:tare/models/recipe.dart';
 import 'dart:convert';
 import 'package:tare/services/api/api_service.dart';
-import 'package:http_parser/http_parser.dart';
 
 class ApiRecipe extends ApiService {
   Future<List<Recipe>> getRecipeList(String query, bool random, int page, int pageSize, String? sortOrder) async {
-    var url = '/api/recipe';
+    var url = '/api/recipe/';
     url += '?query=' + query;
     url += '&random=' + random.toString();
     url += '&page=' + page.toString();
@@ -41,7 +37,7 @@ class ApiRecipe extends ApiService {
   }
 
   Future<Recipe?> getRecipe(int id) async {
-    var url = '/api/recipe/' + id.toString();
+    var url = '/api/recipe/' + id.toString() + '/';
 
     Response res = await httpGet(url);
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
@@ -62,8 +58,7 @@ class ApiRecipe extends ApiService {
     if (recipe.id == null) {
       throw MappingException(message: 'Id missing for updating recipe ' + recipe.name);
     }
-    var url = '/api/recipe/' + recipe.id.toString();
-
+    var url = '/api/recipe/' + recipe.id.toString() + '/';
     Response res = await httpPut(url, recipe.toJson());
 
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
@@ -78,23 +73,27 @@ class ApiRecipe extends ApiService {
     }
   }
 
-  Future updateImage(Recipe recipe, image) async {
+  Future<Recipe> updateImage(Recipe recipe, image) async {
     if (recipe.id == null) {
       throw MappingException(message: 'Id missing for recipe image update ' + recipe.name);
     }
     var url = '/api/recipe/' + recipe.id.toString() + '/image/';
 
-    var request = MultipartRequest('PUT', Uri.parse(url));
-    request.files.add(MultipartFile.fromBytes('file', file.readAsBytesSync(), contentType: MediaType('image','jpeg')));
+    Response res = await Response.fromStream(await httpPutImage(url, image));
 
-    request.send().then((response) {
-      print('response: ' + response.toString());
-      if ([200, 201].contains(response)) print("Uploaded!");
-    });
+    if ([200, 201].contains(res.statusCode)) {
+      Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
+      return recipe.copyWith(image: box.get('url') + json['image']);
+    } else {
+      throw ApiException(
+          message: 'Recipe api error on uploading image',
+          statusCode: res.statusCode
+      );
+    }
   }
 
   Future addIngredientsToShoppingList(int recipeId, List<int> ingredientIds, int servings) async {
-    var url = '/api/recipe/' + recipeId.toString() + '/shopping';
+    var url = '/api/recipe/' + recipeId.toString() + '/shopping/';
 
     Map<String, dynamic> requestJson = {
       'id': recipeId,
@@ -132,7 +131,7 @@ class ApiRecipe extends ApiService {
     if (recipe.id == null) {
       throw MappingException(message: 'Id missing for deleting recipe ' + recipe.name);
     }
-    var url = '/api/recipe/' + recipe.id.toString();
+    var url = '/api/recipe/' + recipe.id.toString() + '/';
 
     Response res = await httpDelete(url);
 

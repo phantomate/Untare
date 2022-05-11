@@ -12,14 +12,16 @@ class FetchRecipe extends RecipeEvent {
 
 class UpdateRecipe extends RecipeEvent {
   final Recipe recipe;
+  final image;
 
-  UpdateRecipe({required this.recipe});
+  UpdateRecipe({required this.recipe, this.image});
 }
 
 class CreateRecipe extends RecipeEvent {
   final Recipe recipe;
+  final image;
 
-  CreateRecipe({required this.recipe});
+  CreateRecipe({required this.recipe, this.image});
 }
 
 class DeleteRecipe extends RecipeEvent {

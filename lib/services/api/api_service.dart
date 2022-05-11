@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 
@@ -33,7 +35,7 @@ abstract class ApiService {
   Future httpPut(String url, data) async {
     String? baseUrl = box.get('url');
     Map<String, String> headers = await getHeaders();
-    Response response = await put(Uri.parse(baseUrl! + url), body: data, headers: headers);
+    Response response = await put(Uri.parse(baseUrl! + url), body: jsonEncode(data), headers: headers);
 
     if (response.statusCode == 403) {
       box.clear();
@@ -64,6 +66,19 @@ abstract class ApiService {
     }
 
     return response;
+  }
+
+  Future httpPutImage(String url, image) async {
+    String? baseUrl = box.get('url');
+    Map<String, String> headers = await getHeaders();
+
+    File file = File(image.path);
+
+    var request = MultipartRequest('PUT', Uri.parse(baseUrl! + url));
+    request.files.add(new MultipartFile('image', file.readAsBytes().asStream(), file.lengthSync(), filename: image.path.split('/').last));
+    request.headers.addAll(headers);
+
+    return request.send();
   }
 
   Future getHeaders() async {
