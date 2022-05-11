@@ -9,7 +9,7 @@ import 'api_service.dart';
 
 class ApiFood extends ApiService {
   Future<List<Food>> getFoods(String query, int page, int pageSize) async {
-    var url = '/api/food';
+    var url = '/api/food/';
     url += '?query=' + query;
     url += '&page=' + page.toString();
     url += '&page_size=' + pageSize.toString();

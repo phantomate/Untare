@@ -8,7 +8,7 @@ import '../../exceptions/api_exception.dart';
 
 class ApiMealType extends ApiService {
   Future<List<MealType>> getMealTypeList() async {
-    var url = '/api/meal-type';
+    var url = '/api/meal-type/';
 
     Response res = await httpGet(url);
     if ([200, 201].contains(res.statusCode)) {
