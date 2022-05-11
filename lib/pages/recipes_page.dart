@@ -164,11 +164,6 @@ Widget sliverAppBar(BuildContext context, Function(String) _onSearchValueChange,
   return SliverAppBar(
     title: Row(
       children: [
-        Image(
-          image: AssetImage('tandoor.png'),
-          height: 40,
-        ),
-        SizedBox(width: 12),
         Text(
           'Recipes',
           style: TextStyle(
