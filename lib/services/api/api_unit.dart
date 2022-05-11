@@ -14,7 +14,7 @@ class ApiUnit extends ApiService {
     Response res = await httpGet(url);
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
 
-    if (res.statusCode == 200) {
+    if ([200, 201].contains(res.statusCode)) {
       List<dynamic> jsonUnits = json['results'];
 
       List<Unit> units = jsonUnits.map((item) => Unit.fromJson(item)).toList();

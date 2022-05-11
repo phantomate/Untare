@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/blocs/recipe/recipe_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_event.dart';
@@ -9,55 +11,51 @@ import 'package:tare/blocs/recipe/recipe_state.dart';
 import 'package:tare/components/loading_component.dart';
 import 'package:tare/components/recipes/recipe_image_component.dart';
 import 'package:tare/components/widgets/recipe_upsert_ingredients_stateful_widget.dart';
+import 'package:tare/constants/colors.dart';
 import 'package:tare/models/food.dart';
 import 'package:tare/models/ingredient.dart';
 import 'package:tare/models/recipe.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tare/models/step.dart';
 import 'package:tare/models/unit.dart';
+import 'package:tare/pages/recipe_detail_page.dart';
 import 'package:tare/services/api/api_recipe.dart';
 
-class RecipeUpsertPage extends StatelessWidget {
+class RecipeUpsertPage extends StatefulWidget {
   final Recipe? recipe;
+
   RecipeUpsertPage({this.recipe});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider<RecipeBloc>(
-        create: (BuildContext context) =>
-            RecipeBloc(apiRecipe: ApiRecipe()),
-        child: RecipeUpsert(recipe: this.recipe)
-    );
-  }
+  _RecipeUpsertPageState createState() => _RecipeUpsertPageState();
 }
 
-class RecipeUpsert extends StatefulWidget {
-  final Recipe? recipe;
-
-  RecipeUpsert({this.recipe});
-
-  @override
-  _RecipeUpsertState createState() => _RecipeUpsertState();
-}
-
-class _RecipeUpsertState extends State<RecipeUpsert> {
+class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
   final formKey = GlobalKey<FormBuilderState>();
   Recipe? recipe;
   late RecipeBloc _recipeBloc;
+  ApiRecipe _apiRecipe = ApiRecipe();
 
   @override
   void initState() {
     super.initState();
-    if (widget.recipe != null) {
-      _recipeBloc = BlocProvider.of<RecipeBloc>(context);
+    _recipeBloc = BlocProvider.of<RecipeBloc>(context);
+    if (widget.recipe != null && widget.recipe!.steps == null) {
       _recipeBloc.add(FetchRecipe(id: widget.recipe!.id!));
     }
+    recipe = widget.recipe;
   }
 
   // Rebuild recipe for upsert
   Recipe rebuildRecipe() {
     formKey.currentState!.save();
     Map<String, dynamic> formBuilderData = formKey.currentState!.value;
+
+    // @todo update image
+    if (formBuilderData.containsKey('image')) {
+
+    }
+
     // Build food list
     List<Ingredient> ingredientList = [];
 
@@ -70,6 +68,7 @@ class _RecipeUpsertState extends State<RecipeUpsert> {
     }
 
     for (int i = 0; i < ingredientAmount; i++) {
+      // Here we can use the form builder data because we already hydrated the values in the form save methods
       Ingredient? ingredient;
       Unit? unit;
       Food? food;
@@ -83,43 +82,25 @@ class _RecipeUpsertState extends State<RecipeUpsert> {
         note = recipe!.steps.first.ingredients[i].note;
       }
 
-      // Overwrite unit, if changed in form
-      if (unit != null && formBuilderData.containsKey('unit$i')) {
-        if (formBuilderData['unit$i'] != null && unit.id != formBuilderData['unit$i'].id) {
-          unit = Unit(id: formBuilderData['unit$i'].id, name: formBuilderData['unit$i'].name, description: formBuilderData['unit$i'].description);
-        } else if (formBuilderData['unit$i'] == null) {
-          unit = null;
-        }
-      } else if (unit == null && formBuilderData.containsKey('unit$i') && formBuilderData['unit$i'] != null) {
-        unit = Unit(id: formBuilderData['unit$i'].id, name: formBuilderData['unit$i'].name, description: formBuilderData['unit$i'].description);
+      // If the the form builder doesn't contain a dynamically generated field, it wasn't changed
+      if (formBuilderData.containsKey('unit$i')) {
+        unit = formBuilderData['unit$i'];
       }
-
-      // Overwrite food, if changed in form
-      if (food != null && formBuilderData.containsKey('food$i')) {
-        if (formBuilderData['food$i'] != null && food.id != formBuilderData['food$i'].id) {
-          food = Food(id: formBuilderData['food$i'].id, name: formBuilderData['food$i'].name, description: formBuilderData['food$i'].description);
-        } else if (formBuilderData['food$i'] == null) {
-          food = null;
-        }
-      } else if (food == null && formBuilderData.containsKey('food$i') && formBuilderData['food$i'] != null) {
-        food = Food(id: formBuilderData['food$i'].id, name: formBuilderData['food$i'].name, description: formBuilderData['food$i'].description);
+      if (formBuilderData.containsKey('food$i')) {
+        food = formBuilderData['food$i'];
       }
-
-      // Overwrite amount, if changed in form
-      if (formBuilderData.containsKey('amount$i') && amount != formBuilderData['amount$i']) {
-        amount = (!["", null].contains(formBuilderData['amount$i'])) ? double.parse(formBuilderData['amount$i']) : 0;
+      if (formBuilderData.containsKey('quantity$i')) {
+        amount = double.tryParse(formBuilderData['quantity$i']) ?? 0;
       }
-
-      // Overwrite note, if changed in form
-      if (formBuilderData.containsKey('note$i') && amount != formBuilderData['note$i']) {
-        note = formBuilderData['note$i'] ?? '';
+      if (formBuilderData.containsKey('note$i')) {
+        note = formBuilderData['note$i'];
       }
 
       // Create ingredient with updated values and pass it into the ingredient list
       if (ingredient != null) {
         ingredient = ingredient.copyWith(food: food, unit: unit, amount: amount, note: note);
       } else {
-        ingredient = Ingredient(food: food, unit: unit, amount: amount ?? 1, note: note ?? '', order: 0);
+        ingredient = Ingredient(food: food, unit: unit, amount: amount ?? 0, note: note ?? '', order: 0);
       }
 
       ingredientList.add(ingredient);
@@ -170,207 +151,229 @@ class _RecipeUpsertState extends State<RecipeUpsert> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocConsumer<RecipeBloc, RecipeState>(
-          listener: (context, state) {
-            if (state is RecipeError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.error),
-                  duration: Duration(seconds: 8),
+      body: NestedScrollView(
+          headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                leadingWidth: 50,
+                titleSpacing: 0,
+                automaticallyImplyLeading: false,
+                iconTheme: const IconThemeData(color: Colors.black87),
+                leading: IconButton(
+                  iconSize: 30,
+                  padding: const EdgeInsets.all(0),
+                  onPressed: () => Navigator.pop(hsbContext),
+                  splashRadius: 20,
+                  icon: Icon(
+                    Icons.chevron_left,
+                  ),
                 ),
-              );
-            } else if (state is RecipeUnauthorized) {
-              Phoenix.rebirth(context);
-            } else if (state is RecipeUpdated) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('Saved'),
-                  duration: Duration(seconds: 5),
+                actions: [
+                  IconButton(
+                    onPressed: () {
+                      formKey.currentState!.save();
+                      if (formKey.currentState!.validate()) {
+                        if (widget.recipe != null) {
+                          _recipeBloc.add(UpdateRecipe(recipe: rebuildRecipe()));
+                        } else {
+                          _recipeBloc.add(CreateRecipe(recipe: rebuildRecipe()));
+                        }
+                      }
+                    },
+                    icon: Icon(Icons.save_outlined, color: primaryColor),
+                  )
+                ],
+                title: Text(
+                  (widget.recipe != null) ? 'Edit recipe' : 'Create recipe',
+                  style: TextStyle(
+                      color: Colors.black87,
+                      fontWeight: FontWeight.bold
+                  ),
                 ),
-              );
-
-              Navigator.pop(context);
-            }
+                elevation: 1.5,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                pinned: true,
+              )
+            ];
           },
-          builder: (context, state) {
-            if (state is RecipeLoading) {
-              return buildLoading();
-            } else if (state is RecipeFetched) {
-              if (recipe == null) {
-                recipe = state.recipe;
-              }
-            }
+          body: FormBuilder(
+              key: formKey,
+              autovalidateMode: AutovalidateMode.disabled,
+              child: ListView(
+                padding: const EdgeInsets.only(top: 15, bottom: 10),
+                children: [
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Container(
+                            padding: const EdgeInsets.only(left: 4),
+                            child: FormBuilderImagePicker(
+                              name: 'image',
+                              initialValue: [
+                                (recipe != null) ? buildRecipeImage(recipe!, BorderRadius.circular(12), 220) : null
+                              ],
+                              decoration: const InputDecoration(
+                                  border: OutlineInputBorder(
+                                      borderSide: BorderSide.none
+                                  )
+                              ),
+                              maxImages: 1,
+                              iconColor: Colors.grey[400],
+                              previewWidth: 170,
+                              previewHeight: 140,
+                            )
+                        ),
+                      ),
+                      Flexible(
+                          child: Container(
+                              padding: const EdgeInsets.only(right: 15),
+                              child: Column(
+                                children: [
+                                  FormBuilderTextField(
+                                    name: 'workingTime',
+                                    initialValue: (recipe != null) ? recipe!.workingTime.toString() : null,
+                                    decoration: InputDecoration(
+                                      labelText: 'Prep Time',
+                                      labelStyle: TextStyle(
+                                        color: Colors.black26,
+                                      ),
+                                      isDense: true,
+                                      contentPadding: const EdgeInsets.all(10),
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    validator: FormBuilderValidators.compose([
+                                      FormBuilderValidators.numeric(),
+                                      FormBuilderValidators.min(0)
+                                    ]),
+                                    keyboardType: TextInputType.number,
+                                  ),
+                                  SizedBox(height: 10),
+                                  FormBuilderTextField(
+                                    name: 'waitingTime',
+                                    initialValue: (recipe != null) ? recipe!.waitingTime.toString() : null,
+                                    decoration: InputDecoration(
+                                      labelText: 'Waiting time',
+                                      labelStyle: TextStyle(
+                                        color: Colors.black26,
+                                      ),
+                                      isDense: true,
+                                      contentPadding: const EdgeInsets.all(10),
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    validator: FormBuilderValidators.compose([
+                                      FormBuilderValidators.numeric(),
+                                      FormBuilderValidators.min(0)
+                                    ]),
+                                    keyboardType: TextInputType.number,
+                                  ),
+                                  SizedBox(height: 10),
+                                  FormBuilderTextField(
+                                    name: 'servings',
+                                    initialValue: (recipe != null) ? recipe!.servings.toString() : null,
+                                    decoration: InputDecoration(
+                                      labelText: 'Servings',
+                                      labelStyle: TextStyle(
+                                        color: Colors.black26,
+                                      ),
+                                      isDense: true,
+                                      contentPadding: const EdgeInsets.all(10),
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    validator: FormBuilderValidators.compose([
+                                      FormBuilderValidators.numeric(),
+                                      FormBuilderValidators.min(1)
+                                    ]),
+                                    keyboardType: TextInputType.number,
+                                  )
+                                ],
+                              )
+                          )
+                      ),
+                    ],
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 15, right: 15, bottom: 10, left: 15),
+                    child: FormBuilderTextField(
+                      name: 'name',
+                      initialValue: (recipe != null) ? recipe!.name : null,
+                      decoration: InputDecoration(
+                        labelText: 'Name',
+                        labelStyle: TextStyle(
+                          color: Colors.black26,
+                        ),
+                        isDense: true,
+                        contentPadding: const EdgeInsets.all(10),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: FormBuilderValidators.compose([
+                        FormBuilderValidators.required(),
+                        FormBuilderValidators.max(128),
+                      ]),
+                    ),
+                  ),
+                  BlocConsumer<RecipeBloc, RecipeState>(
+                      listener: (context, state) {
+                        if (state is RecipeUpdated) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Saved'),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+                          recipe = state.recipe;
 
-            return NestedScrollView(
-                headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
-                  return <Widget>[
-                    SliverAppBar(
-                      leadingWidth: 50,
-                      titleSpacing: 0,
-                      automaticallyImplyLeading: false,
-                      iconTheme: const IconThemeData(color: Colors.black87),
-                      leading: IconButton(
-                        iconSize: 30,
-                        padding: const EdgeInsets.all(0),
-                        onPressed: () => Navigator.pop(hsbContext),
-                        splashRadius: 20,
-                        icon: Icon(
-                          Icons.chevron_left,
-                        ),
-                      ),
-                      actions: [
-                        TextButton.icon(
-                            onPressed: () {
-                              formKey.currentState!.save();
-                              if (formKey.currentState!.validate()) {
-                                _recipeBloc.add(UpdateRecipe(recipe: rebuildRecipe()));
-                              }
-                            },
-                            icon: Icon(Icons.save_outlined, color: Colors.green),
-                            label: Text('Save', style: TextStyle(color: Colors.green))
-                        )
-                      ],
-                      title: Text(
-                        (widget.recipe != null) ? 'Edit recipe' : 'Create recipe',
-                        style: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.bold
-                        ),
-                      ),
-                      elevation: 1.5,
-                      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                      pinned: true,
-                    )
-                  ];
-                },
-                body: FormBuilder(
-                    key: formKey,
-                    autovalidateMode: AutovalidateMode.disabled,
-                    child: buildFormWidgetList(recipe, formKey, rebuildRecipe)
-                )
-            );
-          }
+                          Navigator.pop(context);
+                        } else if (state is RecipeCreated) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Saved'),
+                              duration: Duration(seconds: 3),
+                            ),
+                          );
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: state.recipe)),
+                          );
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is RecipeLoading) {
+                          return buildLoading();
+                        } else if (state is RecipeFetched) {
+                          recipe = state.recipe;
+                        }
+                        return Column(
+                          children: [
+                            RecipeUpsertIngredientsWidget(recipe: recipe, formKey: formKey, rebuildRecipe: rebuildRecipe),
+                            Container(
+                              padding: const EdgeInsets.only(top: 35, right: 15, bottom: 35, left: 15),
+                              child: FormBuilderTextField(
+                                name: 'instruction',
+                                initialValue: (recipe != null && recipe!.steps != null) ? recipe!.steps.first.instruction : null,
+                                decoration: InputDecoration(
+                                  labelText: 'Directions',
+                                  labelStyle: TextStyle(
+                                    color: Colors.black26,
+                                  ),
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.all(10),
+                                  border: OutlineInputBorder(),
+                                ),
+                                keyboardType: TextInputType.multiline,
+                                minLines: (recipe == null || recipe!.steps == null || recipe!.steps.first.instruction == null || recipe!.steps.first.instruction == '') ? 1 : 10,
+                                maxLines: 20,
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+                  )
+                ],
+              )
+          )
       )
     );
   }
-}
-
-Widget buildFormWidgetList(Recipe? recipe, formKey, Function() rebuildRecipe) {
-  return ListView(
-    children: [
-      Container(
-        padding: const EdgeInsets.only(top: 15, right: 15, bottom: 10, left: 15),
-        child: buildRecipeImage(recipe, BorderRadius.circular(12), 220),
-      ),
-      Container(
-        padding: const EdgeInsets.only(top: 10, right: 15, bottom: 10, left: 15),
-        child: FormBuilderTextField(
-          name: 'name',
-          initialValue: (recipe != null) ? recipe.name : null,
-          decoration: InputDecoration(
-            labelText: 'Name',
-            labelStyle: TextStyle(
-              color: Colors.black26,
-            ),
-            isDense: true,
-            contentPadding: const EdgeInsets.all(10),
-            border: OutlineInputBorder(),
-          ),
-          validator: FormBuilderValidators.compose([
-            FormBuilderValidators.required(),
-            FormBuilderValidators.max(128),
-          ]),
-        ),
-      ),
-      Container(
-        padding: const EdgeInsets.only(top: 10, right: 15, bottom: 10, left: 15),
-        child: Row(
-          children: [
-            Flexible(
-                child: FormBuilderTextField(
-                  name: 'workingTime',
-                  initialValue: (recipe != null) ? recipe.workingTime.toString() : null,
-                  decoration: InputDecoration(
-                    labelText: 'Prep Time',
-                    labelStyle: TextStyle(
-                      color: Colors.black26,
-                    ),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.all(10),
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.numeric(),
-                    FormBuilderValidators.min(0)
-                  ]),
-                  keyboardType: TextInputType.number,
-                )
-            ),
-            SizedBox(width: 10),
-            Flexible(
-                child: FormBuilderTextField(
-                  name: 'waitingTime',
-                  initialValue: (recipe != null) ? recipe.waitingTime.toString() : null,
-                  decoration: InputDecoration(
-                    labelText: 'Waiting time',
-                    labelStyle: TextStyle(
-                      color: Colors.black26,
-                    ),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.all(10),
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.numeric(),
-                    FormBuilderValidators.min(0)
-                  ]),
-                  keyboardType: TextInputType.number,
-                )
-            ),
-            SizedBox(width: 10),
-            Flexible(
-                child: FormBuilderTextField(
-                  name: 'servings',
-                  initialValue: (recipe != null) ? recipe.servings.toString() : null,
-                  decoration: InputDecoration(
-                    labelText: 'Servings',
-                    labelStyle: TextStyle(
-                      color: Colors.black26,
-                    ),
-                    isDense: true,
-                    contentPadding: const EdgeInsets.all(10),
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: FormBuilderValidators.compose([
-                    FormBuilderValidators.numeric(),
-                    FormBuilderValidators.min(1)
-                  ]),
-                  keyboardType: TextInputType.number,
-                )
-            ),
-          ],
-        ),
-      ),
-      RecipeUpsertIngredientsWidget(recipe: recipe, formKey: formKey, rebuildRecipe: rebuildRecipe),
-      Container(
-        padding: const EdgeInsets.only(top: 35, right: 15, bottom: 35, left: 15),
-        child: FormBuilderTextField(
-          name: 'instruction',
-          initialValue: (recipe != null) ? recipe.steps.first.instruction : null,
-          decoration: InputDecoration(
-            labelText: 'Directions',
-            labelStyle: TextStyle(
-              color: Colors.black26,
-            ),
-            isDense: true,
-            contentPadding: const EdgeInsets.all(10),
-            border: OutlineInputBorder(),
-          ),
-          keyboardType: TextInputType.multiline,
-          minLines: (recipe == null || recipe.steps.first.instruction == null || recipe.steps.first.instruction == '') ? 1 : 10,
-          maxLines: 20,
-        ),
-      ),
-    ],
-  );
 }

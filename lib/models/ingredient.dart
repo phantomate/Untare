@@ -44,7 +44,7 @@ class Ingredient {
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic>? unit = this.unit != null ? this.unit!.toJson() : null;
-    Map<String, dynamic>? food = this.unit != null ? this.food!.toJson() : null;
+    Map<String, dynamic>? food = this.food != null ? this.food!.toJson() : null;
 
     return {
       'id': this.id,

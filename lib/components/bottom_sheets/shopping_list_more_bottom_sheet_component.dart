@@ -1,33 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:tare/components/widgets/bottomSheets/recipe_more_component.dart';
-import 'package:tare/models/recipe.dart';
+import 'package:tare/components/widgets/bottom_sheets/shopping_list_more_component.dart';
 
-Future recipeMoreBottomSheet(BuildContext context, Recipe recipe) {
+Future shoppingListMoreBottomSheet(BuildContext context) {
   return showModalBottomSheet(
       backgroundColor: Colors.transparent,
       useRootNavigator: true,
       context: context,
       builder: (btsContext) => Container(
+        //alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(12))
+            borderRadius: BorderRadius.all(Radius.circular(10))
         ),
         margin: const EdgeInsets.all(12),
-        height: 250,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Wrap(
           children: [
             Container(
-              height: 45,
+              height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
                   color: Colors.grey[300]
               ),
               child: Text(
-                recipe.name,
+                'Shopping list',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -36,9 +32,7 @@ Future recipeMoreBottomSheet(BuildContext context, Recipe recipe) {
                 ),
               ),
             ),
-            Expanded(
-                child: buildRecipeMore(context, btsContext, recipe)
-            )
+            buildShoppingListMore(context, btsContext)
           ],
         ),
       )

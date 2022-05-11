@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tare/blocs/abstract_state.dart';
-import 'package:tare/blocs/recipes/recipes_state.dart';
+import 'package:tare/blocs/recipe/recipe_state.dart';
 import 'package:tare/components/custom_scroll_notification.dart';
 import 'package:tare/components/recipes/recipe_grid_component.dart';
 import 'package:tare/components/recipes/recipe_list_component.dart';
@@ -17,12 +17,12 @@ Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNav
   final CustomScrollNotification customScrollNotification = CustomScrollNotification(widget: widget);
   final List<Widget> recipesWidgetList = [];
 
-  if (state is RecipesLoading) {
+  if (state is RecipeListLoading) {
     recipesWidgetList.add(buildLoading());
   }
 
   if (recipes.length == 0) {
-    if (state is RecipesFetched) {
+    if (state is RecipeListFetched) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(12),

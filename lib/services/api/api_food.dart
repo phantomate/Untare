@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:tare/exceptions/api_exception.dart';
+import 'package:tare/exceptions/mapping_exception.dart';
 import 'package:tare/models/food.dart';
 
 import 'api_service.dart';
@@ -16,7 +17,7 @@ class ApiFood extends ApiService {
     Response res = await httpGet(url);
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
 
-    if (res.statusCode == 200) {
+    if ([200, 201].contains(res.statusCode)) {
       List<dynamic> jsonUnits = json['results'];
 
       List<Food> foods = jsonUnits.map((item) => Food.fromJson(item)).toList();
@@ -27,6 +28,30 @@ class ApiFood extends ApiService {
     } else {
       throw ApiException(
           message: 'Food api error: ' + (json['detail'] ?? json['error']),
+          statusCode: res.statusCode
+      );
+    }
+  }
+
+  Future<Food> patchFoodOnHand(Food food) async {
+    if (food.id == null) {
+      throw MappingException(message: 'Id missing for patching food');
+    }
+    var url = '/api/food/' + food.id.toString();
+
+    Map<String, dynamic> requestJson = {
+      'food_onhand': food.onHand
+    };
+
+    Response res = await httpPatch(url, requestJson);
+
+    Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
+
+    if ([200, 201].contains(res.statusCode)) {
+      return Food.fromJson(json);
+    } else {
+      throw ApiException(
+          message: 'Food api error',
           statusCode: res.statusCode
       );
     }

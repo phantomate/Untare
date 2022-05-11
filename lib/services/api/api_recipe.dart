@@ -1,12 +1,16 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:http/http.dart';
 import 'package:tare/exceptions/api_exception.dart';
 import 'package:tare/exceptions/mapping_exception.dart';
 import 'package:tare/models/recipe.dart';
 import 'dart:convert';
 import 'package:tare/services/api/api_service.dart';
+import 'package:http_parser/http_parser.dart';
 
 class ApiRecipe extends ApiService {
-  Future<List<Recipe>> getRecipes(String query, bool random, int page, int pageSize, String? sortOrder) async {
+  Future<List<Recipe>> getRecipeList(String query, bool random, int page, int pageSize, String? sortOrder) async {
     var url = '/api/recipe';
     url += '?query=' + query;
     url += '&random=' + random.toString();
@@ -20,7 +24,7 @@ class ApiRecipe extends ApiService {
     Response res = await httpGet(url);
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
 
-    if (res.statusCode == 200) {
+    if ([200, 201].contains(res.statusCode)) {
       List<dynamic> jsonRecipes = json['results'];
 
       List<Recipe> recipes = jsonRecipes.map((dynamic item) => Recipe.fromJson(item)).toList();
@@ -42,7 +46,7 @@ class ApiRecipe extends ApiService {
     Response res = await httpGet(url);
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
 
-    if (res.statusCode == 200) {
+    if ([200, 201].contains(res.statusCode)) {
       return Recipe.fromJson(json);
     } else if (res.statusCode == 404) {
       return null;
@@ -64,7 +68,7 @@ class ApiRecipe extends ApiService {
 
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
 
-    if (res.statusCode == 200) {
+    if ([200, 201].contains(res.statusCode)) {
       return Recipe.fromJson(json);
     } else {
       throw ApiException(
@@ -74,21 +78,69 @@ class ApiRecipe extends ApiService {
     }
   }
 
-  Future<Recipe> updateImage(Recipe recipe, image) async {
+  Future updateImage(Recipe recipe, image) async {
     if (recipe.id == null) {
       throw MappingException(message: 'Id missing for recipe image update ' + recipe.name);
     }
     var url = '/api/recipe/' + recipe.id.toString() + '/image/';
 
-    Response res = await httpPut(url, image);
+    var request = MultipartRequest('PUT', Uri.parse(url));
+    request.files.add(MultipartFile.fromBytes('file', file.readAsBytesSync(), contentType: MediaType('image','jpeg')));
 
+    request.send().then((response) {
+      print('response: ' + response.toString());
+      if ([200, 201].contains(response)) print("Uploaded!");
+    });
+  }
+
+  Future addIngredientsToShoppingList(int recipeId, List<int> ingredientIds, int servings) async {
+    var url = '/api/recipe/' + recipeId.toString() + '/shopping';
+
+    Map<String, dynamic> requestJson = {
+      'id': recipeId,
+      'ingredients': ingredientIds,
+      'servings': servings
+    };
+
+    Response res = await httpPut(url, requestJson);
+
+    if (![200, 201, 204].contains(res.statusCode)) {
+      throw ApiException(
+          message: 'Recipe api error on adding ingredients to shopping list',
+          statusCode: res.statusCode
+      );
+    }
+  }
+
+  Future<Recipe> createRecipe(Recipe recipe) async {
+    var url = '/api/recipe/';
+
+    Response res = await httpPost(url, recipe.toJson());
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
 
-    if (res.statusCode == 200) {
-      return recipe.copyWith(image: json['image']);
+    if ([200, 201].contains(res.statusCode)) {
+      return Recipe.fromJson(json);
     } else {
       throw ApiException(
-          message: 'Recipe api error: ' + (json['detail'] ?? json['error']),
+          message: 'Recipe api error',
+          statusCode: res.statusCode
+      );
+    }
+  }
+
+  Future<Recipe> deleteRecipe(Recipe recipe) async {
+    if (recipe.id == null) {
+      throw MappingException(message: 'Id missing for deleting recipe ' + recipe.name);
+    }
+    var url = '/api/recipe/' + recipe.id.toString();
+
+    Response res = await httpDelete(url);
+
+    if ([200, 201, 204].contains(res.statusCode)) {
+      return recipe;
+    } else {
+      throw ApiException(
+          message: 'Recipe api error',
           statusCode: res.statusCode
       );
     }

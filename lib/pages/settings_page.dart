@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:tare/components/bottomSheets/settings_layout_bottom_sheet_component.dart';
+import 'package:tare/components/bottom_sheets/settings_layout_bottom_sheet_component.dart';
+import 'package:tare/constants/colors.dart';
 import 'package:tare/cubits/recipe_layout_cubit.dart';
+import 'package:tare/cubits/theme_mode_cubit.dart';
 import 'package:tare/extensions/string_extension.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -12,6 +14,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  bool? themeModeSwitch;
+
   @override
   void initState() {
     super.initState();
@@ -19,6 +23,9 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    ThemeModeCubit themeModeCubit = context.read<ThemeModeCubit>();
+    themeModeSwitch = (themeModeCubit.state == 'dark');
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -61,8 +68,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       value: Text(layout.capitalize()),
                     ),
                     SettingsTile.switchTile(
-                      onToggle: (value) {},
-                      initialValue: true,
+                      onToggle: (bool value) {
+                        setState(() {
+                          themeModeSwitch = value;
+                        });
+                        if (value) {
+                          themeModeCubit.changeToDarkTheme();
+                        } else {
+                          themeModeCubit.changeToLightTheme();
+                        }
+                      },
+                      initialValue: themeModeSwitch,
                       leading: Icon(Icons.format_paint),
                       title: Text('Dark mode'),
                     ),
@@ -79,6 +95,10 @@ class _SettingsPageState extends State<SettingsPage> {
             ],
             platform: DevicePlatform.android,
             physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            lightTheme: SettingsThemeData(
+              tileHighlightColor: primaryColor,
+              titleTextColor: primaryColor
+            ),
           );
         }
       )

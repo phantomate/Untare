@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:tare/components/widgets/bottomSheets/settings_layout_component.dart';
+import 'package:tare/components/widgets/recipe_shopping_list_stateful_widget.dart';
 
-Future settingsLayoutBottomSheet(BuildContext context) {
+import 'package:tare/models/recipe.dart';
+
+Future recipeShoppingListBottomSheet(BuildContext context, Recipe recipe) {
   return showModalBottomSheet(
+    isScrollControlled: true,
       backgroundColor: Colors.transparent,
       useRootNavigator: true,
       context: context,
       builder: (btsContext) => Container(
         decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(12))
+            borderRadius: BorderRadius.all(Radius.circular(10))
         ),
         margin: const EdgeInsets.all(12),
-        height: 150,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Wrap(
           children: [
             Container(
-              height: 45,
+              height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
                   color: Colors.grey[300]
               ),
               child: Text(
-                'Layout recipes',
+                recipe.name,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -34,9 +34,7 @@ Future settingsLayoutBottomSheet(BuildContext context) {
                 ),
               ),
             ),
-            Expanded(
-                child: buildSettingsLayout(context, btsContext)
-            )
+            Container(height: 600,child: RecipeShoppingListWidget(recipe: recipe, btsContext: btsContext))
           ],
         ),
       )

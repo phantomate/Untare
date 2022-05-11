@@ -43,9 +43,13 @@ dependencies:
   flutter_form_builder: ^7.1.1
   form_builder_validators: ^8.1.1
   form_builder_extra_fields: 7.0.0
-  #form_builder_image_picker: ^2.0.0
+  form_builder_image_picker: ^2.0.0
   flutter_dialogs: ^2.1.1
   flutter_slidable: ^1.2.0
+  intl: ^0.17.0
+  modal_bottom_sheet: ^2.0.1
+  grouped_list: ^4.2.0
+  configurable_expansion_tile_null_safety: ^2.0.0
 
 dev_dependencies:
   flutter_test:

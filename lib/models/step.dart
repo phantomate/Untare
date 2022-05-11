@@ -54,7 +54,7 @@ class StepModel {
 
     return {
       'id': this.id,
-      'name': this.name,
+      'name': this.name ?? '',
       'instruction': this.instruction ?? '',
       'ingredients': ingredients,
       'time': this.time ?? 0,

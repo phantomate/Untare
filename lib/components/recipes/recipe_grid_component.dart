@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tare/components/bottomSheets/recipe_more_bottom_sheet_component.dart';
+import 'package:tare/components/bottom_sheets/meal_plan_more_bottom_sheet_component.dart';
+import 'package:tare/components/bottom_sheets/recipe_more_bottom_sheet_component.dart';
 import 'package:tare/components/recipes/recipe_image_component.dart';
 import 'package:tare/components/recipes/recipe_time_component.dart';
+import 'package:tare/models/meal_plan_entry.dart';
 
 import 'package:tare/models/recipe.dart';
 import 'package:tare/pages/recipe_detail_page.dart';
 
-Widget recipeGridComponent(Recipe recipe, BuildContext context) {
+Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer, MealPlanEntry? mealPlan}) {
   BoxDecoration recipeTimeDecoration = BoxDecoration(
       color: Colors.white.withOpacity(0.8),
       borderRadius: BorderRadius.circular(30)
@@ -22,17 +24,21 @@ Widget recipeGridComponent(Recipe recipe, BuildContext context) {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: recipe)),
+          MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: recipe, referer: referer)),
         );
       },
       onLongPress: () {
-        recipeMoreBottomSheet(context, recipe);
+        if (mealPlan != null) {
+          mealPlanMoreBottomSheet(context, mealPlan);
+        } else {
+          recipeMoreBottomSheet(context, recipe);
+        }
       },
       child: Column(
         children: [
           Stack(
             children: [
-              buildRecipeImage(recipe, BorderRadius.vertical(top: Radius.circular(10)), 120),
+              buildRecipeImage(recipe, BorderRadius.vertical(top: Radius.circular(10)), 120, referer: referer),
               Container(
                 padding: EdgeInsets.all(5),
                 alignment: Alignment.topRight,
@@ -40,23 +46,22 @@ Widget recipeGridComponent(Recipe recipe, BuildContext context) {
               )
             ],
           ),
-          Expanded(
-            child: Container(
-              alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
-              ),
-              padding: EdgeInsets.only(top: 10, right: 5, bottom: 10, left: 15),
-              child: Text(
-                recipe.name,
-                style: TextStyle(
+          Container(
+            height: 54,
+            alignment: Alignment.centerLeft,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+            ),
+            padding: EdgeInsets.only(top: 10, right: 5, bottom: 10, left: 15),
+            child: Text(
+              recipe.name,
+              style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.black87
-                ),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
               ),
-            )
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
           )
         ],
       )

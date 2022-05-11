@@ -1,42 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:intl/intl.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:tare/blocs/recipe/recipe_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_event.dart';
 import 'package:tare/blocs/recipe/recipe_state.dart';
-import 'package:tare/components/bottomSheets/recipe_more_bottom_sheet_component.dart';
+import 'package:tare/components/bottom_sheets/recipe_more_bottom_sheet_component.dart';
 import 'package:tare/components/widgets/recipe_detail_ingredients_stateful_widget.dart';
 import 'package:tare/components/recipes/recipe_image_component.dart';
 import 'package:tare/components/loading_component.dart';
 import 'package:tare/models/recipe.dart';
-import 'package:tare/services/api/api_recipe.dart';
 
-class RecipeDetailPage extends StatelessWidget {
+class RecipeDetailPage extends StatefulWidget {
   final Recipe recipe;
-  RecipeDetailPage({required this.recipe});
+  final String? referer;
+
+  RecipeDetailPage({required this.recipe, this.referer});
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider<RecipeBloc>(
-        create: (BuildContext context) =>
-            RecipeBloc(apiRecipe: ApiRecipe()),
-        child: RecipeDetail(recipe: this.recipe)
-    );
-  }
+  _RecipeDetailPageState createState() => _RecipeDetailPageState();
 }
 
-class RecipeDetail extends StatefulWidget {
-  final Recipe recipe;
-
-  RecipeDetail({required this.recipe});
-
-  @override
-  _RecipeDetailState createState() => _RecipeDetailState();
-}
-
-class _RecipeDetailState extends State<RecipeDetail> {
+class _RecipeDetailPageState extends State<RecipeDetailPage> {
   late RecipeBloc recipeBloc;
   late Recipe recipe;
 
@@ -53,54 +39,53 @@ class _RecipeDetailState extends State<RecipeDetail> {
     return Scaffold(
       body: DefaultTabController(
         length: 2,
-        child: NestedScrollView(
-          headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
-            return <Widget>[
-              sliverWidget(context, hsbContext, recipe)
-            ];
+        child: BlocConsumer<RecipeBloc, RecipeState>(
+          listener: (context, state) {
+            if (state is RecipeDeleted) {
+              Navigator.pop(context);
+            } else if (state is RecipeUpdated) {
+              recipe = state.recipe;
+            }
           },
-          body: Container(
-            margin: const EdgeInsets.only(top: 50),
-            color: Theme.of(context).scaffoldBackgroundColor,
-            child: BlocConsumer<RecipeBloc, RecipeState>(
-              listener: (context, state) {
-                if (state is RecipeError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.error),
-                      duration: Duration(seconds: 8),
-                    ),
-                  );
-                } else if (state is RecipeUnauthorized) {
-                  Phoenix.rebirth(context);
-                }
-              },
-              builder: (context, state) {
-                if (state is RecipeLoading) {
-                  return buildLoading();
-                } else if (state is RecipeFetched) {
-                  recipe = state.recipe;
-
-                  return TabBarView(
-                    children: [
-                      RecipeDetailIngredientsWidget(recipe: recipe),
-                      buildRecipeInstructions(recipe)
-                    ],
-                  );
-                } else {
-                  return Center(child: Text('Help'));
-                }
+          builder: (context, state) {
+            if (state is RecipeFetched) {
+              if (widget.recipe.id == state.recipe.id) {
+                recipe = state.recipe;
               }
-            ),
-          ),
-        ),
+            }
+
+            return NestedScrollView(
+              headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  sliverWidget(context, hsbContext, recipe, referer: widget.referer)
+                ];
+              },
+              body: Container(
+                  margin: const EdgeInsets.only(top: 50),
+                  color: Theme.of(context).scaffoldBackgroundColor,
+                  child: (state is RecipeLoading)
+                    ? buildLoading()
+                    : TabBarView(
+                        children: [
+                          RecipeDetailIngredientsWidget(recipe: recipe),
+                          buildRecipeInstructions(recipe)
+                        ],
+                      )
+              ),
+            );
+          }
+        )
       )
     );
   }
 }
 
-Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe) {
-  int recipeSumTime = (recipe.workingTime ?? 0) + (recipe.waitingTime ?? 0);
+Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe, {String? referer}) {
+  String? lastCooked;
+  if (recipe.lastCooked != null) {
+    DateTime tempDate = DateTime.parse(recipe.lastCooked!);
+    lastCooked = DateFormat("dd.MM.yy").format(tempDate);
+  }
 
   return SliverOverlapAbsorber(
     handle: NestedScrollView.sliverOverlapAbsorberHandleFor(hsbContext),
@@ -108,7 +93,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
       children: [
         SliverLayoutBuilder(
           builder: (BuildContext hsbContext, constraints) {
-            final scrolled = constraints.scrollOffset > 0 && constraints.scrollOffset < 285;
+            final scrolled = constraints.scrollOffset > 0 && constraints.scrollOffset < 290;
 
             return SliverAppBar(
               leadingWidth: 50,
@@ -155,64 +140,133 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                 [
                   Container(
                     height: 250,
-                    child: buildRecipeImage(recipe, BorderRadius.zero, 250),
+                    child: buildRecipeImage(recipe, BorderRadius.zero, 250, referer: referer),
                   ),
                   Container(
-                    height: 40,
+                    height: 45,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        Row(
+                        if (lastCooked != null) Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.timer_outlined,
-                              size: 12,
-                              color: Colors.black87,
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.restaurant_outlined,
+                                  size: 12,
+                                  color: Colors.black87,
+                                ),
+                                SizedBox(width: 2),
+                                Text(
+                                  lastCooked,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 2),
+                            SizedBox(height: 3),
                             Text(
-                              recipeSumTime.toString() + ' min',
+                              'Last cooked',
                               style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black87,
+                                  fontSize: 9,
+                                  color: Colors.grey
                               ),
-                            ),
+                            )
                           ],
                         ),
-                        Row(
+                        if (recipe.rating != null && recipe.rating! > 0) Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.timer_outlined,
-                              size: 12,
-                              color: Colors.black87,
+                            Row(
+                              children: [
+                                Text(
+                                  recipe.rating.toString(),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                SizedBox(width: 2),
+                                Icon(
+                                  Icons.star,
+                                  size: 12,
+                                  color: Colors.amberAccent,
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 2),
+                            SizedBox(height: 3),
                             Text(
-                              recipeSumTime.toString() + ' min',
+                              'Rating',
                               style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black87,
+                                  fontSize: 9,
+                                  color: Colors.grey
                               ),
-                            ),
+                            )
                           ],
                         ),
-                        Row(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
-                              Icons.timer_outlined,
-                              size: 12,
-                              color: Colors.black87,
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.timer_outlined,
+                                  size: 12,
+                                  color: Colors.black87,
+                                ),
+                                SizedBox(width: 2),
+                                Text(
+                                  recipe.workingTime.toString() + ' min',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(width: 2),
+                            SizedBox(height: 3),
                             Text(
-                              recipeSumTime.toString() + ' min',
+                              'Prep. time',
                               style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.black87,
+                                fontSize: 9,
+                                color: Colors.grey
                               ),
-                            ),
+                            )
                           ],
-                        )
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.hourglass_bottom_outlined,
+                                  size: 12,
+                                  color: Colors.black87,
+                                ),
+                                SizedBox(width: 2),
+                                Text(
+                                  recipe.waitingTime.toString() + ' min',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 3),
+                            Text(
+                              'Waiting time',
+                              style: TextStyle(
+                                  fontSize: 9,
+                                  color: Colors.grey
+                              ),
+                            )
+                          ],
+                        ),
                       ],
                     ),
                   )
@@ -238,7 +292,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
 }
 
 Widget buildRecipeInstructions(Recipe recipe) {
-  if (recipe.steps!.first.instruction != null && recipe.steps!.first.instruction != '') {
+  if (recipe.steps != null && recipe.steps!.first.instruction != null && recipe.steps!.first.instruction != '') {
     List<String> splitInstructions = recipe.steps!.first.instruction.split("\n\n");
 
     if (splitInstructions.length <= 2) {
@@ -257,9 +311,10 @@ Widget buildRecipeInstructions(Recipe recipe) {
       if (i < splitInstructions.length - 1) {
         instructionSteps.add(buildInstructionStep(i+1, splitInstruction));
       } else {
-        instructionSteps.add(Container(
-          padding: const EdgeInsets.only(top: 10),
-          child: Text(splitInstruction, style: TextStyle(color: Colors.black45)),
+        instructionSteps.add(
+          Container(
+            padding: const EdgeInsets.only(top: 10),
+            child: Text(splitInstruction, style: TextStyle(color: Colors.black45)),
         ));
       }
     }
@@ -276,11 +331,19 @@ Widget buildRecipeInstructions(Recipe recipe) {
 
 Widget buildInstructionStep(int stepCount, String step) {
   return Container(
-    padding: const EdgeInsets.only(top: 10),
+    padding: const EdgeInsets.only(top: 15, bottom: 15),
+    decoration: BoxDecoration(
+      border: Border(
+          bottom: BorderSide(
+            color: Colors.grey[200]!,
+            width: 1
+          )
+      )
+    ),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Step $stepCount', style: TextStyle(color: Colors.black45)),
+        Text('Step $stepCount', style: TextStyle(color: Colors.black45, fontSize: 12)),
         SizedBox(height: 5),
         Text(step)
       ],
