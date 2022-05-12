@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:cross_file/cross_file.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -50,11 +49,6 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
   Recipe rebuildRecipe() {
     formKey.currentState!.save();
     Map<String, dynamic> formBuilderData = formKey.currentState!.value;
-
-    // @todo update image
-    if (formBuilderData.containsKey('image')) {
-
-    }
 
     // Build food list
     List<Ingredient> ingredientList = [];
@@ -173,10 +167,15 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                     onPressed: () {
                       formKey.currentState!.save();
                       if (formKey.currentState!.validate()) {
+                        XFile? image;
+                        if (formKey.currentState!.value['image'].first is XFile) {
+                          image = formKey.currentState!.value['image'].first;
+                        }
+
                         if (widget.recipe != null) {
-                          _recipeBloc.add(UpdateRecipe(recipe: rebuildRecipe()));
+                          _recipeBloc.add(UpdateRecipe(recipe: rebuildRecipe(), image: image));
                         } else {
-                          _recipeBloc.add(CreateRecipe(recipe: rebuildRecipe()));
+                          _recipeBloc.add(CreateRecipe(recipe: rebuildRecipe(), image: image));
                         }
                       }
                     },

@@ -8,7 +8,7 @@ import 'package:tare/services/api/api_service.dart';
 
 class ApiMealPlan extends ApiService {
   Future<List<MealPlanEntry>> getMealPlanList(String from, String to) async {
-    var url = '/api/meal-plan';
+    var url = '/api/meal-plan/';
     url += '?from_date=' + from;
     url += '&to_date=' + to;
 
@@ -52,7 +52,7 @@ class ApiMealPlan extends ApiService {
     if (mealPlan.id == null) {
       throw MappingException(message: 'Id missing for updating meal plan');
     }
-    var url = '/api/meal-plan/' + mealPlan.id.toString();
+    var url = '/api/meal-plan/' + mealPlan.id.toString() + '/';
 
     Response res = await httpPut(url, mealPlan.toJson());
 
@@ -72,7 +72,7 @@ class ApiMealPlan extends ApiService {
     if (mealPlan.id == null) {
       throw MappingException(message: 'Id missing for deleting meal plan');
     }
-    var url = '/api/meal-plan/' + mealPlan.id.toString();
+    var url = '/api/meal-plan/' + mealPlan.id.toString() + '/';
 
     Response res = await httpDelete(url);
 

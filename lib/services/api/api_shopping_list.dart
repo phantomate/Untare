@@ -8,7 +8,7 @@ import 'package:tare/services/api/api_service.dart';
 
 class ApiShoppingList extends ApiService {
   Future<List<ShoppingListEntry>> getShoppingListEntries(String checked, String idFilter) async {
-    var url = '/api/shopping-list-entry';
+    var url = '/api/shopping-list-entry/';
     url += '?checked=' + checked;
     url += idFilter;
 
@@ -52,7 +52,7 @@ class ApiShoppingList extends ApiService {
     if (entry.id == null) {
       throw MappingException(message: 'Id missing for updating shopping list entry');
     }
-    var url = '/api/shopping-list-entry/' + entry.id.toString();
+    var url = '/api/shopping-list-entry/' + entry.id.toString() + '/';
 
     Response res = await httpPut(url, entry.toJson());
 
@@ -72,7 +72,7 @@ class ApiShoppingList extends ApiService {
     if (entry.id == null) {
       throw MappingException(message: 'Id missing for patching shopping list entry');
     }
-    var url = '/api/shopping-list-entry/' + entry.id.toString();
+    var url = '/api/shopping-list-entry/' + entry.id.toString() + '/';
 
     Map<String, dynamic> requestJson = {
       'id': entry.id,

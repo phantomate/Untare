@@ -121,9 +121,9 @@ class Recipe {
       createdAt: json['created_at'] as String,
       updatedAt: json['updated_at'] as String,
       internal: json['internal'] as bool,
-      servings: json['servings'] as int?,
+      servings: (json['servings'] is int) ? json['servings'] : ((json['servings'] is double) ? json['servings'].toInt() : null),
       servingsText: json['servings_text'] as String,
-      rating: json['rating'] as int?,
+      rating: (json['rating'] is int) ? json['rating'] : ((json['rating'] is double) ? json['rating'].toInt() : null),
       lastCooked: json['last_cooked'] as String?,
       isNew: json['new'] as bool?,
       recent: json['recent'] as int?

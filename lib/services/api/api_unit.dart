@@ -6,7 +6,7 @@ import 'package:tare/services/api/api_service.dart';
 
 class ApiUnit extends ApiService {
   Future<List<Unit>> getUnits(String query, int page, int pageSize) async {
-    var url = '/api/unit';
+    var url = '/api/unit/';
     url += '?query=' + query;
     url += '&page=' + page.toString();
     url += '&page_size=' + pageSize.toString();

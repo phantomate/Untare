@@ -25,7 +25,7 @@ class RecipeMealPlan {
         name: json['name'] as String,
         recipe: json['recipe'] as int,
         mealPlan: json['mealplan'] as int?,
-        servings: json['servings'] as int,
+        servings: (json['servings'] is int) ? json['servings'] : ((json['servings'] is double) ? json['servings'].toInt() : 1),
         mealPlanNote: json['mealplan_note'] as String?
     );
   }
