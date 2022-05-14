@@ -24,18 +24,7 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> _for
     enabled: (referer == 'meal-plan' || referer == 'edit'),
     selectionToTextTransformer: (recipe) => recipe.name,
     decoration: const InputDecoration(
-      labelText: 'Recipe',
-      labelStyle: TextStyle(
-        color: Colors.black26,
-      ),
-      isDense: true,
-      contentPadding: const EdgeInsets.all(10),
-      border: OutlineInputBorder(),
-      disabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.black12,
-          )
-      ),
+      labelText: 'Recipe'
     ),
     validator: FormBuilderValidators.compose([
       FormBuilderValidators.required()

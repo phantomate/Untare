@@ -20,14 +20,8 @@ Widget mealTypeTypeAheadFieldForm(MealType? mealType, GlobalKey<FormBuilderState
     initialValue: mealType,
     controller: _mealTypeTextController,
     selectionToTextTransformer: (mealType) => mealType.name,
-    decoration: const InputDecoration(
+    decoration: InputDecoration(
       labelText: 'Meal type',
-      labelStyle: TextStyle(
-        color: Colors.black26,
-      ),
-      isDense: true,
-      contentPadding: const EdgeInsets.all(10),
-      border: OutlineInputBorder(),
     ),
     validator: FormBuilderValidators.compose([
       FormBuilderValidators.required()
@@ -51,7 +45,7 @@ Widget mealTypeTypeAheadFieldForm(MealType? mealType, GlobalKey<FormBuilderState
       _mealTypeList.forEach((element) => (element.name == query) ? hideOnEqual = true : null);
 
 
-      if (mealTypeListByQuery.isEmpty || !hideOnEqual) {
+      if (query != '' && (mealTypeListByQuery.isEmpty || !hideOnEqual)) {
         mealTypeListByQuery.add(MealType(name: query, defaultType: false, order: 0, createdBy: 1));
       }
 

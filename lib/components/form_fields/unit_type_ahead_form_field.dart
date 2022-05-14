@@ -21,18 +21,7 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuild
     initialValue: unit,
     selectionToTextTransformer: (unit) => unit.name,
     decoration: const InputDecoration(
-      labelText: 'Unit',
-      labelStyle: TextStyle(
-        color: Colors.black26,
-      ),
-      isDense: true,
-      contentPadding: const EdgeInsets.all(10),
-      border: OutlineInputBorder(),
-      disabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.black12,
-          )
-      ),
+      labelText: 'Unit'
     ),
     itemBuilder: (context, unit) {
       return ListTile(title: Text(unit.name));

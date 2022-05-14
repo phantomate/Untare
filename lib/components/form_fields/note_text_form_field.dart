@@ -11,12 +11,6 @@ Widget noteTextFormField(String? note, GlobalKey<FormBuilderState> _formBuilderK
     initialValue: note,
     decoration: InputDecoration(
         labelText: 'Note',
-        labelStyle: TextStyle(
-          color: Colors.black26,
-        ),
-        border: OutlineInputBorder(),
-        isDense: true,
-        contentPadding: const EdgeInsets.all(10)
     ),
     onSaved: (String? formNote) {
       String? newNote = note;

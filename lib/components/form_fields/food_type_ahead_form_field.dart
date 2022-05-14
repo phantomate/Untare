@@ -22,14 +22,8 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> _formBuild
     controller: _foodTextController,
     initialValue: food,
     selectionToTextTransformer: (food) => food.name,
-    decoration: const InputDecoration(
+    decoration: InputDecoration(
       labelText: 'Food',
-      labelStyle: TextStyle(
-        color: Colors.black26,
-      ),
-      isDense: true,
-      contentPadding: const EdgeInsets.all(10),
-      border: OutlineInputBorder(),
     ),
     validator: FormBuilderValidators.compose([
       FormBuilderValidators.required()

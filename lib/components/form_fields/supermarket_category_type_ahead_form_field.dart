@@ -19,19 +19,8 @@ Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCat
     controller: _categoryTextController,
     initialValue: supermarketCategory,
     selectionToTextTransformer: (category) => category.name,
-    decoration: const InputDecoration(
-      labelText: 'Category',
-      labelStyle: TextStyle(
-        color: Colors.black26,
-      ),
-      isDense: true,
-      contentPadding: const EdgeInsets.all(10),
-      border: OutlineInputBorder(),
-      disabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.black12,
-          )
-      ),
+    decoration: InputDecoration(
+      labelText: 'Category'
     ),
     itemBuilder: (context, category) {
       return ListTile(title: Text(category.name));
@@ -52,7 +41,7 @@ Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCat
       _superMarketCategories.forEach((element) => (element.name == query) ? hideOnEqual = true : null);
 
 
-      if (supermarketCategoriesByQuery.isEmpty || !hideOnEqual) {
+      if (query != '' && (supermarketCategoriesByQuery.isEmpty || !hideOnEqual)) {
         supermarketCategoriesByQuery.add(SupermarketCategory(name: query));
       }
 

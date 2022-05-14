@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:tare/extensions/double_extension.dart';
 
 Widget quantityTextFormField(double? amount, GlobalKey<FormBuilderState> _formBuilderKey, {int? index, dynamicKey}) {
   final fieldName = 'quantity' + ((index != null) ? index.toString() : '');
@@ -9,35 +10,29 @@ Widget quantityTextFormField(double? amount, GlobalKey<FormBuilderState> _formBu
   return FormBuilderTextField(
     name: fieldName,
     key: dynamicKey,
-    initialValue: (amount != null ) ? amount.toString() : null,
+    initialValue: (amount != null ) ? amount.toFormattedString() : null,
     decoration: InputDecoration(
-      labelText: 'Quantity',
-      labelStyle: TextStyle(
-        color: Colors.black26,
-      ),
-      isDense: true,
-      contentPadding: const EdgeInsets.all(10),
-      border: OutlineInputBorder(),
+      labelText: 'Quantity'
     ),
     validator: FormBuilderValidators.compose([
       FormBuilderValidators.numeric(),
     ]),
     onSaved: (String? formAmount) {
-      double? newAmount = amount;
+      double newAmount = amount ?? 0;
+      double formAmountDouble = double.tryParse(formAmount ?? '') ?? 0;
 
       // Overwrite amount, if changed in form
-      if (amount.toString() != formAmount) {
-        newAmount = (!['', null].contains(formAmount)) ? double.tryParse(formAmount!) : 0;
-      } else if (amount.toString() == formAmount) {
-        newAmount = amount;
+      if (newAmount.compareTo(formAmountDouble) != 0) {
+        newAmount = formAmountDouble;
+      } else if (newAmount.compareTo(formAmountDouble) == 0) {
+        newAmount = newAmount;
       }
-      newAmount = newAmount ?? 0;
 
       // If we have a dynamic key the form field is generated dynamically and therefore we have to use an other method
       if (dynamicKey != null) {
-        _formBuilderKey.currentState!.setInternalFieldValue(fieldName, newAmount.toString(), isSetState: true);
+        _formBuilderKey.currentState!.setInternalFieldValue(fieldName, newAmount.toFormattedString(), isSetState: true);
       } else {
-        _formBuilderKey.currentState!.fields[fieldName]!.didChange(newAmount.toString());
+        _formBuilderKey.currentState!.fields[fieldName]!.didChange(newAmount.toFormattedString());
       }
     },
   );
