@@ -25,6 +25,7 @@ import 'package:tare/pages/settings_page.dart';
 import 'package:tare/pages/shopping_list_page.dart';
 import 'package:tare/pages/starting_page.dart';
 import 'package:tare/services/api/api_meal_plan.dart';
+import 'package:tare/services/api/api_meal_type.dart';
 import 'package:tare/services/api/api_recipe.dart';
 import 'package:tare/services/api/api_shopping_list.dart';
 import 'package:tare/services/api/api_supermarket_category.dart';
@@ -76,7 +77,7 @@ class Tare extends StatelessWidget {
             create: (BuildContext context) => RecipeBloc(apiRecipe: ApiRecipe())
           ),
           BlocProvider<MealPlanBloc>(
-            create: (BuildContext context) => MealPlanBloc(apiMealPlan: ApiMealPlan())
+            create: (BuildContext context) => MealPlanBloc(apiMealPlan: ApiMealPlan(), apiMealType: ApiMealType())
           ),
           BlocProvider<ShoppingListBloc>(
             create: (BuildContext context) => ShoppingListBloc(apiShoppingList: ApiShoppingList(), apiSupermarketCategory: ApiSupermarketCategory())
