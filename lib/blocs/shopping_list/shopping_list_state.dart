@@ -1,4 +1,5 @@
 import 'package:tare/models/shopping_list_entry.dart';
+import 'package:tare/models/supermarket_category.dart';
 
 abstract class ShoppingListState {}
 
@@ -42,3 +43,13 @@ class ShoppingListError extends ShoppingListState {
 }
 
 class ShoppingListUnauthorized extends ShoppingListState {}
+
+class ShoppingListUpdatedSupermarketCategory extends ShoppingListState {
+  final SupermarketCategory supermarketCategory;
+  ShoppingListUpdatedSupermarketCategory({required this.supermarketCategory});
+}
+
+class ShoppingListDeletedSupermarketCategory extends ShoppingListState {
+  final SupermarketCategory supermarketCategory;
+  ShoppingListDeletedSupermarketCategory({required this.supermarketCategory});
+}
