@@ -188,13 +188,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.1"
-  flutter_dialogs:
-    dependency: "direct main"
-    description:
-      name: flutter_dialogs
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.1"
   flutter_form_builder:
     dependency: "direct main"
     description:
@@ -413,13 +406,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.7.0"
-  modal_bottom_sheet:
-    dependency: "direct main"
-    description:
-      name: modal_bottom_sheet
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
   nested:
     dependency: transitive
     description:
