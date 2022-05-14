@@ -29,4 +29,35 @@ class ApiMealType extends ApiService {
       );
     }
   }
+
+  Future<MealType> patchMealType(MealType mealType) async {
+    var url = '/api/meal-type/' + mealType.id.toString() + '/';
+
+    Response res = await httpPatch(url, mealType.toJson());
+    if ([200, 201].contains(res.statusCode)) {
+      Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
+
+      return MealType.fromJson(json);
+    } else {
+      throw ApiException(
+          message: 'Meal type api error - could not update meal type',
+          statusCode: res.statusCode
+      );
+    }
+  }
+
+  Future<MealType> deleteMealType(MealType mealType) async {
+    var url = '/api/meal-type/' + mealType.id.toString() + '/';
+
+    Response res = await httpDelete(url);
+
+    if ([200, 201, 204].contains(res.statusCode)) {
+      return mealType;
+    } else {
+      throw ApiException(
+          message: 'Meal type api error - could not delete meal type',
+          statusCode: res.statusCode
+      );
+    }
+  }
 }
