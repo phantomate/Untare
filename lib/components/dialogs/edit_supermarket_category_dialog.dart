@@ -47,10 +47,8 @@ Future editSupermarketCategoryDialog(BuildContext context) async {
                         [FormBuilderValidators.required()]
                     ),
                     onChanged: (dynamic value) {
-                      print(value);
                       if (!isVisible) {
                         setState(() {
-                          print('dude');
                           isVisible = true;
                         });
                       }
