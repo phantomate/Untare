@@ -24,67 +24,34 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
               MaterialPageRoute(builder: (context) => RecipeUpsertPage(recipe: recipe)),
             );
           },
-          icon: Icon(
-            Icons.edit_outlined,
-            color: Colors.black87,
-          ),
-          label: Text(
-            'Edit',
-            style: TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.bold
-            ),
-          ),
+          icon: Icon(Icons.edit_outlined),
+          label: Text('Edit'),
         ),
         TextButton.icon(
           onPressed: () {
             Navigator.pop(btsContext);
             mealPlanUpsertBottomSheet(context, recipe: recipe, referer: 'recipe');
           },
-          icon: Icon(
-            Icons.calendar_today_outlined,
-            color: Colors.black87,
-          ),
-          label: Text(
-            'Add to meal plan',
-            style: TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.bold
-            ),
-          ),
+          icon: Icon(Icons.calendar_today_outlined),
+          label: Text('Add to meal plan'),
         ),
         TextButton.icon(
           onPressed: () {
             Navigator.pop(btsContext);
             recipeShoppingListBottomSheet(context, recipe);
           },
-          icon: Icon(
-            Icons.add_shopping_cart_outlined,
-            color: Colors.black87,
-          ),
-          label: Text(
-            'Add to shopping list',
-            style: TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.bold
-            ),
-          ),
+          icon: Icon(Icons.add_shopping_cart_outlined),
+          label: Text('Add to shopping list'),
         ),
         TextButton.icon(
           onPressed: () {
             Navigator.pop(btsContext);
             _recipeBloc.add(DeleteRecipe(recipe: recipe));
           },
-          icon: Icon(
-            Icons.delete_outline,
-            color: Colors.redAccent,
-          ),
+          icon: Icon(Icons.delete_outline, color: Colors.redAccent),
           label: Text(
             'Remove',
-            style: TextStyle(
-                color: Colors.redAccent,
-                fontWeight: FontWeight.bold
-            ),
+            style: TextStyle(color: Colors.redAccent),
           ),
         ),
       ],
