@@ -6,7 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:tare/blocs/meal_plan/meal_plan_bloc.dart';
 import 'package:tare/blocs/meal_plan/meal_plan_event.dart';
 import 'package:tare/blocs/meal_plan/meal_plan_state.dart';
-import 'package:tare/components/bottom_sheets/meal_plan_upsert_bottom_sheet_component.dart';
+import 'package:tare/components/bottom_sheets/meal_plan_more_bottom_sheet_component.dart';
+import 'package:tare/components/dialogs/upsert_meal_plan_entry_dialog.dart';
 import 'package:tare/components/loading_component.dart';
 import 'package:tare/components/recipes/recipe_grid_component.dart';
 import 'package:tare/components/recipes/recipe_list_component.dart';
@@ -14,6 +15,7 @@ import 'package:tare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart
 import 'package:tare/constants/colors.dart';
 import 'package:tare/cubits/recipe_layout_cubit.dart';
 import 'package:tare/models/meal_plan_entry.dart';
+import 'package:tare/models/meal_type.dart';
 import '../components/custom_scroll_notification.dart';
 
 
@@ -26,6 +28,7 @@ class MealPlanPage extends HideBottomNavBarStatefulWidget {
 
 class _MealPlanPageState extends State<MealPlanPage> {
   DateTime dateTime = DateTime.now();
+  late String rangeTitleText;
   late MealPlanBloc _mealPlanBloc;
   List<MealPlanEntry> mealPlanList = [];
   late DateTime fromDateTime;
@@ -43,6 +46,8 @@ class _MealPlanPageState extends State<MealPlanPage> {
     toDateTime = dateTime.add(const Duration(days: 28));
     toDate = DateFormat('yyyy-MM-dd').format(toDateTime);
 
+    rangeTitleText = getTitleText();
+
     _mealPlanBloc = BlocProvider.of<MealPlanBloc>(context);
     _mealPlanBloc.add(FetchMealPlan(from: fromDate, to: toDate));
   }
@@ -58,12 +63,14 @@ class _MealPlanPageState extends State<MealPlanPage> {
   void decreaseDate() {
     setState(() {
       dateTime = dateTime.subtract(Duration(days: 7));
+      rangeTitleText = getTitleText();
     });
   }
 
   void increaseDate() {
     setState(() {
       dateTime = dateTime.add(Duration(days: 7));
+      rangeTitleText = getTitleText();
     });
   }
 
@@ -90,44 +97,86 @@ class _MealPlanPageState extends State<MealPlanPage> {
   @override
   Widget build(BuildContext context) {
     final CustomScrollNotification customScrollNotification = CustomScrollNotification(widget: widget);
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 1.5,
-        iconTheme: const IconThemeData(color: Colors.black87),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-                onPressed: (){
-                  decreaseDate();
-                },
-                icon: Icon(Icons.chevron_left_outlined)
-            ),
-            SizedBox(
-              width: 230,
-              child: Text(
-                getTitleText(),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
+    return NestedScrollView(
+        headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
+      return <Widget>[
+        SliverAppBar(
+          expandedHeight: 120,
+          leadingWidth: 0,
+          titleSpacing: 0,
+          automaticallyImplyLeading: false,
+          iconTheme: const IconThemeData(color: Colors.black87),
+          flexibleSpace: FlexibleSpaceBar(
+            titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 50),
+            expandedTitleScale: 1.3,
+            title: Text(
+              'Meal plan',
+              style: TextStyle(
                   color: Colors.black87,
-                ),
+                  fontWeight: FontWeight.bold
               ),
             ),
+          ),
+          actions: [
             IconButton(
-                onPressed: (){
-                  increaseDate();
+                tooltip: 'More',
+                splashRadius: 20,
+                onPressed: () {
+                  mealPlanMoreBottomSheet(context);
                 },
-                icon: Icon(Icons.chevron_right_outlined)
-            ),
+                icon: Icon(
+                  Icons.more_vert_outlined,
+                  color: Colors.black87,
+                )
+            )
           ],
+          elevation: 1.5,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          pinned: true,
+          bottom: PreferredSize(
+            preferredSize: Size(double.maxFinite, 35),
+            child:  Container(
+              height: 35,
+              padding: const EdgeInsets.fromLTRB(15, 0, 15, 12),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                      padding: const EdgeInsets.fromLTRB(8, 1, 8, 12),
+                      splashRadius: 20,
+                      onPressed: () {
+                        decreaseDate();
+                      },
+                      icon: Icon(Icons.chevron_left_outlined)
+                  ),
+                  SizedBox(
+                    width: 155,
+                    child: Text(
+                      rangeTitleText,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                      padding: const EdgeInsets.fromLTRB(8, 1, 8, 12),
+                      splashRadius: 20,
+                      onPressed: () {
+                        increaseDate();
+                      },
+                      icon: Icon(Icons.chevron_right_outlined)
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
-      body: BlocConsumer<MealPlanBloc, MealPlanState>(
+      ];
+    },
+    body: BlocConsumer<MealPlanBloc, MealPlanState>(
         listener: (context, state) {
           if (state is MealPlanCreated) {
             mealPlanList.add(state.mealPlan);
@@ -135,6 +184,25 @@ class _MealPlanPageState extends State<MealPlanPage> {
             mealPlanList[mealPlanList.indexWhere((element) => element.id == state.mealPlan.id)] = state.mealPlan;
           } else if (state is MealPlanDeleted) {
             mealPlanList.removeWhere((element) => element.id == state.mealPlan.id);
+          } else if (state is MealPlanUpdatedType) {
+            mealPlanList.forEach((element) {
+              if (element.mealType.id == state.mealType.id) {
+                MealType newMealType = element.mealType.copyWith(name: state.mealType.name);
+                MealPlanEntry entry = element.copyWith(mealType: newMealType);
+                mealPlanList[mealPlanList.indexWhere((element) => element.id == entry.id)] = entry;
+              }
+            });
+          } else if (state is MealPlanDeletedType) {
+            List<int> idsToRemove = [];
+            mealPlanList.forEach((element) {
+              if (element.mealType.id == state.mealType.id) {
+                idsToRemove.add(element.id!);
+              }
+            });
+
+            idsToRemove.forEach((element) {
+              mealPlanList.removeWhere((el) => el.id == element);
+            });
           }
         },
         builder: (context, state) {
@@ -150,7 +218,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
               onNotification: customScrollNotification.handleScrollNotification,
               child: ListView(
                 physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                padding: const EdgeInsets.only(bottom: 20),
+                padding: const EdgeInsets.only(bottom: 20, top: 10),
                 children: buildMealPlanLayout(context, mealPlanList, dateTime),
               ),
             )
@@ -217,7 +285,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
           ),
           trailing: IconButton(
               onPressed: () {
-                mealPlanUpsertBottomSheet(context, date: day, referer: 'meal-plan');
+                upsertMealPlanEntryDialog(context, date: day, referer: 'meal-plan');
               },
               icon: Icon(Icons.add)
           ),
