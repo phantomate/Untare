@@ -27,6 +27,7 @@ import 'package:tare/pages/starting_page.dart';
 import 'package:tare/services/api/api_meal_plan.dart';
 import 'package:tare/services/api/api_recipe.dart';
 import 'package:tare/services/api/api_shopping_list.dart';
+import 'package:tare/services/api/api_supermarket_category.dart';
 
 
 import 'blocs/authentication/authentication_bloc.dart';
@@ -78,7 +79,7 @@ class Tare extends StatelessWidget {
             create: (BuildContext context) => MealPlanBloc(apiMealPlan: ApiMealPlan())
           ),
           BlocProvider<ShoppingListBloc>(
-            create: (BuildContext context) => ShoppingListBloc(apiShoppingList: ApiShoppingList())
+            create: (BuildContext context) => ShoppingListBloc(apiShoppingList: ApiShoppingList(), apiSupermarketCategory: ApiSupermarketCategory())
           ),
           BlocProvider<ShoppingListEntryCubit>(
             create: (BuildContext context) =>ShoppingListEntryCubit()
