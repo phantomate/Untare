@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tare/components/dialogs/delete_meal_type_dialog.dart';
-import 'package:tare/components/dialogs/edit_meal_type_dialog.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tare/blocs/meal_plan/meal_plan_bloc.dart';
+import 'package:tare/blocs/meal_plan/meal_plan_event.dart';
+import 'package:tare/components/dialogs/upsert_meal_plan_entry_dialog.dart';
+import 'package:tare/models/meal_plan_entry.dart';
 
-Future mealPlanMoreBottomSheet(BuildContext context) {
+import 'recipe_shopping_list_bottom_sheet_component.dart';
+
+Future mealPlanEntryMoreBottomSheet(BuildContext context, MealPlanEntry mealPlan) {
+  MealPlanBloc _mealPlanBloc = BlocProvider.of<MealPlanBloc>(context);
+
   return showModalBottomSheet(
       backgroundColor: Colors.transparent,
       useRootNavigator: true,
@@ -15,7 +22,6 @@ Future mealPlanMoreBottomSheet(BuildContext context) {
         ),
         margin: const EdgeInsets.all(12),
         child: Wrap(
-          spacing: 15,
           children: [
             Container(
               height: 50,
@@ -25,7 +31,7 @@ Future mealPlanMoreBottomSheet(BuildContext context) {
                   color: Colors.grey[300]
               ),
               child: Text(
-                'Meal plan',
+                mealPlan.recipe!.name,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -42,19 +48,28 @@ Future mealPlanMoreBottomSheet(BuildContext context) {
                       TextButton.icon(
                         onPressed: () {
                           Navigator.pop(btsContext);
-                          editMealTypeDialog(context);
+                          upsertMealPlanEntryDialog(context, mealPlan: mealPlan, referer: 'edit');
                         },
                         icon: Icon(Icons.edit_outlined),
-                        label: Text('Edit meal type'),
+                        label: Text('Edit'),
                       ),
+                      if (mealPlan.recipe != null)
+                        TextButton.icon(
+                          onPressed: () {
+                            Navigator.pop(btsContext);
+                            recipeShoppingListBottomSheet(context, mealPlan.recipe!);
+                          },
+                          icon: Icon(Icons.add_shopping_cart_outlined),
+                          label: Text('Add to shopping list'),
+                        ),
                       TextButton.icon(
                         onPressed: () {
                           Navigator.pop(btsContext);
-                          deleteMealTypeDialog(context);
+                          _mealPlanBloc.add(DeleteMealPlan(mealPlan: mealPlan));
                         },
                         icon: Icon(Icons.delete_outline, color: Colors.redAccent),
                         label: Text(
-                          'Remove meal type',
+                          'Remove from meal plan',
                           style: TextStyle(color: Colors.redAccent),
                         ),
                       ),
