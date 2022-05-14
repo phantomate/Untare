@@ -21,17 +21,8 @@ Widget buildMealPlanMore(BuildContext context, BuildContext btsContext, MealPlan
             Navigator.pop(btsContext);
             mealPlanUpsertBottomSheet(context, mealPlan: mealPlan, referer: 'edit');
           },
-          icon: Icon(
-            Icons.edit_outlined,
-            color: Colors.black87,
-          ),
-          label: Text(
-            'Edit',
-            style: TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.bold
-            ),
-          ),
+          icon: Icon(Icons.edit_outlined),
+          label: Text('Edit'),
         ),
         if (mealPlan.recipe != null)
           TextButton.icon(
@@ -39,33 +30,18 @@ Widget buildMealPlanMore(BuildContext context, BuildContext btsContext, MealPlan
               Navigator.pop(btsContext);
               recipeShoppingListBottomSheet(context, mealPlan.recipe!);
             },
-            icon: Icon(
-              Icons.add_shopping_cart_outlined,
-              color: Colors.black87,
-            ),
-            label: Text(
-              'Add to shopping list',
-              style: TextStyle(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold
-              ),
-            ),
+            icon: Icon(Icons.add_shopping_cart_outlined),
+            label: Text('Add to shopping list'),
           ),
         TextButton.icon(
           onPressed: () {
             Navigator.pop(btsContext);
             _mealPlanBloc.add(DeleteMealPlan(mealPlan: mealPlan));
           },
-          icon: Icon(
-            Icons.delete_outline,
-            color: Colors.redAccent,
-          ),
+          icon: Icon(Icons.delete_outline, color: Colors.redAccent),
           label: Text(
             'Remove from meal plan',
-            style: TextStyle(
-                color: Colors.redAccent,
-                fontWeight: FontWeight.bold
-            ),
+            style: TextStyle(color: Colors.redAccent),
           ),
         ),
       ],

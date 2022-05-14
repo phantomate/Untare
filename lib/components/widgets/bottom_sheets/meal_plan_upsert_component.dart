@@ -30,17 +30,6 @@ Widget buildMealPlanUpsert(BuildContext context, {MealPlanEntry? mealPlan, DateT
               inputType: InputType.date,
               decoration: InputDecoration(
                 labelText: 'Date',
-                labelStyle: TextStyle(
-                  color: Colors.black26,
-                ),
-                isDense: true,
-                contentPadding: const EdgeInsets.all(10),
-                border: OutlineInputBorder(),
-                disabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: Colors.black12,
-                    )
-                ),
               ),
               validator: FormBuilderValidators.compose([
                 FormBuilderValidators.required()
@@ -56,12 +45,6 @@ Widget buildMealPlanUpsert(BuildContext context, {MealPlanEntry? mealPlan, DateT
               initialValue: (mealPlan != null) ? mealPlan.title : null,
               decoration: InputDecoration(
                 labelText: 'Alternative title',
-                labelStyle: TextStyle(
-                  color: Colors.black26,
-                ),
-                isDense: true,
-                contentPadding: const EdgeInsets.all(10),
-                border: OutlineInputBorder(),
               ),
               validator: FormBuilderValidators.compose([
                 FormBuilderValidators.max(64),
@@ -73,12 +56,6 @@ Widget buildMealPlanUpsert(BuildContext context, {MealPlanEntry? mealPlan, DateT
               initialValue: (mealPlan != null) ? mealPlan.servings.toString() : ((recipe != null) ? recipe.servings.toString() : '1'),
               decoration: InputDecoration(
                 labelText: 'Servings',
-                labelStyle: TextStyle(
-                  color: Colors.black26,
-                ),
-                isDense: true,
-                contentPadding: const EdgeInsets.all(10),
-                border: OutlineInputBorder(),
               ),
               validator: FormBuilderValidators.compose([
                 FormBuilderValidators.numeric(),

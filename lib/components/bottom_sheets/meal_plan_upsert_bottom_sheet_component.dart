@@ -6,13 +6,11 @@ import 'package:tare/blocs/meal_plan/meal_plan_state.dart';
 import 'package:tare/components/widgets/bottom_sheets/meal_plan_upsert_component.dart';
 import 'package:tare/models/meal_plan_entry.dart';
 import 'package:tare/models/recipe.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 Future mealPlanUpsertBottomSheet(BuildContext context, {MealPlanEntry? mealPlan, DateTime? date, Recipe? recipe, String? referer}) {
-  return showMaterialModalBottomSheet(
+  return showModalBottomSheet(
       backgroundColor: Colors.transparent,
       useRootNavigator: true,
-      duration: Duration(milliseconds: 300),
       context: context,
       builder: (btsContext) => Container(
         alignment: Alignment.center,
