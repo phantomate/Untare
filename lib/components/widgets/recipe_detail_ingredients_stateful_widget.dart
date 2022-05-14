@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:tare/models/ingredient.dart';
 import 'package:tare/models/recipe.dart';
+import 'package:tare/extensions/double_extension.dart';
 
 class RecipeDetailIngredientsWidget extends StatefulWidget {
   final Recipe recipe;
@@ -96,7 +97,7 @@ class _RecipeDetailIngredientsWidgetState extends State<RecipeDetailIngredientsW
 }
 
 TableRow ingredientComponent(Ingredient ingredient, int initServing, int newServing) {
-  String amount = (ingredient.amount > 0) ? ((ingredient.amount * (((newServing/initServing))*100).ceil()/100).toString() + ' ') : '';
+  String amount = (ingredient.amount > 0) ? ((ingredient.amount * (((newServing/initServing))*100).ceil()/100).toFormattedString() + ' ') : '';
   String unit = (ingredient.unit != null) ? (ingredient.unit!.name + ' ') : '';
   String food = (ingredient.food != null) ? (ingredient.food!.name + ' ') : '';
   String note = (ingredient.note != null && ingredient.note != '') ? ('(' + ingredient.note! + ')') : '';
