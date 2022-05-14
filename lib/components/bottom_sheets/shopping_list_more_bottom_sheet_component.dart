@@ -7,7 +7,6 @@ Future shoppingListMoreBottomSheet(BuildContext context) {
       useRootNavigator: true,
       context: context,
       builder: (btsContext) => Container(
-        //alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(10))
