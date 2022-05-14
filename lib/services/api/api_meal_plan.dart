@@ -26,7 +26,7 @@ class ApiMealPlan extends ApiService {
       return [];
     } else {
       throw ApiException(
-          message: 'Meal plan api error',
+          message: 'Meal plan api error - could not fetch meal plan list',
           statusCode: res.statusCode
       );
     }
@@ -42,7 +42,7 @@ class ApiMealPlan extends ApiService {
       return MealPlanEntry.fromJson(json);
     } else {
       throw ApiException(
-          message: 'Meal plan api error',
+          message: 'Meal plan api error - could not create meal plan',
           statusCode: res.statusCode
       );
     }
@@ -62,7 +62,7 @@ class ApiMealPlan extends ApiService {
       return MealPlanEntry.fromJson(json);
     } else {
       throw ApiException(
-          message: 'Meal plan api error',
+          message: 'Meal plan api error - could not update meal plan',
           statusCode: res.statusCode
       );
     }
@@ -80,7 +80,7 @@ class ApiMealPlan extends ApiService {
       return mealPlan;
     } else {
       throw ApiException(
-          message: 'Meal plan api error',
+          message: 'Meal plan api error - could not delete meal plan',
           statusCode: res.statusCode
       );
     }

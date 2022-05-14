@@ -95,13 +95,13 @@ class ApiRecipe extends ApiService {
   Future addIngredientsToShoppingList(int recipeId, List<int> ingredientIds, int servings) async {
     var url = '/api/recipe/' + recipeId.toString() + '/shopping/';
 
-    Map<String, dynamic> requestJson = {
+    Map<String, dynamic> requestData = {
       'id': recipeId,
       'ingredients': ingredientIds,
       'servings': servings
     };
 
-    Response res = await httpPut(url, requestJson);
+    Response res = await httpPut(url, requestData);
 
     if (![200, 201, 204].contains(res.statusCode)) {
       throw ApiException(
@@ -139,7 +139,28 @@ class ApiRecipe extends ApiService {
       return recipe;
     } else {
       throw ApiException(
-          message: 'Recipe api error',
+          message: 'Recipe api error - could not delete recipe',
+          statusCode: res.statusCode
+      );
+    }
+  }
+
+  Future<Recipe> importRecipe(String url) async {
+    var url = '/api/recipe-from-source/';
+
+    Map<String, dynamic> requestData = {
+      'data': '',
+      'url': url
+    };
+
+    Response res = await httpPost(url, requestData);
+    Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
+
+    if ([200, 201].contains(res.statusCode)) {
+      return Recipe.fromJson(json['recipe_json']);
+    } else {
+      throw ApiException(
+          message: 'Recipe api error - could not import recipe',
           statusCode: res.statusCode
       );
     }

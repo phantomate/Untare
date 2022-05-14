@@ -24,7 +24,7 @@ class ApiMealType extends ApiService {
       return [];
     } else {
       throw ApiException(
-          message: 'Food api error',
+          message: 'Meal type api error - could not fetch meal type list',
           statusCode: res.statusCode
       );
     }

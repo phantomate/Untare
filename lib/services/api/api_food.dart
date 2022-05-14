@@ -51,7 +51,7 @@ class ApiFood extends ApiService {
       return Food.fromJson(json);
     } else {
       throw ApiException(
-          message: 'Food api error',
+          message: 'Food api error - could not update food on hand',
           statusCode: res.statusCode
       );
     }
