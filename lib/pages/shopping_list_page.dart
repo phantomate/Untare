@@ -8,15 +8,17 @@ import 'package:tare/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_event.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_state.dart';
 import 'package:tare/components/bottom_sheets/add_shopping_list_entry_bottom_sheet_component.dart';
-import 'package:tare/components/bottom_sheets/shopping_list_entry_edit_bottom_sheet_component.dart';
 import 'package:tare/components/bottom_sheets/shopping_list_more_bottom_sheet_component.dart';
 import 'package:tare/components/custom_scroll_notification.dart';
+import 'package:tare/components/dialogs/edit_shopping_list_entry_dialog.dart';
 import 'package:tare/components/loading_component.dart';
 import 'package:tare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
 import 'package:tare/cubits/shopping_list_entry_cubit.dart';
+import 'package:tare/models/food.dart';
 import 'package:tare/models/shopping_list_entry.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:configurable_expansion_tile_null_safety/configurable_expansion_tile.dart';
+import 'package:tare/extensions/double_extension.dart';
 
 class ShoppingListPage extends HideBottomNavBarStatefulWidget {
   ShoppingListPage({required isHideBottomNavBar}) : super(isHideBottomNavBar: isHideBottomNavBar);
@@ -62,6 +64,22 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                   if (!element.checked) {
                     ShoppingListEntry entry = element.copyWith(checked: true);
                     _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
+                  }
+                });
+              } else if (state is ShoppingListUpdatedSupermarketCategory) {
+                shoppingListEntries.forEach((element) {
+                  if (element.food != null && element.food!.supermarketCategory != null && element.food!.supermarketCategory!.id == state.supermarketCategory.id) {
+                    Food newFood = element.food!.copyWith(supermarketCategory: state.supermarketCategory);
+                    ShoppingListEntry entry = element.copyWith(food: newFood);
+                    shoppingListEntries[shoppingListEntries.indexWhere((element) => element.id == entry.id)] = entry;
+                  }
+                });
+              } else if (state is ShoppingListDeletedSupermarketCategory) {
+                shoppingListEntries.forEach((element) {
+                  if (element.food != null && element.food!.supermarketCategory != null && element.food!.supermarketCategory!.id == state.supermarketCategory.id) {
+                    Food newFood = Food(id: element.food!.id, name: element.food!.name, description: element.food!.description, onHand: element.food!.onHand, supermarketCategory: null, ignoreShopping: element.food!.ignoreShopping);
+                    ShoppingListEntry entry = element.copyWith(food: newFood);
+                    shoppingListEntries[shoppingListEntries.indexWhere((element) => element.id == entry.id)] = entry;
                   }
                 });
               }
@@ -115,7 +133,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                                 iconTheme: const IconThemeData(color: Colors.black87),
                                 flexibleSpace: FlexibleSpaceBar(
                                   titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 16),
-                                  expandedTitleScale: 1.2,
+                                  expandedTitleScale: 1.3,
                                   title: Text(
                                     'Shopping list',
                                     style: TextStyle(
@@ -311,7 +329,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
   }
 
   Widget buildShoppingListEntryWidget(ShoppingListEntry shoppingListEntry, {bool? grouped}) {
-    String amount = (shoppingListEntry.amount > 0) ? (shoppingListEntry.amount.toString() + ' ') : '';
+    String amount = (shoppingListEntry.amount > 0) ? (shoppingListEntry.amount.toFormattedString() + ' ') : '';
     String unit = (shoppingListEntry.unit != null) ? (shoppingListEntry.unit!.name + ' ') : '';
     String food = (shoppingListEntry.food != null) ? (shoppingListEntry.food!.name) : '';
     bool checkBoxValue = shoppingListEntry.checked;
@@ -349,7 +367,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
         child: InkWell(
           highlightColor: Colors.grey[50],
           onTap: () {
-            shoppingListEntryEditBottomSheet(context, shoppingListEntry);
+            editShoppingListEntryDialog(context, shoppingListEntry);
           },
           child: Container(
             decoration: BoxDecoration(
