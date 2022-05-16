@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:settings_ui/settings_ui.dart';
+import 'package:tare/blocs/authentication/authentication_bloc.dart';
+import 'package:tare/blocs/authentication/authentication_event.dart';
+import 'package:tare/components/bottom_sheets/settings_default_page_bottom_sheet_component.dart';
 import 'package:tare/components/bottom_sheets/settings_layout_bottom_sheet_component.dart';
 import 'package:tare/constants/colors.dart';
-import 'package:tare/cubits/recipe_layout_cubit.dart';
-import 'package:tare/cubits/theme_mode_cubit.dart';
+import 'package:tare/cubits/settings_cubit.dart';
 import 'package:tare/extensions/string_extension.dart';
+import 'package:tare/models/app_setting.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -14,93 +17,191 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool? themeModeSwitch;
-
   @override
   void initState() {
     super.initState();
+    context.read<SettingsCubit>().initServerSetting();
   }
 
   @override
   Widget build(BuildContext context) {
-    ThemeModeCubit themeModeCubit = context.read<ThemeModeCubit>();
-    themeModeSwitch = (themeModeCubit.state == 'dark');
+    final AuthenticationBloc _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    SettingsCubit _settingsCubit = context.read<SettingsCubit>();
+    bool? themeModeSwitch = (_settingsCubit.state.theme == 'dark');
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 1.5,
-        iconTheme: IconThemeData(
-          color: Colors.black87,
-        ),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        title: const Text(
-          'Settings',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.black87
-          ),
-        ),
-      ),
-      body: BlocBuilder<RecipeLayoutCubit, String>(
-        builder: (context, layout) {
-          return SettingsList(
-            sections: [
-              SettingsSection(
-                  title: Text('App'),
-                  tiles: [
-                    SettingsTile.navigation(
-                      leading: Icon(Icons.language),
-                      title: Text('Language'),
-                      value: Text('English'),
+      body:  NestedScrollView(
+          headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                expandedHeight: 90,
+                leadingWidth: 0,
+                titleSpacing: 0,
+                automaticallyImplyLeading: false,
+                flexibleSpace: FlexibleSpaceBar(
+                  titlePadding: const EdgeInsets.fromLTRB(20, 0, 0, 16),
+                  expandedTitleScale: 1.3,
+                  title: Text(
+                    'Settings',
+                    style: TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.bold
                     ),
-                    SettingsTile.navigation(
-                      leading: Icon(Icons.pageview_outlined),
-                      title: Text('Default page'),
-                      value: Text('Search'),
-                    ),
-                    SettingsTile.navigation(
-                      onPressed: (context) => {
-                        settingsLayoutBottomSheet(context)
-                      },
-                      leading: Icon(Icons.design_services_outlined),
-                      title: Text('Recipe layout'),
-                      value: Text(layout.capitalize()),
-                    ),
-                    SettingsTile.switchTile(
-                      onToggle: (bool value) {
-                        setState(() {
-                          themeModeSwitch = value;
-                        });
-                        if (value) {
-                          themeModeCubit.changeToDarkTheme();
-                        } else {
-                          themeModeCubit.changeToLightTheme();
-                        }
-                      },
-                      initialValue: themeModeSwitch,
-                      leading: Icon(Icons.format_paint),
-                      title: Text('Dark mode'),
-                    ),
-                  ]
-              ),
-              SettingsSection(
-                  title: Text('Server'),
-                  tiles: [
-                    SettingsTile(
-                        title: Text('Test')
-                    )
-                  ]
+                  ),
+                ),
+                elevation: 1.5,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                pinned: true,
               )
-            ],
-            platform: DevicePlatform.android,
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-            lightTheme: SettingsThemeData(
-              tileHighlightColor: primaryColor,
-              titleTextColor: primaryColor
-            ),
-          );
-        }
+            ];
+          },
+          body: BlocBuilder<SettingsCubit, AppSetting>(
+              builder: (context, setting) {
+                return SettingsList(
+                  sections: [
+                    SettingsSection(
+                        title: Text('Customization'),
+                        tiles: [
+                          SettingsTile.navigation(
+                            leading: Icon(Icons.language),
+                            title: Text('Language'),
+                            value: Text('English'),
+                          ),
+                          SettingsTile.navigation(
+                            onPressed: (context) => settingsDefaultPageBottomSheet(context),
+                            leading: Icon(Icons.pageview_outlined),
+                            title: Text('Default page'),
+                            value: Text(setting.defaultPage.capitalize()),
+                          ),
+                          SettingsTile.navigation(
+                            onPressed: (context) => settingsLayoutBottomSheet(context),
+                            leading: Icon(Icons.design_services_outlined),
+                            title: Text('Recipe layout'),
+                            value: Text(setting.layout.capitalize()),
+                          ),
+                          SettingsTile.switchTile(
+                            onToggle: (bool value) {
+                              setState(() {
+                                themeModeSwitch = value;
+                              });
+                              if (value) {
+                                _settingsCubit.changeThemeTo('dark');
+                              } else {
+                                _settingsCubit.changeThemeTo('light');
+                              }
+                            },
+                            initialValue: themeModeSwitch,
+                            leading: Icon(Icons.format_paint),
+                            title: Text('Dark mode'),
+                          ),
+                        ]
+                    ),
+                    if (setting.userServerSetting != null)
+                      SettingsSection(
+                          title: Text('Shopping list'),
+                          tiles: [
+                            SettingsTile(
+                              enabled: false,
+                              leading: Icon(Icons.share_outlined),
+                              title: Text('Shared with'),
+                              value: Text( setting.userServerSetting!.shoppingShare.map((user) => user.username).toList().join(',')),
+                            ),
+                            SettingsTile(
+                              enabled: false,
+                              leading: Icon(Icons.refresh_outlined),
+                              title: Text('Refresh interval'),
+                              description: Text('Refreshes the shopping list every ' + setting.userServerSetting!.shoppingAutoSync.toString() + ' seconds in shopping mode'),
+                            ),
+                            SettingsTile(
+                              enabled: false,
+                              leading: Icon(Icons.calendar_today_sharp),
+                              title: Text('Recent days'),
+                              description: Text('Displays the last ' + setting.userServerSetting!.shoppingRecentDays.toString() + ' days of the shopping list'),
+                            ),
+                            SettingsTile.switchTile(
+                              enabled: false,
+                              leading: Icon(Icons.add_shopping_cart_outlined),
+                              onToggle: (bool value) {
+
+                              },
+                              initialValue: setting.userServerSetting!.mealPlanAutoAddShopping,
+                              title: Text('Auto add meal plan'),
+                              description: Text('Automatically add meal plan ingredients to shopping list'),
+                            ),
+                          ]
+                      ),
+                    if (setting.userServerSetting != null)
+                      SettingsSection(
+                          title: Text('Miscellaneous'),
+                          tiles: [
+                            SettingsTile(
+                              enabled: false,
+                              leading: Icon(Icons.scale_outlined),
+                              title: Text('Default unit'),
+                              value: Text(setting.userServerSetting!.defaultUnit),
+                            ),
+                            SettingsTile.switchTile(
+                              enabled: false,
+                              leading: Icon(Icons.settings),
+                              onToggle: (bool value) {
+
+                              },
+                              initialValue: setting.userServerSetting!.useFractions,
+                              title: Text('Use fractions'),
+                            ),
+                            SettingsTile.switchTile(
+                              enabled: false,
+                              leading: Icon(Icons.settings),
+                              onToggle: (bool value) {
+
+                              },
+                              initialValue: setting.userServerSetting!.useKj,
+                              title: Text('Use KJ'),
+                            ),
+                            SettingsTile(
+                              enabled: false,
+                              leading: Icon(Icons.settings),
+                              title: Text('Ingredient decimal places'),
+                              value: Text(setting.userServerSetting!.ingredientDecimal.toString()),
+                            ),
+                            SettingsTile(
+                              enabled: false,
+                              leading: Icon(Icons.search_outlined),
+                              title: Text('Search style'),
+                              value: Text(setting.userServerSetting!.searchStyle),
+                            ),
+                            SettingsTile.switchTile(
+                              enabled: false,
+                              leading: Icon(Icons.comment_outlined),
+                              onToggle: (bool value) {
+
+                              },
+                              initialValue: setting.userServerSetting!.comments,
+                              title: Text('Comments'),
+                              description: Text('If you want to be able to create and see comments underneath recipes'),
+                            ),
+                          ]
+                      ),
+                    SettingsSection(
+                        title: Text('Logout'),
+                        tiles: [
+                          SettingsTile(
+                              onPressed: (context) => _authenticationBloc.add(UserLoggedOut()),
+                              leading: Icon(Icons.logout_outlined),
+                              title: Text('Logout')
+                          )
+                        ]
+                    )
+                  ],
+                  physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                  lightTheme: SettingsThemeData(
+                      tileHighlightColor: primaryColor,
+                      titleTextColor: primaryColor,
+                      settingsListBackground: Theme.of(context).scaffoldBackgroundColor
+                  ),
+                );
+              }
+          )
       )
     );
   }

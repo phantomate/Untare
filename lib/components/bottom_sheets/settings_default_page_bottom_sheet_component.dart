@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tare/cubits/settings_cubit.dart';
 
-Future settingsLayoutBottomSheet(BuildContext context) {
+Future settingsDefaultPageBottomSheet(BuildContext context) {
   return showModalBottomSheet(
       backgroundColor: Colors.transparent,
       useRootNavigator: true,
@@ -24,7 +24,7 @@ Future settingsLayoutBottomSheet(BuildContext context) {
                   color: Colors.grey[300]
               ),
               child: Text(
-                'Layout recipes',
+                'Default page',
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -39,17 +39,24 @@ Future settingsLayoutBottomSheet(BuildContext context) {
                 children: [
                   TextButton(
                     onPressed: () {
-                      context.read<SettingsCubit>().changeLayoutTo('card');
+                      context.read<SettingsCubit>().changeDefaultPageTo('plan');
                       Navigator.pop(btsContext);
                     },
-                    child: Text('Card'),
+                    child: Text('Meal plan'),
                   ),
                   TextButton(
                     onPressed: () {
-                      context.read<SettingsCubit>().changeLayoutTo('list');
+                      context.read<SettingsCubit>().changeDefaultPageTo('recipes');
                       Navigator.pop(btsContext);
                     },
-                    child: Text('List'),
+                    child: Text('Recipes'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      context.read<SettingsCubit>().changeDefaultPageTo('shopping');
+                      Navigator.pop(btsContext);
+                    },
+                    child: Text('Shopping list'),
                   ),
                 ],
               ),
