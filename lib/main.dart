@@ -14,11 +14,14 @@ import 'package:tare/blocs/recipe/recipe_state.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_state.dart';
 import 'package:tare/constants/colors.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 
-import 'package:tare/cubits/recipe_layout_cubit.dart';
+import 'package:tare/cubits/settings_cubit.dart';
 import 'package:tare/cubits/shopping_list_entry_cubit.dart';
-import 'package:tare/cubits/theme_mode_cubit.dart';
 import 'package:tare/extensions/theme_extension.dart';
+import 'package:tare/models/app_setting.dart';
+import 'package:tare/models/user.dart';
+import 'package:tare/models/user_setting.dart';
 import 'package:tare/pages/meal_plan_page.dart';
 import 'package:tare/pages/recipes_page.dart';
 import 'package:tare/pages/settings_page.dart';
@@ -29,6 +32,8 @@ import 'package:tare/services/api/api_meal_type.dart';
 import 'package:tare/services/api/api_recipe.dart';
 import 'package:tare/services/api/api_shopping_list.dart';
 import 'package:tare/services/api/api_supermarket_category.dart';
+import 'package:tare/services/api/api_user.dart';
+import 'package:path_provider/path_provider.dart';
 
 
 import 'blocs/authentication/authentication_bloc.dart';
@@ -36,15 +41,22 @@ import 'blocs/authentication/authentication_event.dart';
 import 'blocs/authentication/authentication_state.dart';
 
 void main() async{
-  await Hive.initFlutter();
-  await Hive.openBox('appBox');
-
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(UserAdapter());
+  Hive.registerAdapter(AppSettingAdapter());
+  Hive.registerAdapter(UserSettingAdapter());
+  await Hive.openBox('hydrated_box');
+  final storage = await HydratedStorage.build(storageDirectory: await getTemporaryDirectory());
+
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_){
-    runApp(
-        Phoenix(
-            child: Tare()
-        )
+    HydratedBlocOverrides.runZoned(
+        () => runApp(
+            Phoenix(
+                child: Tare()
+            )
+        ),
+        storage: storage
     );
   });
 }
@@ -52,24 +64,22 @@ void main() async{
 class Tare extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var box = Hive.box('appBox');
+    var box = Hive.box('hydrated_box');
 
     return MultiBlocProvider(
         providers: [
           BlocProvider<AuthenticationBloc>(
               create: (context) => AuthenticationBloc()..add(AppLoaded())
           ),
-          BlocProvider<RecipeLayoutCubit>(
+          BlocProvider<SettingsCubit>(
               create: (context) {
-                RecipeLayoutCubit cubit = RecipeLayoutCubit();
-                cubit.initLayout(box.get('layout'));
-                return cubit;
-              }
-          ),
-          BlocProvider<ThemeModeCubit>(
-              create: (context) {
-                ThemeModeCubit cubit = ThemeModeCubit();
-                cubit.initThemeMode(box.get('theme'));
+                SettingsCubit cubit = SettingsCubit(apiUser: ApiUser());
+                AppSetting? storedAppSetting = box.get('settings');
+                if (storedAppSetting != null) {
+                  cubit.changeLayoutTo(storedAppSetting.layout);
+                  cubit.changeThemeTo(storedAppSetting.theme);
+                  cubit.changeDefaultPageTo(storedAppSetting.defaultPage);
+                }
                 return cubit;
               }
           ),
@@ -135,6 +145,11 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    if (context.read<SettingsCubit>().state.defaultPage == 'plan') {
+      _selectedScreenIndex = 1;
+    } else if (context.read<SettingsCubit>().state.defaultPage == 'shopping') {
+      _selectedScreenIndex = 2;
+    }
   }
 
   void _selectScreen(int index) {
@@ -151,7 +166,8 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    ThemeModeCubit themeModeCubit = context.watch<ThemeModeCubit>();
+    SettingsCubit settingsCubit = context.watch<SettingsCubit>();
+
     return MaterialApp(
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
@@ -170,7 +186,7 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
       title: 'Tare App',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: (themeModeCubit.state == 'light') ? ThemeMode.light : ThemeMode.dark,
+      themeMode: (settingsCubit.state.theme == 'light') ? ThemeMode.light : ThemeMode.dark,
       home: MultiBlocListener(
           listeners: [
             BlocListener<MealPlanBloc, MealPlanState>(

@@ -1,18 +1,35 @@
 import 'package:tare/models/user.dart';
+import 'package:hive/hive.dart';
 
+part 'user_setting.g.dart';
+
+@HiveType(typeId: 2)
 class UserSetting {
 
+  @HiveField(0)
   final int user;
+  @HiveField(1)
   final String defaultUnit;
+  @HiveField(2)
   final bool useFractions;
+  @HiveField(3)
   final bool useKj;
+  @HiveField(4)
   final String searchStyle;
+  @HiveField(5)
   final List<User> planShare;
+  @HiveField(6)
   final List<User> shoppingShare;
+  @HiveField(7)
   final int? ingredientDecimal;
+  @HiveField(8)
   final bool? comments;
+  @HiveField(9)
   final bool mealPlanAutoAddShopping;
+  @HiveField(10)
   final int shoppingRecentDays;
+  @HiveField(11)
+  final int shoppingAutoSync;
 
 
   UserSetting({
@@ -27,6 +44,7 @@ class UserSetting {
     required this.comments,
     required this.mealPlanAutoAddShopping,
     required this.shoppingRecentDays,
+    required this.shoppingAutoSync
   });
 
   UserSetting copyWith({
@@ -41,6 +59,7 @@ class UserSetting {
     bool? comments,
     bool? mealPlanAutoAddShopping,
     int? shoppingRecentDays,
+    int? shoppingAutoSync
   }) {
     return UserSetting(
       user: user ?? this.user,
@@ -53,7 +72,8 @@ class UserSetting {
       ingredientDecimal: ingredientDecimal ?? this.ingredientDecimal,
       comments: comments ?? this.comments,
       mealPlanAutoAddShopping: mealPlanAutoAddShopping ?? this.mealPlanAutoAddShopping,
-      shoppingRecentDays: shoppingRecentDays ?? this.shoppingRecentDays
+      shoppingRecentDays: shoppingRecentDays ?? this.shoppingRecentDays,
+      shoppingAutoSync: shoppingAutoSync ?? this.shoppingAutoSync
     );
   }
 
@@ -64,12 +84,13 @@ class UserSetting {
       useFractions: json['use_fractions'] as bool,
       useKj: json['use_kj'] as bool,
       searchStyle: json['search_style'] as String,
-      planShare: json['plan_share'].map((item) => User.fromJson(item)).toList(),
-      shoppingShare: json['shopping_share'].map((item) => User.fromJson(item)).toList(),
+      planShare: json['plan_share'].map((item) => User.fromJson(item)).toList().cast<User>(),
+      shoppingShare: json['shopping_share'].map((item) => User.fromJson(item)).toList().cast<User>(),
       ingredientDecimal: json['ingredient_decimals'] as int,
       comments: json['comments'] as bool,
       mealPlanAutoAddShopping: json['mealplan_autoadd_shopping'] as bool,
       shoppingRecentDays: json['shopping_recent_days'] as int,
+      shoppingAutoSync: json['shopping_auto_sync'] as int
     );
   }
 
@@ -83,6 +104,7 @@ class UserSetting {
     'ingredient_decimals': this.ingredientDecimal,
     'comments': this.comments,
     'mealplan_autoadd_shopping': this.mealPlanAutoAddShopping,
-    'shopping_recent_days': this.shoppingRecentDays
+    'shopping_recent_days': this.shoppingRecentDays,
+    'shopping_auto_sync': this.shoppingAutoSync
   };
 }

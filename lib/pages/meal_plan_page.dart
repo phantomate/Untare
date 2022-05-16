@@ -13,7 +13,8 @@ import 'package:tare/components/recipes/recipe_grid_component.dart';
 import 'package:tare/components/recipes/recipe_list_component.dart';
 import 'package:tare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
 import 'package:tare/constants/colors.dart';
-import 'package:tare/cubits/recipe_layout_cubit.dart';
+import 'package:tare/cubits/settings_cubit.dart';
+import 'package:tare/models/app_setting.dart';
 import 'package:tare/models/meal_plan_entry.dart';
 import 'package:tare/models/meal_type.dart';
 import '../components/custom_scroll_notification.dart';
@@ -290,12 +291,12 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
               icon: Icon(Icons.add)
           ),
         ),
-        BlocBuilder<RecipeLayoutCubit, String>(
-            builder: (context, layout) {
+        BlocBuilder<SettingsCubit, AppSetting>(
+            builder: (context, setting) {
               dailyMealPlanWidgetList.clear();
               dailyMealPlanList.forEach((mealPlan) {
                 if (mealPlan.recipe != null) {
-                  if (layout == 'list') {
+                  if (setting.layout == 'list') {
                     dailyMealPlanWidgetList.add(
                       Container(
                         padding: const EdgeInsets.fromLTRB(10, 0, 12, 0),
@@ -324,7 +325,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                 }
               });
 
-              if (layout == 'list') {
+              if (setting.layout == 'list') {
                 return Container(
                   child: Column(
                     children: dailyMealPlanWidgetList,
