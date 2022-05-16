@@ -10,7 +10,8 @@ import 'package:tare/components/recipes/recipes_grid_component.dart';
 import 'package:tare/components/recipes/recipes_list_component.dart';
 import 'package:tare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
 import 'package:tare/components/loading_component.dart';
-import 'package:tare/cubits/recipe_layout_cubit.dart';
+import 'package:tare/cubits/settings_cubit.dart';
+import 'package:tare/models/app_setting.dart';
 import 'package:tare/models/recipe.dart';
 
 Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNavBarStatefulWidget widget, BuildContext context) {
@@ -33,10 +34,10 @@ Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNav
       return Center();
     }
   } else {
-    return BlocBuilder<RecipeLayoutCubit, String>(
-      builder: (context, layout) {
+    return BlocBuilder<SettingsCubit, AppSetting>(
+      builder: (context, setting) {
         recipesWidgetList.clear();
-        if (layout == 'list') {
+        if (setting.layout == 'list') {
           recipesWidgetList.addAll(recipes.map((item) => recipeListComponent(item, context)).toList());
         } else {
           recipesWidgetList.addAll(recipes.map((item) => recipeGridComponent(item, context)).toList());
@@ -47,14 +48,14 @@ Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNav
             child: LayoutBuilder(
                 builder: (lbContext, constraints) {
                   Widget recipesWidget;
-                  if (layout == 'list') {
+                  if (setting.layout == 'list') {
                     recipesWidget = buildRecipesList(recipesWidgetList);
                   } else {
                     recipesWidget = buildRecipesGrid(recipesWidgetList, constraints);
                   }
 
                   return Container(
-                      padding: const EdgeInsets.only(right: 12, bottom: 0, left: 12),
+                      padding: const EdgeInsets.only(right: 12, bottom: 0, left: 12, top: 55),
                       child: CustomScrollView(
                         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                         cacheExtent: recipesWidgetList.length * 100,
