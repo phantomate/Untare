@@ -1,19 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 
 abstract class ApiService {
-  var box = Hive.box('appBox');
+  var box = Hive.box('hydrated_box');
 
   Future httpGet(String url) async {
     String? baseUrl = box.get('url');
     Map<String, String> headers = await getHeaders();
     Response response = await get(Uri.parse(baseUrl! + url), headers: headers);
 
-    if (response.statusCode == 403) {
+    if (response.statusCode == 401) {
       box.clear();
     }
 
@@ -25,7 +24,7 @@ abstract class ApiService {
     Map<String, String> headers = await getHeaders();
     Response response = await post(Uri.parse(baseUrl! + url), body: jsonEncode(data), headers: headers);
 
-    if (response.statusCode == 403) {
+    if (response.statusCode == 401) {
       box.clear();
     }
 
@@ -37,7 +36,7 @@ abstract class ApiService {
     Map<String, String> headers = await getHeaders();
     Response response = await put(Uri.parse(baseUrl! + url), body: jsonEncode(data), headers: headers);
 
-    if (response.statusCode == 403) {
+    if (response.statusCode == 401) {
       box.clear();
     }
 
@@ -49,7 +48,7 @@ abstract class ApiService {
     Map<String, String> headers = await getHeaders();
     Response response = await patch(Uri.parse(baseUrl! + url), body: jsonEncode(data), headers: headers);
 
-    if (response.statusCode == 403) {
+    if (response.statusCode == 401) {
       box.clear();
     }
 
@@ -61,7 +60,7 @@ abstract class ApiService {
     Map<String, String> headers = await getHeaders();
     Response response = await delete(Uri.parse(baseUrl! + url), headers: headers);
 
-    if (response.statusCode == 403) {
+    if (response.statusCode == 401) {
       box.clear();
     }
 
