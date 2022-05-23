@@ -12,6 +12,12 @@ class FetchShoppingListEntries extends ShoppingListEvent {
   FetchShoppingListEntries({required this.checked});
 }
 
+class SyncShoppingListEntries extends ShoppingListEvent {
+  final String checked;
+
+  SyncShoppingListEntries({required this.checked});
+}
+
 class CreateShoppingListEntry extends ShoppingListEvent {
   final ShoppingListEntry shoppingListEntry;
 

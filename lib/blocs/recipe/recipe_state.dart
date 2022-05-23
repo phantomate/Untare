@@ -27,6 +27,11 @@ class RecipeDeleted extends RecipeState {
   RecipeDeleted({required this.recipe});
 }
 
+class RecipeImported extends RecipeState {
+  final Recipe recipe;
+  RecipeImported({required this.recipe});
+}
+
 class RecipeAddedIngredientsToShoppingList extends RecipeState {}
 
 class RecipeListLoading extends RecipeState {}

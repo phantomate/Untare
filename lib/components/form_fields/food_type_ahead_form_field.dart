@@ -6,10 +6,10 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/models/food.dart';
 import 'package:tare/services/api/api_food.dart';
 
-Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> _formBuilderKey, {int? index, dynamicKey}) {
+Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> _formBuilderKey) {
   final _foodTextController = TextEditingController();
   final ApiFood _apiFood = ApiFood();
-  final fieldName = 'food' + ((index != null) ? index.toString() : '');
+  final fieldName = 'food';
 
   // Set text editors because type ahead field isn't aware of empty string
   if (food != null) {
@@ -18,7 +18,6 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> _formBuild
 
   return FormBuilderTypeAhead<Food>(
     name: fieldName,
-    key: dynamicKey,
     controller: _foodTextController,
     initialValue: food,
     selectionToTextTransformer: (food) => food.name,
@@ -48,13 +47,7 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> _formBuild
 
       if (_foodTextController.text.isEmpty) {
         // Invalidate empty string because type ahead field isn't aware
-        if (dynamicKey != null)  {
-          _formBuilderKey.currentState!.setInternalFieldValue(fieldName, null, isSetState: true);
-          // Do own validation, because the package validation doesn't work on dynamically generated fields
-          dynamicKey.currentState!.invalidate('');
-        } else {
-          _formBuilderKey.currentState!.fields[fieldName]!.didChange(null);
-        }
+        _formBuilderKey.currentState!.fields[fieldName]!.didChange(null);
       } else {
         // Overwrite food, if changed in form
         if (food != null && formFood != null) {
@@ -68,16 +61,7 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> _formBuild
           newFood = Food(id: formFood.id, name: formFood.name, description: formFood.description, onHand: formFood.onHand);
         }
 
-        // If we have a dynamic key the form field is generated dynamically and therefore we have to use an other method
-        if (dynamicKey != null) {
-          if (newFood == null) {
-            // Do own validation, because the package validation doesn't work on dynamically generated fields
-            dynamicKey.currentState!.invalidate('');
-          }
-          _formBuilderKey.currentState!.setInternalFieldValue(fieldName, newFood, isSetState: true);
-        } else {
-          _formBuilderKey.currentState!.fields[fieldName]!.didChange(newFood);
-        }
+        _formBuilderKey.currentState!.fields[fieldName]!.didChange(newFood);
       }
     },
     hideOnEmpty: true,

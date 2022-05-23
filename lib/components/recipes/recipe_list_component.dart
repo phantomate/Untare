@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:tare/components/bottom_sheets/meal_plan_more_bottom_sheet_component.dart';
+import 'package:tare/components/bottom_sheets/meal_plan_entry_more_bottom_sheet_component.dart';
 import 'package:tare/components/bottom_sheets/recipe_more_bottom_sheet_component.dart';
 import 'package:tare/components/recipes/recipe_image_component.dart';
 import 'package:tare/components/recipes/recipe_time_component.dart';
@@ -26,7 +26,7 @@ Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer
     },
     onLongPress: () {
       if (mealPlan != null) {
-        mealPlanMoreBottomSheet(context, mealPlan);
+        mealPlanEntryMoreBottomSheet(context, mealPlan);
       } else {
         recipeMoreBottomSheet(context, recipe);
       }
@@ -41,13 +41,15 @@ Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(recipe.name),
-            if (recipe.lastCooked != null || (recipe.rating != null && recipe.rating! > 0))
+            if (recipe.lastCooked != null || (recipe.rating != null && recipe.rating! > 0) || mealPlan != null)
               Row(
                 children: [
                   Row(
                     children: [
                       lastCooked(recipe),
-                      rating(recipe)
+                      rating(recipe),
+                      if (mealPlan != null)
+                        Text(mealPlan.mealType.name, style: TextStyle(color: Colors.grey, fontSize: 12))
                     ],
                   ),
                 ],
@@ -70,9 +72,7 @@ Widget lastCooked(Recipe recipe) {
         SizedBox(width: 2),
         Text(
             DateFormat('dd.MM.yy').format(DateTime.parse(recipe.lastCooked!)),
-            style: TextStyle(
-              fontSize: 12,
-            )
+            style: TextStyle( fontSize: 12)
         ),
         SizedBox(width: 8)
       ],
@@ -96,7 +96,8 @@ Widget rating (Recipe recipe) {
           Icons.star,
           size: 12,
           color: Colors.amberAccent,
-        )
+        ),
+        SizedBox(width: 8)
       ],
     );
   }

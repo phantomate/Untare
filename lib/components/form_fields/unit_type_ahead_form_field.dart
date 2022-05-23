@@ -5,10 +5,10 @@ import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:tare/models/unit.dart';
 import 'package:tare/services/api/api_unit.dart';
 
-Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuilderKey, {int? index, dynamicKey}) {
+Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuilderKey) {
   final _unitTextController = TextEditingController();
   final ApiUnit _apiUnit = ApiUnit();
-  final fieldName = 'unit' + ((index != null) ? index.toString() : '');
+  final fieldName = 'unit';
 
   if (unit != null) {
     _unitTextController.text = unit.name;
@@ -17,7 +17,6 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuild
   return FormBuilderTypeAhead<Unit>(
     name: fieldName,
     controller: _unitTextController,
-    key: dynamicKey,
     initialValue: unit,
     selectionToTextTransformer: (unit) => unit.name,
     decoration: const InputDecoration(
@@ -43,13 +42,7 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuild
       
       if (_unitTextController.text.isEmpty) {
         // Invalidate empty string because type ahead field isn't aware
-        if (dynamicKey != null)  {
-          _formBuilderKey.currentState!.setInternalFieldValue(fieldName, null, isSetState: true);
-          // Do own validation, because the package validation doesn't work on dynamically generated fields
-          dynamicKey.currentState!.invalidate('');
-        } else {
-          _formBuilderKey.currentState!.fields[fieldName]!.didChange(null);
-        }
+        _formBuilderKey.currentState!.fields[fieldName]!.didChange(null);
       } else {
         // Overwrite unit, if changed in form
         if (unit != null && formUnit != null) {
@@ -63,16 +56,7 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuild
           newUnit = Unit(id: formUnit.id, name: formUnit.name, description: formUnit.description);
         }
 
-        // If we have a dynamic key the form field is generated dynamically and therefore we have to use an other method
-        if (dynamicKey != null) {
-          if (newUnit == null) {
-            // Do own validation, because the package validation doesn't work on dynamically generated fields
-            dynamicKey.currentState!.invalidate('');
-          }
-          _formBuilderKey.currentState!.setInternalFieldValue(fieldName, newUnit, isSetState: true);
-        } else {
-          _formBuilderKey.currentState!.fields[fieldName]!.didChange(newUnit);
-        }
+        _formBuilderKey.currentState!.fields[fieldName]!.didChange(newUnit);
       }
     },
     hideOnEmpty: true,

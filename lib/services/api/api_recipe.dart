@@ -145,16 +145,19 @@ class ApiRecipe extends ApiService {
     }
   }
 
-  Future<Recipe> importRecipe(String url) async {
+  Future<Recipe> importRecipe(String recipeUrl) async {
     var url = '/api/recipe-from-source/';
 
     Map<String, dynamic> requestData = {
       'data': '',
-      'url': url
+      'url': recipeUrl
     };
 
+    print(jsonEncode(requestData));
+    print('dude');
     Response res = await httpPost(url, requestData);
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
+    print(res.statusCode);
 
     if ([200, 201].contains(res.statusCode)) {
       return Recipe.fromJson(json['recipe_json']);

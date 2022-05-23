@@ -7,7 +7,7 @@ import 'package:tare/blocs/recipe/recipe_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_event.dart';
 import 'package:tare/blocs/recipe/recipe_state.dart';
 import 'package:tare/components/bottom_sheets/recipe_more_bottom_sheet_component.dart';
-import 'package:tare/components/widgets/recipe_detail_ingredients_stateful_widget.dart';
+import 'package:tare/components/widgets/recipe_detail_tabbar_widget.dart';
 import 'package:tare/components/recipes/recipe_image_component.dart';
 import 'package:tare/components/loading_component.dart';
 import 'package:tare/models/recipe.dart';
@@ -61,16 +61,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 ];
               },
               body: Container(
-                  margin: const EdgeInsets.only(top: 50),
                   color: Theme.of(context).scaffoldBackgroundColor,
                   child: (state is RecipeLoading)
                     ? buildLoading()
-                    : TabBarView(
-                        children: [
-                          RecipeDetailIngredientsWidget(recipe: recipe),
-                          buildRecipeInstructions(recipe)
-                        ],
-                      )
+                    : RecipeDetailTabBarWidget(recipe: recipe)
               ),
             );
           }
@@ -112,8 +106,8 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
               title: Text(
                 recipe.name,
                 style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18
                 ),
               ),
               actions: [
@@ -154,14 +148,14 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                               children: [
                                 Icon(
                                   Icons.restaurant_outlined,
-                                  size: 12,
+                                  size: 13,
                                   color: Colors.black87,
                                 ),
                                 SizedBox(width: 2),
                                 Text(
                                   lastCooked,
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     color: Colors.black87,
                                   ),
                                 ),
@@ -171,7 +165,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                             Text(
                               'Last cooked',
                               style: TextStyle(
-                                  fontSize: 9,
+                                  fontSize: 10,
                                   color: Colors.grey
                               ),
                             )
@@ -185,14 +179,14 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                                 Text(
                                   recipe.rating.toString(),
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     color: Colors.black87,
                                   ),
                                 ),
                                 SizedBox(width: 2),
                                 Icon(
                                   Icons.star,
-                                  size: 12,
+                                  size: 13,
                                   color: Colors.amberAccent,
                                 ),
                               ],
@@ -201,7 +195,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                             Text(
                               'Rating',
                               style: TextStyle(
-                                  fontSize: 9,
+                                  fontSize: 10,
                                   color: Colors.grey
                               ),
                             )
@@ -214,14 +208,14 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                               children: [
                                 Icon(
                                   Icons.timer_outlined,
-                                  size: 12,
+                                  size: 13,
                                   color: Colors.black87,
                                 ),
                                 SizedBox(width: 2),
                                 Text(
                                   recipe.workingTime.toString() + ' min',
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     color: Colors.black87,
                                   ),
                                 ),
@@ -231,7 +225,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                             Text(
                               'Prep. time',
                               style: TextStyle(
-                                fontSize: 9,
+                                fontSize: 10,
                                 color: Colors.grey
                               ),
                             )
@@ -244,14 +238,14 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                               children: [
                                 Icon(
                                   Icons.hourglass_bottom_outlined,
-                                  size: 12,
+                                  size: 13,
                                   color: Colors.black87,
                                 ),
                                 SizedBox(width: 2),
                                 Text(
                                   recipe.waitingTime.toString() + ' min',
                                   style: TextStyle(
-                                    fontSize: 12,
+                                    fontSize: 13,
                                     color: Colors.black87,
                                   ),
                                 ),
@@ -261,7 +255,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                             Text(
                               'Waiting time',
                               style: TextStyle(
-                                  fontSize: 9,
+                                  fontSize: 10,
                                   color: Colors.grey
                               ),
                             )
@@ -280,72 +274,12 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
               unselectedLabelColor: Colors.grey,
               tabs: [
                 Tab(text: 'Ingredients'),
-                Tab(text: 'Instructions'),
+                Tab(text: 'Directions'),
               ],
             ),
           ),
           pinned: true,
         ),
-      ],
-    ),
-  );
-}
-
-Widget buildRecipeInstructions(Recipe recipe) {
-  if (recipe.steps != null && recipe.steps!.first.instruction != null && recipe.steps!.first.instruction != '') {
-    List<String> splitInstructions = recipe.steps!.first.instruction.split("\n\n");
-
-    if (splitInstructions.length <= 2) {
-      List<String> tmpSplitInstructions = splitInstructions;
-      splitInstructions = [];
-      for(int i = 0; i < tmpSplitInstructions.length; i++) {
-        splitInstructions.addAll(tmpSplitInstructions[i].split("\n"));
-      }
-    }
-
-    List<Widget> instructionSteps = [];
-
-    for(int i = 0; i < splitInstructions.length; i++) {
-      final splitInstruction = splitInstructions[i].replaceAll("\r", "");
-
-      if (i < splitInstructions.length - 1) {
-        instructionSteps.add(buildInstructionStep(i+1, splitInstruction));
-      } else {
-        instructionSteps.add(
-          Container(
-            padding: const EdgeInsets.only(top: 10),
-            child: Text(splitInstruction, style: TextStyle(color: Colors.black45)),
-        ));
-      }
-    }
-
-    return ListView(
-      padding: const EdgeInsets.only(top: 10, right: 20, bottom: 0, left: 20),
-      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      children: instructionSteps,
-    );
-  } else {
-    return Center(child: Text('No instructions found'));
-  }
-}
-
-Widget buildInstructionStep(int stepCount, String step) {
-  return Container(
-    padding: const EdgeInsets.only(top: 15, bottom: 15),
-    decoration: BoxDecoration(
-      border: Border(
-          bottom: BorderSide(
-            color: Colors.grey[200]!,
-            width: 1
-          )
-      )
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Step $stepCount', style: TextStyle(color: Colors.black45, fontSize: 12)),
-        SizedBox(height: 5),
-        Text(step)
       ],
     ),
   );

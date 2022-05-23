@@ -20,6 +20,7 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
     on<MarkAllAsCompleted>(_onMarkAllAsCompleted);
     on<UpdateSupermarketCategory>(_onUpdateSupermarketCategory);
     on<DeleteSupermarketCategory>(_onDeleteSupermarketCategory);
+    on<SyncShoppingListEntries>(_onSyncShoppingListEntries);
   }
 
   Future<void> _onFetchShoppingListEntries(FetchShoppingListEntries event, Emitter<ShoppingListState> emit) async {
@@ -27,6 +28,21 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
     try {
       List<ShoppingListEntry> shoppingListEntries = await apiShoppingList.getShoppingListEntries(event.checked, '');
       emit(ShoppingListEntriesFetched(shoppingListEntries: shoppingListEntries));
+    } on ApiException catch (e) {
+      if (e.statusCode == 401) {
+        emit(ShoppingListUnauthorized());
+      } else {
+        emit(ShoppingListError(error: e.message ?? e.toString()));
+      }
+    } catch (e) {
+      emit(ShoppingListError(error: e.toString()));
+    }
+  }
+
+  Future<void> _onSyncShoppingListEntries(SyncShoppingListEntries event, Emitter<ShoppingListState> emit) async {
+    try {
+      List<ShoppingListEntry> shoppingListEntries = await apiShoppingList.getShoppingListEntries(event.checked, '');
+      emit(ShoppingListEntriesSynced(shoppingListEntries: shoppingListEntries));
     } on ApiException catch (e) {
       if (e.statusCode == 401) {
         emit(ShoppingListUnauthorized());

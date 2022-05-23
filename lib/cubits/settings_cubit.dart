@@ -9,7 +9,6 @@ class SettingsCubit extends Cubit<AppSetting> {
   var box = Hive.box('hydrated_box');
   final ApiUser apiUser;
 
-
   SettingsCubit({required this.apiUser}) : super(AppSetting(layout: 'card', theme: 'light', defaultPage: 'recipes'));
 
   void changeLayoutTo(String? layout) {
@@ -39,6 +38,16 @@ class SettingsCubit extends Cubit<AppSetting> {
       UserSetting userSetting = await apiUser.getUserSettings(user);
 
       emit(state.copyWith(userServerSetting: userSetting));
+      box.put('settings', state);
+    }
+  }
+
+  void updateServerSetting(UserSetting userSetting) async {
+    User? user = box.get('user');
+    if (user != null) {
+      UserSetting newUserSetting = await apiUser.patchUserSettings(user, userSetting);
+
+      emit(state.copyWith(userServerSetting: newUserSetting));
       box.put('settings', state);
     }
   }

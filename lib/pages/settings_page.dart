@@ -6,6 +6,9 @@ import 'package:tare/blocs/authentication/authentication_bloc.dart';
 import 'package:tare/blocs/authentication/authentication_event.dart';
 import 'package:tare/components/bottom_sheets/settings_default_page_bottom_sheet_component.dart';
 import 'package:tare/components/bottom_sheets/settings_layout_bottom_sheet_component.dart';
+import 'package:tare/components/dialogs/edit_share_dialog.dart';
+import 'package:tare/components/dialogs/edit_shopping_list_recent_days_dialog.dart';
+import 'package:tare/components/dialogs/edit_shopping_list_refresh_dialog.dart';
 import 'package:tare/constants/colors.dart';
 import 'package:tare/cubits/settings_cubit.dart';
 import 'package:tare/extensions/string_extension.dart';
@@ -101,24 +104,24 @@ class _SettingsPageState extends State<SettingsPage> {
                           title: Text('Shopping list'),
                           tiles: [
                             SettingsTile(
-                              enabled: false,
                               leading: Icon(Icons.share_outlined),
                               title: Text('Shared with'),
-                              value: Text( setting.userServerSetting!.shoppingShare.map((user) => user.username).toList().join(',')),
+                              value: Text(setting.userServerSetting!.shoppingShare.isNotEmpty ? setting.userServerSetting!.shoppingShare.map((user) => user.username).toList().join(',') : '-'),
+                              onPressed: (context) => editShareDialog(context, setting.userServerSetting!, 'shopping'),
                             ),
                             SettingsTile(
-                              enabled: false,
                               leading: Icon(Icons.refresh_outlined),
                               title: Text('Refresh interval'),
-                              description: Text('Refreshes the shopping list every ' + setting.userServerSetting!.shoppingAutoSync.toString() + ' seconds in shopping mode'),
+                              description: Text('Refreshes the shopping list every ' + setting.userServerSetting!.shoppingAutoSync.toString() + ' seconds when autosync is enabled'),
+                              onPressed: (context) => editShoppingListRefreshDialog(context, setting.userServerSetting!),
                             ),
                             SettingsTile(
-                              enabled: false,
                               leading: Icon(Icons.calendar_today_sharp),
                               title: Text('Recent days'),
                               description: Text('Displays the last ' + setting.userServerSetting!.shoppingRecentDays.toString() + ' days of the shopping list'),
+                              onPressed: (context) => editShoppingListRecentDaysDialog(context, setting.userServerSetting!),
                             ),
-                            SettingsTile.switchTile(
+                           /* SettingsTile.switchTile(
                               enabled: false,
                               leading: Icon(Icons.add_shopping_cart_outlined),
                               onToggle: (bool value) {
@@ -127,6 +130,19 @@ class _SettingsPageState extends State<SettingsPage> {
                               initialValue: setting.userServerSetting!.mealPlanAutoAddShopping,
                               title: Text('Auto add meal plan'),
                               description: Text('Automatically add meal plan ingredients to shopping list'),
+                            ),*/
+                          ]
+                      ),
+                    if (setting.userServerSetting != null)
+                      SettingsSection(
+                          title: Text('Meal plan'),
+                          tiles: [
+                            SettingsTile(
+                              enabled: false,
+                              leading: Icon(Icons.share_outlined),
+                              title: Text('Shared with'),
+                              value: Text(setting.userServerSetting!.planShare.isNotEmpty ? setting.userServerSetting!.planShare.map((user) => user.username).toList().join(',') : '-'),
+                              onPressed: (context) => editShareDialog(context, setting.userServerSetting!, 'plan'),
                             ),
                           ]
                       ),

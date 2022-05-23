@@ -7,6 +7,7 @@ import 'package:tare/components/form_fields/food_type_ahead_form_field.dart';
 import 'package:tare/components/form_fields/quantity_text_form_field.dart';
 import 'package:tare/components/form_fields/supermarket_category_type_ahead_form_field.dart';
 import 'package:tare/components/form_fields/unit_type_ahead_form_field.dart';
+import 'package:tare/constants/colors.dart';
 import 'package:tare/models/food.dart';
 import 'package:tare/models/shopping_list_entry.dart';
 
@@ -50,7 +51,8 @@ Future editShoppingListEntryDialog(BuildContext context, ShoppingListEntry shopp
                           SizedBox(height: 15),
                           Container(
                               alignment: Alignment.bottomRight,
-                              child: TextButton(
+                              child: MaterialButton(
+                                  color: primaryColor,
                                   onPressed: () {
                                     _formBuilderKey.currentState!.save();
                                     if (_formBuilderKey.currentState!.validate()) {

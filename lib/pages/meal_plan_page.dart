@@ -41,10 +41,10 @@ class _MealPlanPageState extends State<MealPlanPage> {
   @override
   void initState() {
     super.initState();
-    fromDateTime = dateTime.subtract(const Duration(days: 28));
+    fromDateTime = findFirstDateOfTheWeek(dateTime).subtract(const Duration(days: 28));
     fromDate = DateFormat('yyyy-MM-dd').format(fromDateTime);
 
-    toDateTime = dateTime.add(const Duration(days: 28));
+    toDateTime = findLastDateOfTheWeek(dateTime).add(const Duration(days: 28));
     toDate = DateFormat('yyyy-MM-dd').format(toDateTime);
 
     rangeTitleText = getTitleText();
@@ -65,6 +65,13 @@ class _MealPlanPageState extends State<MealPlanPage> {
     setState(() {
       dateTime = dateTime.subtract(Duration(days: 7));
       rangeTitleText = getTitleText();
+
+      DateTime firstDay = findFirstDateOfTheWeek(dateTime);
+      if (firstDay.year == fromDateTime.year && firstDay.month == fromDateTime.month && firstDay.day == fromDateTime.day) {
+        fromDateTime = fromDateTime.subtract(const Duration(days: 28));
+        fromDate = DateFormat('yyyy-MM-dd').format(fromDateTime);
+        _mealPlanBloc.add(FetchMealPlan(from: fromDate, to: toDate));
+      }
     });
   }
 
@@ -72,6 +79,13 @@ class _MealPlanPageState extends State<MealPlanPage> {
     setState(() {
       dateTime = dateTime.add(Duration(days: 7));
       rangeTitleText = getTitleText();
+
+      DateTime lastDay = findLastDateOfTheWeek(dateTime);
+      if (lastDay.year == toDateTime.year && lastDay.month == toDateTime.month && lastDay.day == toDateTime.day) {
+        toDateTime = toDateTime.add(const Duration(days: 28));
+        toDate = DateFormat('yyyy-MM-dd').format(toDateTime);
+        _mealPlanBloc.add(FetchMealPlan(from: fromDate, to: toDate));
+      }
     });
   }
 
@@ -108,7 +122,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
           automaticallyImplyLeading: false,
           iconTheme: const IconThemeData(color: Colors.black87),
           flexibleSpace: FlexibleSpaceBar(
-            titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 50),
+            titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 55),
             expandedTitleScale: 1.3,
             title: Text(
               'Meal plan',

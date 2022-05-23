@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/blocs/meal_plan/meal_plan_bloc.dart';
 import 'package:tare/blocs/meal_plan/meal_plan_event.dart';
+import 'package:tare/constants/colors.dart';
 import 'package:tare/models/meal_type.dart';
 import 'package:tare/services/api/api_meal_type.dart';
 
@@ -75,7 +76,8 @@ Future editMealTypeDialog(BuildContext context) async {
                           SizedBox(height: 15),
                           Container(
                               alignment: Alignment.bottomRight,
-                              child: TextButton(
+                              child: MaterialButton(
+                                  color: primaryColor,
                                   onPressed: isVisible ? () {
                                     _formBuilderKey.currentState!.save();
 

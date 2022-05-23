@@ -4,12 +4,11 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/extensions/double_extension.dart';
 
-Widget quantityTextFormField(double? amount, GlobalKey<FormBuilderState> _formBuilderKey, {int? index, dynamicKey}) {
-  final fieldName = 'quantity' + ((index != null) ? index.toString() : '');
+Widget quantityTextFormField(double? amount, GlobalKey<FormBuilderState> _formBuilderKey) {
+  final fieldName = 'quantity';
 
   return FormBuilderTextField(
     name: fieldName,
-    key: dynamicKey,
     initialValue: (amount != null ) ? amount.toFormattedString() : null,
     decoration: InputDecoration(
       labelText: 'Quantity'
@@ -28,12 +27,7 @@ Widget quantityTextFormField(double? amount, GlobalKey<FormBuilderState> _formBu
         newAmount = newAmount;
       }
 
-      // If we have a dynamic key the form field is generated dynamically and therefore we have to use an other method
-      if (dynamicKey != null) {
-        _formBuilderKey.currentState!.setInternalFieldValue(fieldName, newAmount.toFormattedString(), isSetState: true);
-      } else {
-        _formBuilderKey.currentState!.fields[fieldName]!.didChange(newAmount.toFormattedString());
-      }
+      _formBuilderKey.currentState!.fields[fieldName]!.didChange(newAmount.toFormattedString());
     },
   );
 }

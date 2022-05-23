@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
 import 'package:tare/blocs/recipe/recipe_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_event.dart';
 import 'package:tare/blocs/recipe/recipe_state.dart';
+import 'package:tare/components/dialogs/import_recipe_website_dialog.dart';
 import 'package:tare/components/bottom_sheets/sort_bottom_sheet_component.dart';
 import 'package:tare/components/recipes/recipes_view_component.dart';
 import 'package:tare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
 import 'package:tare/components/loading_component.dart';
-import 'package:tare/components/widgets/search_stateful_widget.dart';
 import 'package:tare/constants/colors.dart';
 import 'package:tare/models/recipe.dart';
 import 'package:tare/pages/recipe_upsert_page.dart';
@@ -24,9 +26,9 @@ class RecipesPage extends HideBottomNavBarStatefulWidget {
 
 class _RecipesPageState extends State<RecipesPage> {
   int pageSize = 20;
-  final _scrollController = ScrollController();
-  final _scrollThreshold = 800.0;
+  final searchTextController = TextEditingController();
   late RecipeBloc recipeBloc;
+  bool showSearchClear = false;
   List<Recipe> recipes = [];
   bool isLastPage = false;
   int page = 1;
@@ -38,24 +40,31 @@ class _RecipesPageState extends State<RecipesPage> {
   void initState() {
     super.initState();
     widget.isHideBottomNavBar(true);
-    _scrollController.addListener(_onScroll);
+    searchTextController.addListener(_onSearchValueChange);
     recipeBloc = BlocProvider.of<RecipeBloc>(context);
     recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize));
   }
 
-  void _onScroll() {
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.position.pixels;
-    if (maxScroll - currentScroll <= _scrollThreshold) {
-      if(recipeBloc.state is RecipeListFetched && !isLastPage) {
-        page += 1;
-        recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize));
-      }
+  void _fetchMoreRecipes() {
+    if(recipeBloc.state is RecipeListFetched && !isLastPage) {
+      page += 1;
+      recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize));
     }
   }
 
-  _onSearchValueChange(String searchQuery) {
-    if (!identical(query, searchQuery)) {
+  _onSearchValueChange() {
+    String searchQuery = searchTextController.text;
+    if (searchQuery != '' && !showSearchClear) {
+      setState(() {
+        showSearchClear = true;
+      });
+    } else if (searchQuery == '' && showSearchClear) {
+      setState(() {
+        showSearchClear = false;
+      });
+    }
+
+    if (query != searchQuery) {
       query = searchQuery;
       page = 1;
       random = false;
@@ -71,28 +80,30 @@ class _RecipesPageState extends State<RecipesPage> {
     recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize, sortOrder: sortOrder));
   }
 
-  _openSortBottomSheet() {
-    sortBottomSheet(context, onSortSelected);
-  }
-
   @override
   void dispose() {
-    _scrollController.dispose();
+    searchTextController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return NestedScrollView(
-      controller: _scrollController,
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+      headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
         return <Widget>[
-          sliverAppBar(context, _onSearchValueChange, innerBoxIsScrolled)
+          sliverAppBarWidget(context, innerBoxIsScrolled, searchTextController, onSortSelected, showSearchClear),
         ];
       },
       body: Container(
           child: BlocConsumer<RecipeBloc, RecipeState>(
               listener: (context, state) {
+                if (state is RecipeListFetched) {
+                  if (state.recipes.isEmpty) {
+                    isLastPage = true;
+                  }
+                  recipes.addAll(state.recipes);
+                }
+
                 if (state is RecipeError) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -108,50 +119,22 @@ class _RecipesPageState extends State<RecipesPage> {
                   recipes[recipes.indexWhere((element) => element.id == state.recipe.id)] = state.recipe;
                 } else if (state is RecipeDeleted) {
                   recipes.removeWhere((element) => element.id == state.recipe.id);
+                } else if (state is RecipeImported) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RecipeUpsertPage(recipe: state.recipe)),
+                  );
                 }
               },
               builder: (context, state) {
                 if (state is RecipeInitial) {
                   return buildLoading();
-                } else if (state is RecipeListFetched || state is RecipeListLoading) {
-                  if (state is RecipeListFetched) {
-                    if (state.recipes.isEmpty) {
-                      isLastPage = true;
-                    }
-
-                    recipes.addAll(state.recipes);
-                  }
                 }
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: 100,
-                      padding: const EdgeInsets.only(left: 12, top: 10),
-                      //alignment: Alignment.topLeft,
-                      child: TextButton(
-                          onPressed: _openSortBottomSheet,
-                          child: Row(
-                            children: [
-                              Text(
-                                'Filter',
-                                style: TextStyle(
-                                    color: Colors.black54
-                                ),
-                              ),
-                              Icon(
-                                Icons.arrow_drop_down_outlined,
-                                color: Colors.black54,
-                              )
-                            ],
-                          )
-                      ),
-                    ),
-                    Expanded(
-                        child: buildRecipesView(recipes, state, widget, context)
-                    )
-                  ],
+                return LazyLoadScrollView(
+                  onEndOfPage: () => _fetchMoreRecipes(),
+                  scrollOffset: 80,
+                  child: buildRecipesView(recipes, state, widget, context),
                 );
               }
           )
@@ -160,44 +143,109 @@ class _RecipesPageState extends State<RecipesPage> {
   }
 }
 
-Widget sliverAppBar(BuildContext context, Function(String) _onSearchValueChange, bool innerBoxIsScrolled) {
+Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEditingController searchTextController, Function(String) onSortSelected, bool showSearchClear) {
   return SliverAppBar(
-    title: Row(
-      children: [
-        Text(
-          'Recipes',
-          style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87
-          ),
+    expandedHeight: 120,
+    flexibleSpace: FlexibleSpaceBar(
+      titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 60),
+      expandedTitleScale: 1.3,
+      title: Text(
+        'Recipes',
+        style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black87
         ),
-      ],
+      ),
     ),
     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     pinned: true,
     stretch: true,
     forceElevated: innerBoxIsScrolled,
     elevation: 1.5,
-    actions: [
-      Container(
-        padding: const EdgeInsets.only(top: 12, bottom: 12),
-        child: SearchWidget(onSearchValueChange: _onSearchValueChange),
+    bottom: PreferredSize(
+      preferredSize: Size(double.maxFinite, 42),
+      child: Container(
+        height: 42,
+        padding: const EdgeInsets.fromLTRB(40, 0, 30, 10),
+        child:  Row(
+          children: [
+            Flexible(
+              child: TextField(
+                controller: searchTextController,
+                cursorColor: primaryColor,
+                decoration: InputDecoration(
+                  hintText: 'Search',
+                  contentPadding: const EdgeInsets.only(top: 10),
+                  prefixIcon: Icon(Icons.search_outlined),
+                  suffixIcon: showSearchClear ? IconButton(
+                    splashRadius: 1,
+                    padding: const EdgeInsets.fromLTRB(8, 7, 8, 8),
+                    icon: Icon(Icons.clear_outlined),
+                    onPressed: () {
+                      searchTextController.clear();
+                    },
+                  ) : null,
+                  fillColor: Colors.grey[200],
+                  focusedBorder:  OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent, width: 0.0),
+                    borderRadius: const BorderRadius.all(const Radius.circular(30.0)),
+                  ),
+                  filled: true,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.transparent, width: 0.0),
+                    borderRadius: const BorderRadius.all(const Radius.circular(30.0)),
+                  ),
+                ),
+              ),
+            ),
+            IconButton(
+                padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+                tooltip: 'Sort',
+                splashRadius: 20,
+                onPressed: () => sortBottomSheet(context, onSortSelected),
+                icon: Icon(
+                  Icons.sort_outlined,
+                )
+            )
+          ],
+        )
       ),
-      IconButton(
-          tooltip: 'Add recipe',
-          splashRadius: 20,
-          onPressed: () {
+    ),
+    actions: [
+      PopupMenuButton(
+        tooltip: 'Add recipe',
+        icon: Icon(
+          Icons.add,
+        ),
+        elevation: 3,
+        shape: OutlineInputBorder(
+            borderSide: BorderSide(
+                color: Colors.white,
+                width: 0
+            ),
+            borderRadius: BorderRadius.circular(10)
+        ),
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            child: Text('Create'),
+            value: 1,
+          ),
+          PopupMenuItem(
+            child: Text('Import'),
+            value: 2,
+          )
+        ],
+        onSelected: (value) {
+          if (value == 1) {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => RecipeUpsertPage()),
             );
-          },
-          icon: Icon(
-            Icons.add,
-            color: Colors.black54,
-          )
-      )
+          } else if (value == 2) {
+            importRecipeWebsiteDialog(context);
+          }
+        },
+      ),
     ],
   );
 }

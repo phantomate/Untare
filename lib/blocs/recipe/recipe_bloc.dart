@@ -9,11 +9,13 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   final ApiRecipe apiRecipe;
 
   RecipeBloc({required this.apiRecipe}) : super(RecipeInitial()) {
-    on<FetchRecipeList>(_onFetchRecipeList);    on<FetchRecipe>(_onFetchRecipe);
+    on<FetchRecipeList>(_onFetchRecipeList);
+    on<FetchRecipe>(_onFetchRecipe);
     on<UpdateRecipe>(_onUpdateRecipe);
     on<CreateRecipe>(_onCreateRecipe);
     on<DeleteRecipe>(_onDeleteRecipe);
     on<AddIngredientsToShoppingList>(_onAddIngredientsToShoppingList);
+    on<ImportRecipe>(_onImportRecipe);
   }
 
   Future<void> _onFetchRecipeList(FetchRecipeList event, Emitter<RecipeState> emit) async {
@@ -114,9 +116,25 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
 
   Future<void> _onAddIngredientsToShoppingList(AddIngredientsToShoppingList event, Emitter<RecipeState> emit) async {
     try {
-      Recipe? recipe = await apiRecipe.addIngredientsToShoppingList(event.recipeId, event.ingredientIds, event.servings);
+      await apiRecipe.addIngredientsToShoppingList(event.recipeId, event.ingredientIds, event.servings);
 
       emit(RecipeAddedIngredientsToShoppingList());
+    } on ApiException catch (e) {
+      if (e.statusCode == 401) {
+        emit(RecipeUnauthorized());
+      } else {
+        emit(RecipeError(error: e.message ?? e.toString()));
+      }
+    } catch (e) {
+      emit(RecipeError(error: e.toString()));
+    }
+  }
+
+  Future<void> _onImportRecipe(ImportRecipe event, Emitter<RecipeState> emit) async {
+    try {
+      Recipe? recipe = await apiRecipe.importRecipe(event.url);
+
+      emit(RecipeImported(recipe: recipe));
 
     } on ApiException catch (e) {
       if (e.statusCode == 401) {

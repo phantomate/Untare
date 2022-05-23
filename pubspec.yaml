@@ -49,6 +49,8 @@ dependencies:
   grouped_list: ^4.2.0
   configurable_expansion_tile_null_safety: ^2.0.0
   hydrated_bloc: ^8.1.0
+  lazy_load_scrollview: 1.3.0
+  drag_and_drop_lists: ^0.3.2+2
 
 dev_dependencies:
   flutter_test:

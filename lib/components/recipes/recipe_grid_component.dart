@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:tare/components/bottom_sheets/meal_plan_more_bottom_sheet_component.dart';
+import 'package:tare/components/bottom_sheets/meal_plan_entry_more_bottom_sheet_component.dart';
 import 'package:tare/components/bottom_sheets/recipe_more_bottom_sheet_component.dart';
 import 'package:tare/components/recipes/recipe_image_component.dart';
 import 'package:tare/components/recipes/recipe_time_component.dart';
@@ -29,7 +29,7 @@ Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer
       },
       onLongPress: () {
         if (mealPlan != null) {
-          mealPlanMoreBottomSheet(context, mealPlan);
+          mealPlanEntryMoreBottomSheet(context, mealPlan);
         } else {
           recipeMoreBottomSheet(context, recipe);
         }
@@ -38,21 +38,21 @@ Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer
         children: [
           Stack(
             children: [
-              buildRecipeImage(recipe, BorderRadius.vertical(top: Radius.circular(10)), 120, referer: referer),
+              buildRecipeImage(recipe, BorderRadius.vertical(top: Radius.circular(10)), 140, referer: referer),
               Container(
-                padding: EdgeInsets.all(5),
+                padding: const EdgeInsets.all(5),
                 alignment: Alignment.topRight,
                 child: buildRecipeTime(recipe, boxDecoration: recipeTimeDecoration),
               )
             ],
           ),
           Container(
-            height: 54,
+            height: 48,
             alignment: Alignment.centerLeft,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
             ),
-            padding: EdgeInsets.only(top: 10, right: 5, bottom: 10, left: 15),
+            padding: EdgeInsets.only(top: 6, right: 15, bottom: 8, left: 15),
             child: Text(
               recipe.name,
               style: TextStyle(

@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_event.dart';
-import 'package:tare/components/bottom_sheets/meal_plan_upsert_bottom_sheet_component.dart';
 import 'package:tare/components/bottom_sheets/recipe_shopping_list_bottom_sheet_component.dart';
+import 'package:tare/components/dialogs/upsert_meal_plan_entry_dialog.dart';
 import 'package:tare/models/recipe.dart';
 import 'package:tare/pages/recipe_upsert_page.dart';
 
@@ -30,7 +30,7 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
         TextButton.icon(
           onPressed: () {
             Navigator.pop(btsContext);
-            mealPlanUpsertBottomSheet(context, recipe: recipe, referer: 'recipe');
+            upsertMealPlanEntryDialog(context, recipe: recipe, referer: 'recipe');
           },
           icon: Icon(Icons.calendar_today_outlined),
           label: Text('Add to meal plan'),

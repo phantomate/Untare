@@ -12,8 +12,8 @@ Widget buildRecipesList(List<Widget> recipesWidgetList) {
             Padding(
              padding: const EdgeInsets.only(left: 10, right: 10),
               child: Divider(
-               thickness: 0.1,
-               color: Colors.grey[300],
+               thickness: 0.2,
+               color: Colors.grey[400],
              ),
             ),
         ],

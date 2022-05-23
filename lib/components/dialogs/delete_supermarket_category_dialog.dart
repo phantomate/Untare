@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_event.dart';
+import 'package:tare/constants/colors.dart';
 import 'package:tare/models/supermarket_category.dart';
 import 'package:tare/services/api/api_supermarket_category.dart';
 
@@ -48,7 +49,8 @@ Future deleteSupermarketCategoryDialog(BuildContext context) async {
                     SizedBox(height: 15),
                     Container(
                         alignment: Alignment.bottomRight,
-                        child: TextButton(
+                        child: MaterialButton(
+                            color: primaryColor,
                             onPressed: () {
                               _formBuilderKey.currentState!.save();
 

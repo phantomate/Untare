@@ -97,7 +97,7 @@ class ApiShoppingList extends ApiService {
     if (entry.id == null) {
       throw MappingException(message: 'Id missing for deleting shopping list entry');
     }
-    var url = '/api/shopping-list-entry/' + entry.id.toString();
+    var url = '/api/shopping-list-entry/' + entry.id.toString() + '/';
 
     Response res = await httpDelete(url);
 

@@ -9,6 +9,8 @@ class AppTheme {
       fontFamily: 'Montserrat',
       iconTheme: IconThemeData(color: Colors.black87),
       inputDecorationTheme: InputDecorationTheme(
+        prefixIconColor: Colors.grey[600],
+        suffixIconColor: Colors.grey[600],
         border: OutlineInputBorder(),
         labelStyle: TextStyle(
           color: Colors.black26,
@@ -39,6 +41,9 @@ class AppTheme {
       ),
       buttonTheme: ButtonThemeData(
         textTheme: ButtonTextTheme.primary
+      ),
+      tabBarTheme: TabBarTheme(
+        labelColor: Colors.green
       )
     );
   }

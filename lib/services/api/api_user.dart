@@ -51,9 +51,10 @@ class ApiUser extends ApiService {
 
     Response res = await httpPatch(url, userSetting.toJson());
 
+    print(res.statusCode);
     if ([200, 201].contains(res.statusCode)) {
       Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
-
+      print(json);
       return UserSetting.fromJson(json);
     } else {
       throw ApiException(

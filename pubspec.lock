@@ -211,6 +211,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.3"
+  drag_and_drop_lists:
+    dependency: "direct main"
+    description:
+      name: drag_and_drop_lists
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.2+2"
   dropdown_search:
     dependency: transitive
     description:
@@ -553,6 +560,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.5.0"
+  lazy_load_scrollview:
+    dependency: "direct main"
+    description:
+      name: lazy_load_scrollview
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.3.0"
   logging:
     dependency: transitive
     description:

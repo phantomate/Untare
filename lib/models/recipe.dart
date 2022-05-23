@@ -7,7 +7,7 @@ class Recipe {
   final String? description;
   final String? image;
   final List keywords;
-  final steps;
+  final List<StepModel> steps;
   final int? workingTime;
   final int? waitingTime;
   final int? createdBy;
@@ -48,7 +48,7 @@ class Recipe {
     String? description,
     String? image,
     List? keywords,
-    steps,
+    List<StepModel>? steps,
     int? workingTime,
     int? waitingTime,
     int? createdBy,
@@ -87,7 +87,7 @@ class Recipe {
   Map<String, dynamic> toJson() {
     List<Map<String,dynamic>> steps = [];
 
-    if (this.steps != null && this.steps.isNotEmpty) {
+    if (this.steps.isNotEmpty) {
       this.steps.forEach((StepModel step) {
         steps.add(step.toJson());
       });
@@ -114,7 +114,7 @@ class Recipe {
       description: json['description'] as String?,
       image: json['image'] as String?,
       keywords: json['keywords'] as List,
-      steps: (json['steps'] != null) ? json['steps'].map((item) => StepModel.fromJson(item)) : null,
+      steps: (json['steps'] != null) ? json['steps'].map((item) => StepModel.fromJson(item)).toList().cast<StepModel>() : [],
       workingTime: json['working_time'] as int?,
       waitingTime: json['waiting_time'] as int?,
       createdBy: json['created_by'] as int,

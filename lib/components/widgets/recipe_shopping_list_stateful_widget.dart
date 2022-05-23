@@ -84,7 +84,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
           if (widget.recipe.id == state.recipe.id) {
             recipe = state.recipe;
 
-            recipeIngredients = (recipe.steps != null) ? recipe.steps!.first.ingredients : [];
+            recipeIngredients = (recipe.steps.isNotEmpty) ? recipe.steps.first.ingredients : [];
 
             // Get all food ids from this recipe to check if we have this already on our shopping list
             recipeIngredients.forEach((element) {
