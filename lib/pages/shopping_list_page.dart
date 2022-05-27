@@ -71,15 +71,14 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
               expandedHeight: 90,
               titleSpacing: 0,
               automaticallyImplyLeading: false,
-              iconTheme: const IconThemeData(color: Colors.black87),
               flexibleSpace: FlexibleSpaceBar(
                 titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 16),
                 expandedTitleScale: 1.3,
                 title: Text(
                   'Shopping list',
                   style: TextStyle(
-                      color: Colors.black87,
-                      fontWeight: FontWeight.bold
+                      fontWeight: FontWeight.bold,
+                      color: (Theme.of(context).appBarTheme.titleTextStyle != null) ? Theme.of(context).appBarTheme.titleTextStyle!.color : null
                   ),
                 ),
               ),
@@ -118,10 +117,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                             }
                           }
                         },
-                        icon: Icon(
-                          Icons.sync_outlined,
-                          color: Colors.black87,
-                        )
+                        icon: Icon(Icons.sync_outlined)
                     )
                 ),
                 IconButton(
@@ -132,10 +128,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                     onPressed: () {
                       addShoppingListEntryDialog(context);
                     },
-                    icon: Icon(
-                      Icons.add,
-                      color: Colors.black87,
-                    )
+                    icon: Icon(Icons.add)
                 ),
                 IconButton(
                     tooltip: 'More',
@@ -143,10 +136,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                     onPressed: () {
                       shoppingListMoreBottomSheet(context);
                     },
-                    icon: Icon(
-                      Icons.more_vert_outlined,
-                      color: Colors.black87,
-                    )
+                    icon: Icon(Icons.more_vert_outlined)
                 )
               ],
               elevation: 1.5,
@@ -314,8 +304,8 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                                                             title: Text(
                                                                 groupedList.first.food!.name,
                                                                 style: (checkBoxValue)
-                                                                    ? TextStyle(color: Colors.black45, fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
-                                                                    : TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)
+                                                                    ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
+                                                                    : TextStyle(fontWeight: FontWeight.bold)
                                                             ),
                                                             trailing: Icon(Icons.keyboard_arrow_up),
                                                           )
@@ -325,8 +315,8 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                                                               decoration: BoxDecoration(
                                                                   border: Border(
                                                                       bottom: BorderSide(
-                                                                          color: Colors.grey[200]!,
-                                                                          width: 1.0
+                                                                          color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                                                                          width: 0.8
                                                                       )
                                                                   )
                                                               ),
@@ -355,8 +345,8 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                                                                 title: Text(
                                                                     groupedList.first.food!.name,
                                                                     style: (checkBoxValue)
-                                                                        ? TextStyle(color: Colors.black45, fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
-                                                                        : TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)
+                                                                        ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
+                                                                        : TextStyle(fontWeight: FontWeight.bold)
                                                                 ),
                                                                 trailing: Icon(Icons.keyboard_arrow_down),
                                                               )
@@ -427,7 +417,6 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
           ),
         ),
         child: InkWell(
-          highlightColor: Colors.grey[50],
           onTap: () {
             editShoppingListEntryDialog(context, shoppingListEntry);
           },
@@ -435,8 +424,8 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
             decoration: BoxDecoration(
                 border: Border(
                     bottom: BorderSide(
-                        color: Colors.grey[200]!,
-                        width: 1.0
+                        color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                        width: 0.8
                     )
                 )
             ),
@@ -450,20 +439,23 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                         RichText(
                             text: TextSpan(
                                 children: [
-                                  TextSpan(text: amount, style: TextStyle(fontWeight: FontWeight.bold)),
-                                  TextSpan(text: unit, style: TextStyle(fontWeight: FontWeight.bold)),
-                                  TextSpan(text: food),
+                                  TextSpan(text: amount, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color, fontWeight: FontWeight.bold)),
+                                  TextSpan(text: unit, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color, fontWeight: FontWeight.bold)),
+                                  TextSpan(text: food, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color)),
                                 ],
                                 style: (checkBoxValue)
-                                    ? TextStyle(color: Colors.black45, decoration: TextDecoration.lineThrough)
-                                    : TextStyle(color: Colors.black87)
+                                    ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, decoration: TextDecoration.lineThrough)
+                                    : null
                             )
                         )
                       ]
                   ),
-                  subtitle: (shoppingListEntry.recipeMealPlan != null) ? Text(shoppingListEntry.recipeMealPlan!.name) : null,
+                  subtitle: (shoppingListEntry.recipeMealPlan != null)
+                      ? Text(shoppingListEntry.recipeMealPlan!.name, style: TextStyle(color: Colors.grey[600]!))
+                      : null,
                   leading: Checkbox(
                       value: checkBoxValue,
+                      activeColor: Theme.of(context).primaryColor,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(3)
                       ),

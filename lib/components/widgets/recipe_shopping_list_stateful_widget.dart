@@ -6,7 +6,6 @@ import 'package:tare/blocs/recipe/recipe_event.dart';
 import 'package:tare/blocs/recipe/recipe_state.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:tare/components/loading_component.dart';
-import 'package:tare/constants/colors.dart';
 import 'package:tare/models/food.dart';
 import 'package:tare/models/ingredient.dart';
 import 'package:tare/models/recipe.dart';
@@ -130,7 +129,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                               },
                               icon: Icon(
                                 Icons.remove_circle_outline,
-                                color: primaryColor,
+                                color: Theme.of(context).primaryColor,
                               ),
                             ),
                             Text(newServings.toString()),
@@ -140,7 +139,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                                 },
                                 icon: Icon(
                                   Icons.add_circle_outline_outlined,
-                                  color: primaryColor,
+                                  color: Theme.of(context).primaryColor,
                                 )
                             )
                           ],
@@ -168,21 +167,17 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
                         decoration: BoxDecoration(
-                            color: Colors.grey[50],
                             border: Border(
                                 top: BorderSide(
-                                    color: Colors.grey[300]!,
+                                    color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
                                     width: 1
                                 )
                             )
                         ),
                         child: MaterialButton(
-                          color: primaryColor,
+                          color: Theme.of(context).primaryColor,
                           minWidth: double.maxFinite,
-                          child: Text(
-                            'Add',
-                            style: TextStyle(color: Colors.white),
-                          ),
+                          child: Text('Add'),
                           onPressed: () {
                             recipeBloc.add(AddIngredientsToShoppingList(
                                 recipeId: recipe.id!,
@@ -221,8 +216,8 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
-                  color: Colors.grey[200]!,
-                  width: 1.0
+                  color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                  width: 0.8
               )
           )
       ),
@@ -233,6 +228,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
             visualDensity: VisualDensity(horizontal: 0, vertical: -4),
             contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             leading: Checkbox(
+                activeColor: Theme.of(context).primaryColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(3)
                 ),
@@ -289,7 +285,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                     icon: Icon(
                       Icons.home_outlined,
                       size: 20,
-                      color: (ingredient.food != null && ingredient.food!.onHand) ? primaryColor : null,
+                      color: (ingredient.food != null && ingredient.food!.onHand) ? Theme.of(context).primaryColor : null,
                     )
                 ),
               ],

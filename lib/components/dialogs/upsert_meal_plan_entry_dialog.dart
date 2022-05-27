@@ -7,7 +7,6 @@ import 'package:tare/blocs/meal_plan/meal_plan_bloc.dart';
 import 'package:tare/blocs/meal_plan/meal_plan_event.dart';
 import 'package:tare/components/form_fields/meal_type_type_ahead_form_field.dart';
 import 'package:tare/components/form_fields/recipe_type_ahead_form_field.dart';
-import 'package:tare/constants/colors.dart';
 import 'package:tare/models/meal_plan_entry.dart';
 import 'package:tare/models/recipe.dart';
 
@@ -79,7 +78,7 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                           Container(
                               alignment: Alignment.bottomRight,
                               child: MaterialButton(
-                                  color: primaryColor,
+                                  color: Theme.of(context).primaryColor,
                                   onPressed: () {
                                     _formBuilderKey.currentState!.save();
                                     if (_formBuilderKey.currentState!.validate()) {

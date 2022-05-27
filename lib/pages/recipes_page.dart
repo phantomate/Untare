@@ -12,7 +12,6 @@ import 'package:tare/components/bottom_sheets/sort_bottom_sheet_component.dart';
 import 'package:tare/components/recipes/recipes_view_component.dart';
 import 'package:tare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
 import 'package:tare/components/loading_component.dart';
-import 'package:tare/constants/colors.dart';
 import 'package:tare/models/recipe.dart';
 import 'package:tare/pages/recipe_upsert_page.dart';
 
@@ -153,7 +152,7 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
         'Recipes',
         style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: Colors.black87
+            color: (Theme.of(context).appBarTheme.titleTextStyle != null) ? Theme.of(context).appBarTheme.titleTextStyle!.color : null
         ),
       ),
     ),
@@ -172,7 +171,7 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
             Flexible(
               child: TextField(
                 controller: searchTextController,
-                cursorColor: primaryColor,
+                cursorColor: Theme.of(context).primaryColor,
                 decoration: InputDecoration(
                   hintText: 'Search',
                   contentPadding: const EdgeInsets.only(top: 10),
@@ -185,7 +184,7 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
                       searchTextController.clear();
                     },
                   ) : null,
-                  fillColor: Colors.grey[200],
+                  fillColor: (Theme.of(context).brightness.name == 'light') ? Colors.grey[200] : Colors.grey[700],
                   focusedBorder:  OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.transparent, width: 0.0),
                     borderRadius: const BorderRadius.all(const Radius.circular(30.0)),
@@ -219,10 +218,7 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
         ),
         elevation: 3,
         shape: OutlineInputBorder(
-            borderSide: BorderSide(
-                color: Colors.white,
-                width: 0
-            ),
+            borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(10)
         ),
         itemBuilder: (context) => [

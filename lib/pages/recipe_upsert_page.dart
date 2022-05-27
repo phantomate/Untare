@@ -91,7 +91,6 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                 leadingWidth: 50,
                 titleSpacing: 0,
                 automaticallyImplyLeading: false,
-                iconTheme: const IconThemeData(color: Colors.black87),
                 leading: IconButton(
                   iconSize: 30,
                   padding: const EdgeInsets.all(0),
@@ -174,9 +173,6 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                                     initialValue: (recipe != null) ? recipe!.workingTime.toString() : null,
                                     decoration: InputDecoration(
                                       labelText: 'Prep Time',
-                                      labelStyle: TextStyle(
-                                        color: Colors.black26,
-                                      ),
                                       isDense: true,
                                       contentPadding: const EdgeInsets.all(10),
                                       border: OutlineInputBorder(),
@@ -196,9 +192,6 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                                     initialValue: (recipe != null) ? recipe!.waitingTime.toString() : null,
                                     decoration: InputDecoration(
                                       labelText: 'Waiting time',
-                                      labelStyle: TextStyle(
-                                        color: Colors.black26,
-                                      ),
                                       isDense: true,
                                       contentPadding: const EdgeInsets.all(10),
                                       border: OutlineInputBorder(),
@@ -218,9 +211,6 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                                     initialValue: (recipe != null) ? recipe!.servings.toString() : null,
                                     decoration: InputDecoration(
                                       labelText: 'Servings',
-                                      labelStyle: TextStyle(
-                                        color: Colors.black26,
-                                      ),
                                       isDense: true,
                                       contentPadding: const EdgeInsets.all(10),
                                       border: OutlineInputBorder(),
@@ -247,9 +237,6 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                       initialValue: (recipe != null) ? recipe!.name : null,
                       decoration: InputDecoration(
                         labelText: 'Name',
-                        labelStyle: TextStyle(
-                          color: Colors.black26,
-                        ),
                         isDense: true,
                         contentPadding: const EdgeInsets.all(10),
                         border: OutlineInputBorder(),

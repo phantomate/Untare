@@ -11,7 +11,7 @@ import 'package:tare/pages/recipe_detail_page.dart';
 
 Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer, MealPlanEntry? mealPlan}) {
   BoxDecoration recipeTimeDecoration = BoxDecoration(
-      color: Colors.white.withOpacity(0.8),
+      color: (Theme.of(context).brightness.name == 'light') ? Colors.white.withOpacity(0.8) : Colors.grey[800]!.withOpacity(0.8),
       borderRadius: BorderRadius.circular(30)
   );
 
@@ -55,10 +55,7 @@ Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer
             padding: EdgeInsets.only(top: 6, right: 15, bottom: 8, left: 15),
             child: Text(
               recipe.name,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),

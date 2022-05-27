@@ -7,7 +7,6 @@ import 'package:tare/blocs/authentication/authentication_state.dart';
 import 'package:tare/blocs/login/login_bloc.dart';
 import 'package:tare/blocs/login/login_event.dart';
 import 'package:tare/blocs/login/login_state.dart';
-import 'package:tare/constants/colors.dart';
 
 class StartingPage extends StatelessWidget {
   @override
@@ -47,7 +46,7 @@ class StartingPage extends StatelessWidget {
                 return Center(
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: primaryColor,
+                    color: Theme.of(context).primaryColor,
                   ),
                 );
               },
@@ -113,7 +112,7 @@ class __SignInFormState extends State<_SignInForm> {
             return Center(
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: primaryColor,
+                color: Theme.of(context).primaryColor,
               ),
             );
           }
@@ -166,7 +165,7 @@ class __SignInFormState extends State<_SignInForm> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: primaryColor,
+                          primary: Theme.of(context).primaryColor,
                           onPrimary: Colors.black87,
                           padding: const EdgeInsets.all(16),
                           shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(8.0)),

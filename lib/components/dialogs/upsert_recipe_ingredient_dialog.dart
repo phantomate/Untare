@@ -4,7 +4,6 @@ import 'package:tare/components/form_fields/food_type_ahead_form_field.dart';
 import 'package:tare/components/form_fields/note_text_form_field.dart';
 import 'package:tare/components/form_fields/quantity_text_form_field.dart';
 import 'package:tare/components/form_fields/unit_type_ahead_form_field.dart';
-import 'package:tare/constants/colors.dart';
 import 'package:tare/models/ingredient.dart';
 
 Future upsertRecipeIngredientDialog(BuildContext context, int stepIndex, int ingredientIndex, Function(Map<String, dynamic>) upsertIngredient, {Ingredient? ingredient}) {
@@ -49,7 +48,7 @@ Future upsertRecipeIngredientDialog(BuildContext context, int stepIndex, int ing
                     Container(
                       alignment: Alignment.bottomRight,
                       child: MaterialButton(
-                        color: primaryColor,
+                        color: Theme.of(context).primaryColor,
                         child: Text((ingredient != null) ? 'Edit' : 'Add'),
                         onPressed: () {
 

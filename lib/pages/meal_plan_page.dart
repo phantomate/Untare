@@ -12,7 +12,6 @@ import 'package:tare/components/loading_component.dart';
 import 'package:tare/components/recipes/recipe_grid_component.dart';
 import 'package:tare/components/recipes/recipe_list_component.dart';
 import 'package:tare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
-import 'package:tare/constants/colors.dart';
 import 'package:tare/cubits/settings_cubit.dart';
 import 'package:tare/models/app_setting.dart';
 import 'package:tare/models/meal_plan_entry.dart';
@@ -127,8 +126,8 @@ class _MealPlanPageState extends State<MealPlanPage> {
             title: Text(
               'Meal plan',
               style: TextStyle(
-                  color: Colors.black87,
-                  fontWeight: FontWeight.bold
+                  fontWeight: FontWeight.bold,
+                  color: (Theme.of(context).appBarTheme.titleTextStyle != null) ? Theme.of(context).appBarTheme.titleTextStyle!.color : null
               ),
             ),
           ),
@@ -141,7 +140,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
                 },
                 icon: Icon(
                   Icons.more_vert_outlined,
-                  color: Colors.black87,
+                  color: Theme.of(context).primaryTextTheme.bodyText1!.color,
                 )
             )
           ],
@@ -172,7 +171,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 18,
-                        color: Colors.black87,
+                        color: Theme.of(context).primaryTextTheme.bodyText1!.color,
                       ),
                     ),
                   ),
@@ -274,8 +273,8 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
     decoration: BoxDecoration(
         border: Border(
             bottom: BorderSide(
-                color: Colors.grey[300]!,
-                width: 1
+                color: Theme.of(context).primaryTextTheme.overline!.color!,
+                width: 0.8
             )
         )
     ),
@@ -289,13 +288,13 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                   DateFormat('EEEE').format(day),
                   style: TextStyle(
                       fontWeight: (dailyMealPlanList.isNotEmpty) ? FontWeight.bold : FontWeight.normal,
-                      color: (dailyMealPlanList.isNotEmpty) ? Colors.black87 : Colors.black45
+                      color: (dailyMealPlanList.isNotEmpty) ? Theme.of(context).primaryTextTheme.bodyText1!.color : Theme.of(context).primaryTextTheme.bodyText2!.color
                   )
               ),
               SizedBox(width: 8),
               (isToday)
-                  ? Text('today', style: TextStyle(color: primaryColor))
-                  : Text(DateFormat('d. MMM').format(day), style: TextStyle(color: Colors.black45))
+                  ? Text('today', style: TextStyle(color: Theme.of(context).primaryColor))
+                  : Text(DateFormat('d. MMM').format(day), style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText2!.color))
             ],
           ),
           trailing: IconButton(
@@ -315,10 +314,10 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                       Container(
                         padding: const EdgeInsets.fromLTRB(10, 0, 12, 0),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: (Theme.of(context).brightness.name == 'light') ? Colors.white : Colors.grey[800],
                             border: Border(
                                 bottom: BorderSide(
-                                    color: Colors.grey[100]!,
+                                    color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[100]! : Colors.grey[700]!,
                                     width: 1
                                 )
                             )

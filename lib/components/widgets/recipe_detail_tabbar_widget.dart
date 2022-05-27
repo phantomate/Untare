@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:tare/constants/colors.dart';
 import 'package:tare/models/ingredient.dart';
 import 'package:tare/models/recipe.dart';
 import 'package:tare/extensions/double_extension.dart';
@@ -64,7 +62,7 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
       });
     }
 
-    ingredientsList.addAll(recipeIngredients.map((item) => ingredientComponent(item, servings, newServings, false)).toList());
+    ingredientsList.addAll(recipeIngredients.map((item) => ingredientComponent(item, servings, newServings, false, context)).toList());
 
     if (ingredientsList.isNotEmpty) {
       return ListView(
@@ -81,7 +79,7 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                   },
                   icon: Icon(
                     Icons.remove_circle_outline,
-                    color: primaryColor,
+                    color: Theme.of(context).primaryColor,
                   ),
                 ),
                 Text(newServings.toString()),
@@ -91,7 +89,7 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                     },
                     icon: Icon(
                       Icons.add_circle_outline_outlined,
-                      color: primaryColor,
+                      color: Theme.of(context).primaryColor,
                     )
                 )
               ],
@@ -118,11 +116,11 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
         for (int i = 0; i < widget.recipe.steps.length; i++) {
           List<Widget> stepList = [];
 
-          stepList.addAll(widget.recipe.steps[i].ingredients.map((item) => ingredientComponent(item, servings, newServings, true)).toList());
+          stepList.addAll(widget.recipe.steps[i].ingredients.map((item) => ingredientComponent(item, servings, newServings, true, context)).toList());
 
           stepList.add(Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(widget.recipe.steps[i].instruction ?? '', style: TextStyle(fontSize: 15))));
 
-          directionsSteps.add(directionStepLayout(Column(children: stepList), i+1));
+          directionsSteps.add(directionStepLayout(context, Column(children: stepList), i+1));
         }
 
       } else if (widget.recipe.steps.length == 1) {
@@ -144,6 +142,7 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
           if (!splitInstruction.toLowerCase().contains('imported from: http')) {
             directionsSteps.add(
               directionStepLayout(
+                context,
                 Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(splitInstruction, style: TextStyle(fontSize: 15))),
                 i+1
               )
@@ -164,7 +163,7 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
   }
 }
 
-Widget directionStepLayout(Widget widget, int stepNumber) {
+Widget directionStepLayout(BuildContext context, Widget widget, int stepNumber) {
   return Container(
     alignment: Alignment.centerLeft,
     child: Column(
@@ -180,9 +179,9 @@ Widget directionStepLayout(Widget widget, int stepNumber) {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: primaryColor, width: 2),
+                border: Border.all(color: Theme.of(context).primaryColor, width: 2),
               ),
-              child: Text((stepNumber).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: primaryColor)),
+              child: Text((stepNumber).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
             )
         ),
         Container(
@@ -190,7 +189,7 @@ Widget directionStepLayout(Widget widget, int stepNumber) {
           decoration: BoxDecoration(
               border: Border(
                   left: BorderSide(
-                      color: primaryColor,
+                      color: Theme.of(context).primaryColor,
                       width: 1
                   )
               )
@@ -202,7 +201,7 @@ Widget directionStepLayout(Widget widget, int stepNumber) {
   );
 }
 
-Widget ingredientComponent(Ingredient ingredient, int initServing, int newServing, bool isDense) {
+Widget ingredientComponent(Ingredient ingredient, int initServing, int newServing, bool isDense, BuildContext context) {
   String amount = (ingredient.amount > 0) ? ((ingredient.amount * (((newServing/initServing))*100).ceil()/100).toFormattedString() + ' ') : '';
   String unit = (ingredient.unit != null) ? (ingredient.unit!.name + ' ') : '';
   String food = (ingredient.food != null) ? (ingredient.food!.name + ' ') : '';
@@ -213,8 +212,8 @@ Widget ingredientComponent(Ingredient ingredient, int initServing, int newServin
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
-                  color: Colors.grey[200]!,
-                  width: 1.0
+                  color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                  width: 0.8
               )
           )
       ),
@@ -227,7 +226,14 @@ Widget ingredientComponent(Ingredient ingredient, int initServing, int newServin
             Text(amount, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
             Text(unit, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
             Text(food, style: TextStyle(fontSize: 15)),
-            Text(note, style: TextStyle(color: Colors.black45, fontStyle: FontStyle.italic, fontSize: 15))
+            Text(
+                note,
+                style: TextStyle(
+                    color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 15
+                )
+            )
           ],
         )
       )

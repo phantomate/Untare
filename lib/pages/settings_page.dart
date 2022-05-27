@@ -9,7 +9,6 @@ import 'package:tare/components/bottom_sheets/settings_layout_bottom_sheet_compo
 import 'package:tare/components/dialogs/edit_share_dialog.dart';
 import 'package:tare/components/dialogs/edit_shopping_list_recent_days_dialog.dart';
 import 'package:tare/components/dialogs/edit_shopping_list_refresh_dialog.dart';
-import 'package:tare/constants/colors.dart';
 import 'package:tare/cubits/settings_cubit.dart';
 import 'package:tare/extensions/string_extension.dart';
 import 'package:tare/models/app_setting.dart';
@@ -47,8 +46,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   title: Text(
                     'Settings',
                     style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.bold
+                        fontWeight: FontWeight.bold,
+                        color: (Theme.of(context).appBarTheme.titleTextStyle != null) ? Theme.of(context).appBarTheme.titleTextStyle!.color : null
                     ),
                   ),
                 ),
@@ -211,8 +210,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                   physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                   lightTheme: SettingsThemeData(
-                      tileHighlightColor: primaryColor,
-                      titleTextColor: primaryColor,
+                      tileHighlightColor: Theme.of(context).primaryColor,
+                      titleTextColor: Theme.of(context).primaryColor,
+                      settingsListBackground: Theme.of(context).scaffoldBackgroundColor
+                  ),
+                  darkTheme: SettingsThemeData(
+                      tileHighlightColor: Theme.of(context).primaryColor,
+                      titleTextColor: Theme.of(context).primaryColor,
                       settingsListBackground: Theme.of(context).scaffoldBackgroundColor
                   ),
                 );

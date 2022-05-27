@@ -93,7 +93,6 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
               leadingWidth: 50,
               titleSpacing: 0,
               automaticallyImplyLeading: false,
-              iconTheme: const IconThemeData(color: Colors.black87),
               leading: IconButton(
                 iconSize: 30,
                 padding: const EdgeInsets.all(0),
@@ -117,10 +116,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                     onPressed: () {
                       recipeMoreBottomSheet(context, recipe);
                     },
-                    icon: Icon(
-                      Icons.more_vert_outlined,
-                      color: Colors.black87,
-                    )
+                    icon: Icon(Icons.more_vert_outlined)
                 )
               ],
               elevation: (scrolled) ? 1.5 : 0,
@@ -148,15 +144,13 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                               children: [
                                 Icon(
                                   Icons.restaurant_outlined,
-                                  size: 13,
-                                  color: Colors.black87,
+                                  size: 13
                                 ),
                                 SizedBox(width: 2),
                                 Text(
                                   lastCooked,
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: Colors.black87,
                                   ),
                                 ),
                               ],
@@ -178,10 +172,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                               children: [
                                 Text(
                                   recipe.rating.toString(),
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.black87,
-                                  ),
+                                  style: TextStyle(fontSize: 13),
                                 ),
                                 SizedBox(width: 2),
                                 Icon(
@@ -209,15 +200,11 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                                 Icon(
                                   Icons.timer_outlined,
                                   size: 13,
-                                  color: Colors.black87,
                                 ),
                                 SizedBox(width: 2),
                                 Text(
                                   recipe.workingTime.toString() + ' min',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.black87,
-                                  ),
+                                  style: TextStyle(fontSize: 13),
                                 ),
                               ],
                             ),
@@ -238,15 +225,13 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                               children: [
                                 Icon(
                                   Icons.hourglass_bottom_outlined,
-                                  size: 13,
-                                  color: Colors.black87,
+                                  size: 13
                                 ),
                                 SizedBox(width: 2),
                                 Text(
                                   recipe.waitingTime.toString() + ' min',
                                   style: TextStyle(
                                     fontSize: 13,
-                                    color: Colors.black87,
                                   ),
                                 ),
                               ],
@@ -270,7 +255,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
         SliverPersistentHeader(
           delegate: _SliverAppBarDelegate(
             TabBar(
-              labelColor: Colors.black87,
+              indicatorColor: Theme.of(context).primaryColor,
               unselectedLabelColor: Colors.grey,
               tabs: [
                 Tab(text: 'Ingredients'),

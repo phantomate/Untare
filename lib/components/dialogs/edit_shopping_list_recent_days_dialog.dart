@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:tare/constants/colors.dart';
 import 'package:tare/cubits/settings_cubit.dart';
 import 'package:tare/models/user_setting.dart';
 
@@ -46,7 +45,7 @@ Future editShoppingListRecentDaysDialog(BuildContext context, UserSetting userSe
                           Container(
                               alignment: Alignment.bottomRight,
                               child: MaterialButton(
-                                  color: primaryColor,
+                                  color: Theme.of(context).primaryColor,
                                   onPressed: () {
                                     _formBuilderKey.currentState!.save();
 

@@ -28,7 +28,7 @@ Future mealPlanEntryMoreBottomSheet(BuildContext context, MealPlanEntry mealPlan
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                  color: Colors.grey[300]
+                  color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300] : Colors.grey[700]
               ),
               child: Text(
                 mealPlan.recipe!.name,
@@ -36,7 +36,6 @@ Future mealPlanEntryMoreBottomSheet(BuildContext context, MealPlanEntry mealPlan
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
-                    color: Colors.black87
                 ),
               ),
             ),

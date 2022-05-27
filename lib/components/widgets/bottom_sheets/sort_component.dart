@@ -40,13 +40,11 @@ TableCell sortTableCell(BuildContext context, Function(String) sortButtonPressed
             Text(
               label,
               style: TextStyle(
-                  color: Colors.black87,
                   fontWeight: FontWeight.w400
               ),
             ),
             Icon(
               isAsc ? Icons.arrow_drop_up_outlined : Icons.arrow_drop_down_outlined ,
-              color: Colors.black87,
             )
           ],
         ),

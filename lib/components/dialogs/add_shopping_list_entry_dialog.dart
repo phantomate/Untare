@@ -6,7 +6,6 @@ import 'package:tare/blocs/shopping_list/shopping_list_event.dart';
 import 'package:tare/components/form_fields/food_type_ahead_form_field.dart';
 import 'package:tare/components/form_fields/quantity_text_form_field.dart';
 import 'package:tare/components/form_fields/unit_type_ahead_form_field.dart';
-import 'package:tare/constants/colors.dart';
 import 'package:tare/models/shopping_list_entry.dart';
 import 'package:tare/models/unit.dart';
 
@@ -42,7 +41,7 @@ Future addShoppingListEntryDialog(BuildContext context) {
                                 });
                               },
                               initialValue: simpleMode,
-                              activeColor: primaryColor,
+                              activeColor: Theme.of(context).primaryColor,
                               decoration: InputDecoration(
                                   border: InputBorder.none
                               ),
@@ -69,7 +68,7 @@ Future addShoppingListEntryDialog(BuildContext context) {
                             ),
                             SizedBox(height: 15),
                             MaterialButton(
-                              color: primaryColor,
+                              color: Theme.of(context).primaryColor,
                               child: Text('Add'),
                               onPressed: () {
                                 _formBuilderKey.currentState!.save();

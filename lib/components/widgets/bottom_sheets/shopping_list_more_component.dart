@@ -26,7 +26,6 @@ Widget buildShoppingListMore(BuildContext context, BuildContext btsContext) {
           },
           icon: Icon(
             (shoppingListEntryCubit.state == 'hide') ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-            color: Colors.black87,
           ),
           label: Text(
             (shoppingListEntryCubit.state == 'hide') ? 'Show completed items' : 'Hide completed items',

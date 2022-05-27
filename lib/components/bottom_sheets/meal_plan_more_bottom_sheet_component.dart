@@ -22,15 +22,14 @@ Future mealPlanMoreBottomSheet(BuildContext context) {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                  color: Colors.grey[300]
+                  color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300] : Colors.grey[700]
               ),
               child: Text(
                 'Meal plan',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Colors.black87
+                    fontSize: 18
                 ),
               ),
             ),

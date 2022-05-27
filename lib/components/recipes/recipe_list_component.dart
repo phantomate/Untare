@@ -46,10 +46,10 @@ Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer
                 children: [
                   Row(
                     children: [
-                      lastCooked(recipe),
-                      rating(recipe),
+                      lastCooked(recipe, context),
+                      rating(recipe, context),
                       if (mealPlan != null)
-                        Text(mealPlan.mealType.name, style: TextStyle(color: Colors.grey, fontSize: 12))
+                        Text(mealPlan.mealType.name, style: TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey, fontSize: 12))
                     ],
                   ),
                 ],
@@ -61,18 +61,19 @@ Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer
   );
 }
 
-Widget lastCooked(Recipe recipe) {
+Widget lastCooked(Recipe recipe, BuildContext context) {
   if (recipe.lastCooked != null) {
     return Row(
       children: [
         Icon(
           Icons.restaurant_outlined,
           size: 12,
+          color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey
         ),
         SizedBox(width: 2),
         Text(
             DateFormat('dd.MM.yy').format(DateTime.parse(recipe.lastCooked!)),
-            style: TextStyle( fontSize: 12)
+            style: TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey, fontSize: 12)
         ),
         SizedBox(width: 8)
       ],
@@ -81,7 +82,7 @@ Widget lastCooked(Recipe recipe) {
   return Text('');
 }
 
-Widget rating (Recipe recipe) {
+Widget rating (Recipe recipe, BuildContext context) {
   if (recipe.rating != null && recipe.rating! > 0) {
     return Row(
       children: [
@@ -89,6 +90,7 @@ Widget rating (Recipe recipe) {
             recipe.rating.toString(),
             style: TextStyle(
               fontSize: 12,
+              color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey
             )
         ),
         SizedBox(width: 2),

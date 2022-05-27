@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:tare/components/dialogs/upsert_recipe_ingredient_dialog.dart';
-import 'package:tare/constants/colors.dart';
 import 'package:tare/extensions/double_extension.dart';
 import 'package:tare/models/ingredient.dart';
 import 'package:tare/models/recipe.dart';
@@ -148,7 +145,7 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: primaryColor, width: 2),
+                border: Border.all(color: Theme.of(context).primaryColor, width: 2),
               ),
               child: IconButton(
                 padding: const EdgeInsets.all(0),
@@ -156,7 +153,7 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
                 visualDensity: VisualDensity(horizontal: -4, vertical: -4),
                 icon: Icon(
                   Icons.add,
-                  color: primaryColor,
+                  color: Theme.of(context).primaryColor,
                 ),
                 onPressed: () => _addStep(),
               ),
@@ -205,9 +202,9 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: primaryColor, width: 2),
+                    border: Border.all(color: Theme.of(context).primaryColor, width: 2),
                   ),
-                  child: Text((stepIndex+1).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: primaryColor)),
+                  child: Text((stepIndex+1).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
                 )
             ),
             Container(
@@ -215,7 +212,7 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
               decoration: BoxDecoration(
                   border: Border(
                       left: BorderSide(
-                          color: primaryColor,
+                          color: Theme.of(context).primaryColor,
                           width: 1
                       )
                   )
@@ -228,7 +225,7 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
                   splashRadius: 20,
                   icon: Icon(
                     Icons.add,
-                    color: primaryColor,
+                    color: Theme.of(context).primaryColor,
                   ),
                   onPressed: () {
                     upsertRecipeIngredientDialog(context, stepIndex, ingredients.length, _upsertIngredient);
@@ -245,7 +242,7 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
         decoration: BoxDecoration(
             border: Border(
                 left: BorderSide(
-                    color: primaryColor,
+                    color: Theme.of(context).primaryColor,
                     width: 1
                 )
             )
@@ -296,8 +293,8 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
             decoration: BoxDecoration(
                 border: Border(
                     bottom: BorderSide(
-                        color: Colors.grey[200]!,
-                        width: 1.0
+                        color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                        width: 0.8
                     )
                 )
             ),
@@ -309,7 +306,14 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
                     Text(amount, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                     Text(unit, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                     Text(food, style: TextStyle(fontSize: 15)),
-                    Text(note, style: TextStyle(color: Colors.black45, fontStyle: FontStyle.italic, fontSize: 15))
+                    Text(
+                        note,
+                        style: TextStyle(
+                          color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                          fontStyle: FontStyle.italic,
+                          fontSize: 15
+                        )
+                    )
                   ],
                 ),
               trailing: Icon(Icons.drag_handle_outlined),

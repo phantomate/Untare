@@ -51,8 +51,8 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> _for
                   children: [
                     Row(
                       children: [
-                        lastCooked(recipe),
-                        rating(recipe)
+                        lastCooked(recipe, context),
+                        rating(recipe, context)
                       ],
                     ),
                   ],

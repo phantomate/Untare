@@ -4,7 +4,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/blocs/recipe/recipe_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_event.dart';
-import 'package:tare/constants/colors.dart';
 
 Future importRecipeWebsiteDialog(BuildContext context) {
   final _formBuilderKey = GlobalKey<FormBuilderState>();
@@ -39,7 +38,7 @@ Future importRecipeWebsiteDialog(BuildContext context) {
               Container(
                   alignment: Alignment.bottomRight,
                   child: MaterialButton(
-                      color: primaryColor,
+                      color: Theme.of(context).primaryColor,
                       onPressed: () {
                         _formBuilderKey.currentState!.save();
 
