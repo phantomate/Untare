@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/cubits/settings_cubit.dart';
 import 'package:tare/models/user_setting.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future editShoppingListRecentDaysDialog(BuildContext context, UserSetting userSetting) {
   final _formBuilderKey = GlobalKey<FormBuilderState>();
@@ -25,13 +26,13 @@ Future editShoppingListRecentDaysDialog(BuildContext context, UserSetting userSe
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(bottom: 20),
-                            child: Text('Edit recent days', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                            child: Text(AppLocalizations.of(context)!.editRecentDays, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                           ),
                           FormBuilderTextField(
                             name: 'days',
                             initialValue: userSetting.shoppingRecentDays.toString(),
                             decoration: InputDecoration(
-                                label: Text('Days')
+                                label: Text(AppLocalizations.of(context)!.days)
                             ),
                             validator: FormBuilderValidators.compose([
                               FormBuilderValidators.required(),
@@ -58,7 +59,7 @@ Future editShoppingListRecentDaysDialog(BuildContext context, UserSetting userSe
                                       Navigator.pop(dContext);
                                     }
                                   },
-                                  child: Text('Edit')
+                                  child: Text(AppLocalizations.of(context)!.edit)
                               )
                           )
                         ],

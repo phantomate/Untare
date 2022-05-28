@@ -57,6 +57,9 @@ class AppTheme {
         overline: TextStyle(
             color: Colors.grey[300]
         )
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating
       )
     );
   }
@@ -102,6 +105,10 @@ class AppTheme {
         overline: TextStyle(
           color: Colors.grey[600]
         )
+      ),
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.grey[300]
       )
     );
   }

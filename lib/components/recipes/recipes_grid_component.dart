@@ -11,8 +11,8 @@ Widget buildRecipesGrid(List<Widget> recipesWidgetList, BoxConstraints constrain
     ),
     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: (axisCount > 1) ? axisCount : 1,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
+        crossAxisSpacing: 5,
+        mainAxisSpacing: 5,
         mainAxisExtent: 196
     ),
   );

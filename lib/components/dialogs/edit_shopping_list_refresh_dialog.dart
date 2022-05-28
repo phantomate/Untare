@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/cubits/settings_cubit.dart';
 import 'package:tare/models/user_setting.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future editShoppingListRefreshDialog(BuildContext context, UserSetting userSetting) {
   final _formBuilderKey = GlobalKey<FormBuilderState>();
@@ -25,13 +26,13 @@ Future editShoppingListRefreshDialog(BuildContext context, UserSetting userSetti
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(bottom: 20),
-                            child: Text('Edit refresh interval', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                            child: Text(AppLocalizations.of(context)!.editRefreshInterval, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                           ),
                           FormBuilderTextField(
                             name: 'refresh',
                             initialValue: userSetting.shoppingAutoSync.toString(),
                             decoration: InputDecoration(
-                              label: Text('Refresh interval in seconds')
+                              label: Text(AppLocalizations.of(context)!.refreshIntervalInSeconds)
                             ),
                             validator: FormBuilderValidators.compose([
                               FormBuilderValidators.required(),
@@ -58,7 +59,7 @@ Future editShoppingListRefreshDialog(BuildContext context, UserSetting userSetti
                                       Navigator.pop(dContext);
                                     }
                                   },
-                                  child: Text('Edit')
+                                  child: Text(AppLocalizations.of(context)!.edit)
                               )
                           )
                         ],

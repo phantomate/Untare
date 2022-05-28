@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/models/meal_type.dart';
 import 'package:tare/services/api/api_meal_type.dart';
 
-Widget mealTypeTypeAheadFieldForm(MealType? mealType, GlobalKey<FormBuilderState> _formBuilderKey) {
+Widget mealTypeTypeAheadFieldForm(MealType? mealType, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context) {
   final ApiMealType _apiMealType = ApiMealType();
   final _mealTypeTextController = TextEditingController();
   List<MealType> _mealTypeList = [];
@@ -21,7 +21,7 @@ Widget mealTypeTypeAheadFieldForm(MealType? mealType, GlobalKey<FormBuilderState
     controller: _mealTypeTextController,
     selectionToTextTransformer: (mealType) => mealType.name,
     decoration: InputDecoration(
-      labelText: 'Meal type',
+      labelText: AppLocalizations.of(context)!.mealType,
     ),
     validator: FormBuilderValidators.compose([
       FormBuilderValidators.required()

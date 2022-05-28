@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_event.dart';
@@ -122,7 +122,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                         padding: const EdgeInsets.only(left: 20),
                         child: Row(
                           children: [
-                            Text('Servings:'),
+                            Text(AppLocalizations.of(context)!.servings + ':'),
                             IconButton(
                               onPressed: () => {
                                 decrement()
@@ -177,7 +177,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                         child: MaterialButton(
                           color: Theme.of(context).primaryColor,
                           minWidth: double.maxFinite,
-                          child: Text('Add'),
+                          child: Text(AppLocalizations.of(context)!.add),
                           onPressed: () {
                             recipeBloc.add(AddIngredientsToShoppingList(
                                 recipeId: recipe.id!,
@@ -194,7 +194,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
             ],
           );
         } else {
-          return Center(child: Text('No ingredients found'));
+          return Center(child: Text(AppLocalizations.of(context)!.recipeNoIngredientsPresent));
         }
       }
     );
@@ -258,7 +258,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                 if (isAlreadyOnShoppingList)
                   Tooltip(
                     triggerMode: TooltipTriggerMode.tap,
-                    message: 'Is already on your shopping list',
+                    message: AppLocalizations.of(context)!.addToShoppingListTooltipAlreadyOnShoppingList,
                     child: Icon(
                       Icons.shopping_cart_outlined,
                       size: 18,
@@ -267,7 +267,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                 if (ingredient.food != null)
                 IconButton(
                   padding: const EdgeInsets.fromLTRB(0, 6, 0, 8),
-                    tooltip: (ingredient.food!.onHand) ? 'Is in stock' : 'Add to stock',
+                    tooltip: (ingredient.food!.onHand) ? AppLocalizations.of(context)!.addToShoppingListTooltipIsInStock : AppLocalizations.of(context)!.addToShoppingListTooltipAddToStock,
                     onPressed: () {
                       Food newFood = ingredient.food!.copyWith(onHand: !(ingredient.food!.onHand));
 

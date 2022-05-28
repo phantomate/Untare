@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -111,7 +111,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
               ),
               actions: [
                 IconButton(
-                    tooltip: 'More',
+                    tooltip: AppLocalizations.of(context)!.moreTooltip,
                     splashRadius: 20,
                     onPressed: () {
                       recipeMoreBottomSheet(context, recipe);
@@ -157,7 +157,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                             ),
                             SizedBox(height: 3),
                             Text(
-                              'Last cooked',
+                              AppLocalizations.of(context)!.lastCooked,
                               style: TextStyle(
                                   fontSize: 10,
                                   color: Colors.grey
@@ -184,7 +184,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                             ),
                             SizedBox(height: 3),
                             Text(
-                              'Rating',
+                              AppLocalizations.of(context)!.rating,
                               style: TextStyle(
                                   fontSize: 10,
                                   color: Colors.grey
@@ -210,7 +210,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                             ),
                             SizedBox(height: 3),
                             Text(
-                              'Prep. time',
+                              AppLocalizations.of(context)!.prepTime,
                               style: TextStyle(
                                 fontSize: 10,
                                 color: Colors.grey
@@ -238,7 +238,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                             ),
                             SizedBox(height: 3),
                             Text(
-                              'Waiting time',
+                              AppLocalizations.of(context)!.waitingTime,
                               style: TextStyle(
                                   fontSize: 10,
                                   color: Colors.grey
@@ -258,8 +258,8 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
               indicatorColor: Theme.of(context).primaryColor,
               unselectedLabelColor: Colors.grey,
               tabs: [
-                Tab(text: 'Ingredients'),
-                Tab(text: 'Directions'),
+                Tab(text: AppLocalizations.of(context)!.ingredients),
+                Tab(text: AppLocalizations.of(context)!.directions),
               ],
             ),
           ),

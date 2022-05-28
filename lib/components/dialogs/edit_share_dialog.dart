@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -8,6 +6,7 @@ import 'package:tare/cubits/settings_cubit.dart';
 import 'package:tare/models/user.dart';
 import 'package:tare/models/user_setting.dart';
 import 'package:tare/services/api/api_user.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future editShareDialog(BuildContext context, UserSetting userSetting, String referer) async {
   var box = Hive.box('hydrated_box');
@@ -44,13 +43,13 @@ Future editShareDialog(BuildContext context, UserSetting userSetting, String ref
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(bottom: 20),
-                            child: Text('Edit ' + ((referer == 'shopping') ? 'shopping list' : 'meal plan' + ' sharing'), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                            child: Text(((referer == 'shopping') ? AppLocalizations.of(context)!.editShoppingListSharing : AppLocalizations.of(context)!.editMealPlanSharing), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                           ),
                           FormBuilderFilterChip (
                             name: 'share',
                             initialValue: (referer == 'shopping') ? userSetting.shoppingShare.map((user) => user.id).toList() : userSetting.planShare.map((user) => user.id).toList(),
                             decoration: InputDecoration(
-                              labelText: 'Share with',
+                              labelText: AppLocalizations.of(context)!.shareWith,
                               isDense: true,
                               contentPadding: const EdgeInsets.fromLTRB(10, 10 ,10, 0),
                             ),
@@ -83,7 +82,7 @@ Future editShareDialog(BuildContext context, UserSetting userSetting, String ref
                                       Navigator.pop(dContext);
                                     }
                                   },
-                                  child: Text('Edit')
+                                  child: Text(AppLocalizations.of(context)!.edit)
                               )
                           )
                         ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tare/models/ingredient.dart';
 import 'package:tare/models/recipe.dart';
 import 'package:tare/extensions/double_extension.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 class RecipeDetailTabBarWidget extends StatefulWidget {
   final Recipe recipe;
@@ -72,7 +73,7 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
             padding: const EdgeInsets.only(left: 20),
             child: Row(
               children: [
-                Text('Servings:', style: TextStyle(fontSize: 15)),
+                Text(AppLocalizations.of(context)!.servings + ':', style: TextStyle(fontSize: 15)),
                 IconButton(
                   onPressed: () => {
                     decrement()
@@ -104,7 +105,7 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
         ],
       );
     } else {
-      return Center(child: Text('No ingredients found'));
+      return Center(child: Text(AppLocalizations.of(context)!.recipeNoIngredientsPresent));
     }
   }
 
@@ -120,7 +121,7 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
 
           stepList.add(Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(widget.recipe.steps[i].instruction ?? '', style: TextStyle(fontSize: 15))));
 
-          directionsSteps.add(directionStepLayout(context, Column(children: stepList), i+1));
+          directionsSteps.add(directionStepLayout(context, Column(crossAxisAlignment: CrossAxisAlignment.start, children: stepList), i+1));
         }
 
       } else if (widget.recipe.steps.length == 1) {
@@ -158,7 +159,7 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
       );
 
     } else {
-      return Center(child: Text('No instructions found'));
+      return Center(child: Text(AppLocalizations.of(context)!.recipeNoDirectionsPresent));
     }
   }
 }

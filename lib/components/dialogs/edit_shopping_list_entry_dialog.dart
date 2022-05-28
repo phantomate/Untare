@@ -9,6 +9,7 @@ import 'package:tare/components/form_fields/supermarket_category_type_ahead_form
 import 'package:tare/components/form_fields/unit_type_ahead_form_field.dart';
 import 'package:tare/models/food.dart';
 import 'package:tare/models/shopping_list_entry.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future editShoppingListEntryDialog(BuildContext context, ShoppingListEntry shoppingListEntry) {
   final _formBuilderKey = GlobalKey<FormBuilderState>();
@@ -30,23 +31,23 @@ Future editShoppingListEntryDialog(BuildContext context, ShoppingListEntry shopp
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(bottom: 20),
-                            child: Text('Edit shopping list entry', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                            child: Text(AppLocalizations.of(context)!.editShoppingListEntry, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                           ),
-                          foodTypeAheadFormField(shoppingListEntry.food, _formBuilderKey),
+                          foodTypeAheadFormField(shoppingListEntry.food, _formBuilderKey, context),
                           SizedBox(height: 15),
                           Row(
                             children: [
                               Flexible(
-                                child: quantityTextFormField(shoppingListEntry.amount, _formBuilderKey),
+                                child: quantityTextFormField(shoppingListEntry.amount, _formBuilderKey, context),
                               ),
                               SizedBox(width: 15),
                               Flexible(
-                                  child: unitTypeAheadFormField(shoppingListEntry.unit, _formBuilderKey)
+                                  child: unitTypeAheadFormField(shoppingListEntry.unit, _formBuilderKey, context)
                               )
                             ],
                           ),
                           SizedBox(height: 15),
-                          supermarketCategoryTypeAheadFormField((shoppingListEntry.food != null) ? shoppingListEntry.food!.supermarketCategory : null, _formBuilderKey),
+                          supermarketCategoryTypeAheadFormField((shoppingListEntry.food != null) ? shoppingListEntry.food!.supermarketCategory : null, _formBuilderKey, context),
                           SizedBox(height: 15),
                           Container(
                               alignment: Alignment.bottomRight,
@@ -68,7 +69,7 @@ Future editShoppingListEntryDialog(BuildContext context, ShoppingListEntry shopp
                                       Navigator.pop(dContext);
                                     }
                                   },
-                                  child: Text('Save')
+                                  child: Text(AppLocalizations.of(context)!.edit)
                               )
                           )
                         ]

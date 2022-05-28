@@ -13,6 +13,7 @@ import 'package:tare/models/recipe.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tare/models/step.dart';
 import 'package:tare/pages/recipe_detail_page.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 class RecipeUpsertPage extends StatefulWidget {
   final Recipe? recipe;
@@ -76,9 +77,12 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
     }
 
     if (recipe != null) {
-      return recipe!.copyWith(name: name, workingTime: workingTime, waitingTime: waitingTime, servings: servings , steps: stepList);
+      recipe = recipe!.copyWith(name: name, workingTime: workingTime, waitingTime: waitingTime, servings: servings , steps: stepList);
+    } else {
+      recipe = Recipe(name: name, workingTime: workingTime, waitingTime: waitingTime, servings: servings , steps: stepList, keywords: [], internal: true);
     }
-    return Recipe(name: name, workingTime: workingTime, waitingTime: waitingTime, servings: servings , steps: stepList, keywords: [], internal: true);
+
+    return recipe!;
   }
 
   @override
@@ -122,7 +126,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                   )
                 ],
                 title: Text(
-                  (widget.recipe != null) ? 'Edit recipe' : 'Create recipe',
+                  (widget.recipe != null) ? AppLocalizations.of(context)!.recipeEdit : AppLocalizations.of(context)!.recipeCreate,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18
@@ -172,7 +176,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                                     name: 'workingTime',
                                     initialValue: (recipe != null) ? recipe!.workingTime.toString() : null,
                                     decoration: InputDecoration(
-                                      labelText: 'Prep Time',
+                                      labelText: AppLocalizations.of(context)!.prepTime,
                                       isDense: true,
                                       contentPadding: const EdgeInsets.all(10),
                                       border: OutlineInputBorder(),
@@ -191,7 +195,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                                     name: 'waitingTime',
                                     initialValue: (recipe != null) ? recipe!.waitingTime.toString() : null,
                                     decoration: InputDecoration(
-                                      labelText: 'Waiting time',
+                                      labelText: AppLocalizations.of(context)!.waitingTime,
                                       isDense: true,
                                       contentPadding: const EdgeInsets.all(10),
                                       border: OutlineInputBorder(),
@@ -210,7 +214,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                                     name: 'servings',
                                     initialValue: (recipe != null) ? recipe!.servings.toString() : null,
                                     decoration: InputDecoration(
-                                      labelText: 'Servings',
+                                      labelText: AppLocalizations.of(context)!.servings,
                                       isDense: true,
                                       contentPadding: const EdgeInsets.all(10),
                                       border: OutlineInputBorder(),
@@ -236,7 +240,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                       name: 'name',
                       initialValue: (recipe != null) ? recipe!.name : null,
                       decoration: InputDecoration(
-                        labelText: 'Name',
+                        labelText: AppLocalizations.of(context)!.name,
                         isDense: true,
                         contentPadding: const EdgeInsets.all(10),
                         border: OutlineInputBorder(),
@@ -255,7 +259,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                         if (state is RecipeUpdated) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Saved'),
+                              content: Text(AppLocalizations.of(context)!.saved),
                               duration: Duration(seconds: 3),
                             ),
                           );
@@ -266,7 +270,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Saved'),
+                              content: Text(AppLocalizations.of(context)!.saved),
                               duration: Duration(seconds: 3),
                             ),
                           );

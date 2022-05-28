@@ -5,6 +5,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/blocs/meal_plan/meal_plan_bloc.dart';
 import 'package:tare/blocs/meal_plan/meal_plan_event.dart';
 import 'package:tare/services/api/api_meal_type.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 import '../../models/meal_type.dart';
 
@@ -33,14 +34,14 @@ Future deleteMealTypeDialog(BuildContext context) async {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20),
-                      child: Text('Delete meal type', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                      child: Text(AppLocalizations.of(context)!.removeMealType, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                     ),
                     FormBuilderDropdown(
                       name: 'type',
                       allowClear: true,
                       items: mealTypeWidgetList,
                       decoration: InputDecoration(
-                          label: Text('Meal type')
+                          label: Text(AppLocalizations.of(context)!.mealType)
                       ),
                       validator: FormBuilderValidators.compose(
                           [FormBuilderValidators.required()]
@@ -59,7 +60,7 @@ Future deleteMealTypeDialog(BuildContext context) async {
                                 Navigator.pop(dContext);
                               }
                             },
-                            child: Text('Delete')
+                            child: Text(AppLocalizations.of(context)!.remove)
                         )
                     )
                   ],

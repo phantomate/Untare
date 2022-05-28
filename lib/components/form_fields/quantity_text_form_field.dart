@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/extensions/double_extension.dart';
 
-Widget quantityTextFormField(double? amount, GlobalKey<FormBuilderState> _formBuilderKey) {
+Widget quantityTextFormField(double? amount, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context) {
   final fieldName = 'quantity';
 
   return FormBuilderTextField(
     name: fieldName,
     initialValue: (amount != null ) ? amount.toFormattedString() : null,
     decoration: InputDecoration(
-      labelText: 'Quantity'
+      labelText: AppLocalizations.of(context)!.quantity
     ),
     validator: FormBuilderValidators.compose([
       FormBuilderValidators.numeric(),

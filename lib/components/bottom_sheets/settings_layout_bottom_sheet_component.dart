@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tare/cubits/settings_cubit.dart';
 
@@ -17,14 +17,14 @@ Future settingsLayoutBottomSheet(BuildContext context) {
         child: Wrap(
           children: [
             Container(
-              height: 50,
+              height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
                   color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300] : Colors.grey[700]
               ),
               child: Text(
-                'Layout recipes',
+                AppLocalizations.of(context)!.settingsRecipeLayout,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18
@@ -41,14 +41,14 @@ Future settingsLayoutBottomSheet(BuildContext context) {
                       context.read<SettingsCubit>().changeLayoutTo('card');
                       Navigator.pop(btsContext);
                     },
-                    child: Text('Card'),
+                    child: Text(AppLocalizations.of(context)!.settingRecipeLayoutCard),
                   ),
                   TextButton(
                     onPressed: () {
                       context.read<SettingsCubit>().changeLayoutTo('list');
                       Navigator.pop(btsContext);
                     },
-                    child: Text('List'),
+                    child: Text(AppLocalizations.of(context)!.settingRecipeLayoutList),
                   ),
                 ],
               ),

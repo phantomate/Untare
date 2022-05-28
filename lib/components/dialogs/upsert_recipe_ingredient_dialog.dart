@@ -5,6 +5,7 @@ import 'package:tare/components/form_fields/note_text_form_field.dart';
 import 'package:tare/components/form_fields/quantity_text_form_field.dart';
 import 'package:tare/components/form_fields/unit_type_ahead_form_field.dart';
 import 'package:tare/models/ingredient.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future upsertRecipeIngredientDialog(BuildContext context, int stepIndex, int ingredientIndex, Function(Map<String, dynamic>) upsertIngredient, {Ingredient? ingredient}) {
   final formKey = GlobalKey<FormBuilderState>();
@@ -20,7 +21,7 @@ Future upsertRecipeIngredientDialog(BuildContext context, int stepIndex, int ing
             children: [
               Padding(
                 padding: const EdgeInsets.only(bottom: 15),
-                child: Text((ingredient != null) ? 'Edit ingredient' : 'Create ingredient', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                child: Text((ingredient != null) ? AppLocalizations.of(context)!.editIngredient : AppLocalizations.of(context)!.createIngredient, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
               ),
               SizedBox(height: 10),
               FormBuilder(
@@ -32,24 +33,24 @@ Future upsertRecipeIngredientDialog(BuildContext context, int stepIndex, int ing
                       children: [
                         Container(
                             width: 90,
-                            child: quantityTextFormField((ingredient != null) ? ingredient.amount : null, formKey)
+                            child: quantityTextFormField((ingredient != null) ? ingredient.amount : null, formKey, context)
                         ),
                         SizedBox(width: 10),
                         Flexible(
-                            child: unitTypeAheadFormField((ingredient != null) ? ingredient.unit : null, formKey)
+                            child: unitTypeAheadFormField((ingredient != null) ? ingredient.unit : null, formKey, context)
                         ),
                       ],
                     ),
                     SizedBox(height: 10),
-                    foodTypeAheadFormField((ingredient != null) ? ingredient.food : null, formKey),
+                    foodTypeAheadFormField((ingredient != null) ? ingredient.food : null, formKey, context),
                     SizedBox(height: 10),
-                    noteTextFormField((ingredient != null) ? ingredient.note : null, formKey),
+                    noteTextFormField((ingredient != null) ? ingredient.note : null, formKey, context),
                     SizedBox(height: 10),
                     Container(
                       alignment: Alignment.bottomRight,
                       child: MaterialButton(
                         color: Theme.of(context).primaryColor,
-                        child: Text((ingredient != null) ? 'Edit' : 'Add'),
+                        child: Text((ingredient != null) ? AppLocalizations.of(context)!.edit : AppLocalizations.of(context)!.add),
                         onPressed: () {
 
                           formKey.currentState!.setInternalFieldValue('stepIndex', stepIndex, isSetState: true);

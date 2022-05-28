@@ -18,7 +18,7 @@ Future recipeShoppingListBottomSheet(BuildContext context, Recipe recipe) {
         child: Wrap(
           children: [
             Container(
-              height: 50,
+              height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
@@ -31,6 +31,8 @@ Future recipeShoppingListBottomSheet(BuildContext context, Recipe recipe) {
                     fontWeight: FontWeight.bold,
                     fontSize: 18
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             Container(height: 600,child: RecipeShoppingListWidget(recipe: recipe, btsContext: btsContext))

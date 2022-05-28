@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_event.dart';
@@ -25,7 +25,7 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
             );
           },
           icon: Icon(Icons.edit_outlined),
-          label: Text('Edit'),
+          label: Text(AppLocalizations.of(context)!.edit),
         ),
         TextButton.icon(
           onPressed: () {
@@ -33,7 +33,7 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
             upsertMealPlanEntryDialog(context, recipe: recipe, referer: 'recipe');
           },
           icon: Icon(Icons.calendar_today_outlined),
-          label: Text('Add to meal plan'),
+          label: Text(AppLocalizations.of(context)!.addToMealPlan),
         ),
         TextButton.icon(
           onPressed: () {
@@ -41,7 +41,7 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
             recipeShoppingListBottomSheet(context, recipe);
           },
           icon: Icon(Icons.add_shopping_cart_outlined),
-          label: Text('Add to shopping list'),
+          label: Text(AppLocalizations.of(context)!.addToShoppingList),
         ),
         TextButton.icon(
           onPressed: () {
@@ -50,7 +50,7 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
           },
           icon: Icon(Icons.delete_outline, color: Colors.redAccent),
           label: Text(
-            'Remove',
+            AppLocalizations.of(context)!.remove,
             style: TextStyle(color: Colors.redAccent),
           ),
         ),

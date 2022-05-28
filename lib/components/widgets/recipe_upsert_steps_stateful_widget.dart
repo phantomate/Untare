@@ -6,6 +6,7 @@ import 'package:tare/models/ingredient.dart';
 import 'package:tare/models/recipe.dart';
 import 'package:tare/models/step.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 class RecipeUpsertStepsWidget extends StatefulWidget {
   final Recipe? recipe;
@@ -121,7 +122,7 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
             contentsWhenEmpty: Container(
               alignment: Alignment.centerLeft,
               padding: const EdgeInsets.fromLTRB(20, 15, 10, 0),
-              child: Text('No steps found - go and add one'),
+              child: Text(AppLocalizations.of(context)!.recipeNoStepsFound),
             ),
             disableScrolling: true,
             lastListTargetSize: 0,
@@ -185,7 +186,7 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
     return DragAndDropList(
       canDrag: false,
       children: ingredientWidgetList,
-      contentsWhenEmpty: Text('No ingredients set', style: TextStyle(fontStyle: FontStyle.italic)),
+      contentsWhenEmpty: Text(AppLocalizations.of(context)!.recipeNoIngredientsPresent, style: TextStyle(fontStyle: FontStyle.italic)),
       header: Container(
         alignment: Alignment.centerLeft,
         margin: const EdgeInsets.only(top: 20),
@@ -220,7 +221,7 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
               child: ListTile(
                 visualDensity: VisualDensity(horizontal: 0, vertical: -4),
                 contentPadding: const EdgeInsets.fromLTRB(20, 0, 13, 0),
-                title: Text('Ingredients', style: TextStyle(fontWeight: FontWeight.bold)),
+                title: Text(AppLocalizations.of(context)!.ingredients, style: TextStyle(fontWeight: FontWeight.bold)),
                 trailing: IconButton(
                   splashRadius: 20,
                   icon: Icon(
@@ -328,7 +329,7 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
       child: TextFormField(
         initialValue: directions,
         decoration: InputDecoration(
-          labelText: 'Directions',
+          labelText: AppLocalizations.of(context)!.directions,
           isDense: true,
           contentPadding: const EdgeInsets.all(10),
           border: OutlineInputBorder(),

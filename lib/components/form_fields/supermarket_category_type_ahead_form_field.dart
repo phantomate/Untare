@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:tare/models/supermarket_category.dart';
 import 'package:tare/services/api/api_supermarket_category.dart';
 
-Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCategory, GlobalKey<FormBuilderState> _formBuilderKey) {
+Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCategory, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context) {
   final _categoryTextController = TextEditingController();
   final ApiSupermarketCategory _apiSupermarketCategory = ApiSupermarketCategory();
   List<SupermarketCategory> _superMarketCategories = [];
@@ -20,7 +20,7 @@ Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCat
     initialValue: supermarketCategory,
     selectionToTextTransformer: (category) => category.name,
     decoration: InputDecoration(
-      labelText: 'Category'
+      labelText: AppLocalizations.of(context)!.category
     ),
     itemBuilder: (context, category) {
       return ListTile(title: Text(category.name));

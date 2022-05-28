@@ -6,6 +6,7 @@ import 'package:tare/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_event.dart';
 import 'package:tare/models/supermarket_category.dart';
 import 'package:tare/services/api/api_supermarket_category.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future editSupermarketCategoryDialog(BuildContext context) async {
   final _formBuilderKey = GlobalKey<FormBuilderState>();
@@ -34,14 +35,14 @@ Future editSupermarketCategoryDialog(BuildContext context) async {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 20),
-                    child: Text('Edit supermarket category', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                    child: Text(AppLocalizations.of(context)!.editSupermarketCategories, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                   ),
                   FormBuilderDropdown(
                     name: 'category',
                     allowClear: true,
                     items: supermarketCategoriesWidgetList,
                     decoration: InputDecoration(
-                        label: Text('Category')
+                        label: Text(AppLocalizations.of(context)!.category)
                     ),
                     validator: FormBuilderValidators.compose(
                         [FormBuilderValidators.required()]
@@ -62,7 +63,7 @@ Future editSupermarketCategoryDialog(BuildContext context) async {
                           FormBuilderTextField(
                             name: 'name',
                             decoration: InputDecoration(
-                                label: Text('New name')
+                                label: Text(AppLocalizations.of(context)!.newCategoryName)
                             ),
                             validator: FormBuilderValidators.compose([
                               FormBuilderValidators.required(),
@@ -89,7 +90,7 @@ Future editSupermarketCategoryDialog(BuildContext context) async {
                           Navigator.pop(dContext);
                         }
                       } : null,
-                      child: Text('Edit')
+                      child: Text(AppLocalizations.of(context)!.edit)
                     )
                   )
                 ],

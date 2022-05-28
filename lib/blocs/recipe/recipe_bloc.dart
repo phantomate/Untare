@@ -57,7 +57,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   }
 
   Future<void> _onUpdateRecipe(UpdateRecipe event, Emitter<RecipeState> emit) async {
-    emit(RecipeLoading());
+    emit(RecipeProcessing(processingString: 'updatingRecipe'));
     try {
       Recipe? recipe = await apiRecipe.updateRecipe(event.recipe);
       if (event.image != null) {
@@ -115,6 +115,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   }
 
   Future<void> _onAddIngredientsToShoppingList(AddIngredientsToShoppingList event, Emitter<RecipeState> emit) async {
+    emit(RecipeProcessing(processingString: 'addingIngredientsToShoppingList'));
     try {
       await apiRecipe.addIngredientsToShoppingList(event.recipeId, event.ingredientIds, event.servings);
 
@@ -131,6 +132,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   }
 
   Future<void> _onImportRecipe(ImportRecipe event, Emitter<RecipeState> emit) async {
+    emit(RecipeProcessing(processingString: 'importingRecipe'));
     try {
       Recipe? recipe = await apiRecipe.importRecipe(event.url);
 

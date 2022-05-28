@@ -9,6 +9,7 @@ import 'package:tare/components/form_fields/meal_type_type_ahead_form_field.dart
 import 'package:tare/components/form_fields/recipe_type_ahead_form_field.dart';
 import 'package:tare/models/meal_plan_entry.dart';
 import 'package:tare/models/recipe.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan, DateTime? date, Recipe? recipe, String? referer}) {
   final _formBuilderKey = GlobalKey<FormBuilderState>();
@@ -30,7 +31,7 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(bottom: 20),
-                            child: Text((mealPlan != null) ? 'Edit meal plan entry' : 'Add meal plan entry', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                            child: Text((mealPlan != null) ? AppLocalizations.of(context)!.mealPlanEntryEdit : AppLocalizations.of(context)!.mealPlanEntryAdd, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                           ),
                           FormBuilderDateTimePicker(
                             name: 'date',
@@ -38,22 +39,22 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                             enabled: (referer == 'recipe' || referer == 'edit'),
                             inputType: InputType.date,
                             decoration: InputDecoration(
-                              labelText: 'Date',
+                              labelText: AppLocalizations.of(context)!.date
                             ),
                             validator: FormBuilderValidators.compose([
                               FormBuilderValidators.required()
                             ]),
                           ),
                           SizedBox(height: 15),
-                          mealTypeTypeAheadFieldForm((mealPlan != null) ? mealPlan.mealType : null, _formBuilderKey),
+                          mealTypeTypeAheadFieldForm((mealPlan != null) ? mealPlan.mealType : null, _formBuilderKey, context),
                           SizedBox(height: 15),
-                          recipeTypeAheadFormField((mealPlan != null) ? mealPlan.recipe : recipe, _formBuilderKey, referer: referer),
+                          recipeTypeAheadFormField((mealPlan != null) ? mealPlan.recipe : recipe, _formBuilderKey, context, referer: referer),
                           SizedBox(height: 15),
                           FormBuilderTextField(
                             name: 'title',
                             initialValue: (mealPlan != null) ? mealPlan.title : null,
                             decoration: InputDecoration(
-                              labelText: 'Alternative title',
+                              labelText: AppLocalizations.of(context)!.alternativeTitle,
                             ),
                             validator: FormBuilderValidators.compose([
                               FormBuilderValidators.max(64),
@@ -64,7 +65,7 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                             name: 'servings',
                             initialValue: (mealPlan != null) ? mealPlan.servings.toString() : ((recipe != null) ? recipe.servings.toString() : '1'),
                             decoration: InputDecoration(
-                              labelText: 'Servings',
+                              labelText: AppLocalizations.of(context)!.servings,
                             ),
                             validator: FormBuilderValidators.compose([
                               FormBuilderValidators.numeric(),
@@ -132,7 +133,7 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                                       Navigator.pop(dContext);
                                     }
                                   },
-                                  child: Text((mealPlan != null) ? 'Edit' : 'Add')
+                                  child: Text((mealPlan != null) ? AppLocalizations.of(context)!.edit : AppLocalizations.of(context)!.add)
                               )
                           )
                         ],

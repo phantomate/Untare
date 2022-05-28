@@ -4,6 +4,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/blocs/recipe/recipe_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_event.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future importRecipeWebsiteDialog(BuildContext context) {
   final _formBuilderKey = GlobalKey<FormBuilderState>();
@@ -23,12 +24,12 @@ Future importRecipeWebsiteDialog(BuildContext context) {
             children: [
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
-                child: Text('Import recipe', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                child: Text(AppLocalizations.of(context)!.importRecipe, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
               ),
               FormBuilderTextField(
                 name: 'url',
                 decoration: InputDecoration(
-                    label: Text('Url')
+                    label: Text(AppLocalizations.of(context)!.url)
                 ),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
@@ -48,7 +49,7 @@ Future importRecipeWebsiteDialog(BuildContext context) {
                           Navigator.pop(dContext);
                         }
                       },
-                      child: Text('Import')
+                      child: Text(AppLocalizations.of(context)!.import)
                   )
               )
             ],

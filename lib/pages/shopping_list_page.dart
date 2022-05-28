@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:tare/blocs/recipe/recipe_bloc.dart';
@@ -75,7 +75,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                 titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 16),
                 expandedTitleScale: 1.3,
                 title: Text(
-                  'Shopping list',
+                  AppLocalizations.of(context)!.shoppingListTitle,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: (Theme.of(context).appBarTheme.titleTextStyle != null) ? Theme.of(context).appBarTheme.titleTextStyle!.color : null
@@ -86,7 +86,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                 RotationTransition(
                     turns: _animation,
                     child: IconButton(
-                        tooltip: 'Autosync',
+                        tooltip: AppLocalizations.of(context)!.autoSync,
                         splashRadius: 20,
                         visualDensity: VisualDensity(horizontal: -2.0, vertical: -2.0),
                         padding: EdgeInsets.zero,
@@ -96,7 +96,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                             _timer.cancel();
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('Deactivated autosync'),
+                                content: Text(AppLocalizations.of(context)!.disabledAutoSync),
                                 duration: Duration(seconds: 3),
                               ),
                             );
@@ -110,7 +110,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
 
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text('Activated autosync - refresh every ' + settingsCubit.state.userServerSetting!.shoppingAutoSync.toString() + ' seconds'),
+                                  content: Text(AppLocalizations.of(context)!.enabledAutoSync.replaceFirst('%s', settingsCubit.state.userServerSetting!.shoppingAutoSync.toString())),
                                   duration: Duration(seconds: 3),
                                 ),
                               );
@@ -121,7 +121,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                     )
                 ),
                 IconButton(
-                    tooltip: 'Add',
+                    tooltip: AppLocalizations.of(context)!.add,
                     splashRadius: 20,
                     visualDensity: VisualDensity(horizontal: -2.0, vertical: -2.0),
                     padding: EdgeInsets.zero,
@@ -131,7 +131,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                     icon: Icon(Icons.add)
                 ),
                 IconButton(
-                    tooltip: 'More',
+                    tooltip: AppLocalizations.of(context)!.moreTooltip,
                     splashRadius: 20,
                     onPressed: () {
                       shoppingListMoreBottomSheet(context);
@@ -239,7 +239,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                                             if (element.food != null && element.food!.supermarketCategory != null) {
                                               return element.food!.supermarketCategory.name;
                                             } else {
-                                              return 'uncategorized';
+                                              return AppLocalizations.of(context)!.uncategorized;
                                             }
                                           },
                                           groupSeparatorBuilder: (String groupByValue) {
@@ -369,7 +369,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                           );
                         } else {
                           return Center(
-                            child: Text('There are no items on your shopping list'),
+                            child: Text(AppLocalizations.of(context)!.shoppingListNoEntries),
                           );
                         }
                       });

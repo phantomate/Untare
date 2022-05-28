@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tare/cubits/settings_cubit.dart';
 
@@ -17,14 +17,14 @@ Future settingsDefaultPageBottomSheet(BuildContext context) {
         child: Wrap(
           children: [
             Container(
-              height: 50,
+              height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
                   color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300] : Colors.grey[700]
               ),
               child: Text(
-                'Default page',
+                AppLocalizations.of(context)!.settingsDefaultPage,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18
@@ -41,21 +41,21 @@ Future settingsDefaultPageBottomSheet(BuildContext context) {
                       context.read<SettingsCubit>().changeDefaultPageTo('plan');
                       Navigator.pop(btsContext);
                     },
-                    child: Text('Meal plan'),
+                    child: Text(AppLocalizations.of(context)!.mealPlanTitle),
                   ),
                   TextButton(
                     onPressed: () {
                       context.read<SettingsCubit>().changeDefaultPageTo('recipes');
                       Navigator.pop(btsContext);
                     },
-                    child: Text('Recipes'),
+                    child: Text(AppLocalizations.of(context)!.recipesTitle),
                   ),
                   TextButton(
                     onPressed: () {
                       context.read<SettingsCubit>().changeDefaultPageTo('shopping');
                       Navigator.pop(btsContext);
                     },
-                    child: Text('Shopping list'),
+                    child: Text(AppLocalizations.of(context)!.shoppingListTitle),
                   ),
                 ],
               ),

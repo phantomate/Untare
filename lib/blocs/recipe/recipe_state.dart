@@ -7,6 +7,11 @@ class RecipeInitial extends RecipeState {}
 
 class RecipeLoading extends RecipeState {}
 
+class RecipeProcessing extends RecipeState {
+  final String processingString;
+  RecipeProcessing({required this.processingString});
+}
+
 class RecipeFetched extends RecipeState {
   final Recipe recipe;
   RecipeFetched({required this.recipe});

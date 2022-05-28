@@ -8,6 +8,7 @@ import 'package:tare/components/form_fields/quantity_text_form_field.dart';
 import 'package:tare/components/form_fields/unit_type_ahead_form_field.dart';
 import 'package:tare/models/shopping_list_entry.dart';
 import 'package:tare/models/unit.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future addShoppingListEntryDialog(BuildContext context) {
   final _formBuilderKey = GlobalKey<FormBuilderState>();
@@ -25,7 +26,7 @@ Future addShoppingListEntryDialog(BuildContext context) {
                 return Wrap(
                   spacing: 15,
                   children: [
-                    Text('Add to shopping list', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                    Text(AppLocalizations.of(context)!.addToShoppingList, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                     FormBuilder(
                         key: _formBuilderKey,
                         autovalidateMode: AutovalidateMode.disabled,
@@ -34,7 +35,7 @@ Future addShoppingListEntryDialog(BuildContext context) {
                           children: [
                             FormBuilderSwitch(
                               name: 'switch',
-                              title: Text('Simple mode'),
+                              title: Text(AppLocalizations.of(context)!.simpleMode),
                               onChanged: (bool? value) {
                                 setState(() {
                                   simpleMode = value ?? false;
@@ -46,7 +47,7 @@ Future addShoppingListEntryDialog(BuildContext context) {
                                   border: InputBorder.none
                               ),
                             ),
-                            foodTypeAheadFormField(null, _formBuilderKey),
+                            foodTypeAheadFormField(null, _formBuilderKey, context),
                             Visibility(
                                 visible: !simpleMode,
                                 child: Column(
@@ -55,11 +56,11 @@ Future addShoppingListEntryDialog(BuildContext context) {
                                     Row(
                                       children: [
                                         Flexible(
-                                          child: quantityTextFormField(null, _formBuilderKey),
+                                          child: quantityTextFormField(null, _formBuilderKey, context),
                                         ),
                                         SizedBox(width: 15),
                                         Flexible(
-                                            child: unitTypeAheadFormField(null, _formBuilderKey)
+                                            child: unitTypeAheadFormField(null, _formBuilderKey, context)
                                         )
                                       ],
                                     ),
@@ -69,7 +70,7 @@ Future addShoppingListEntryDialog(BuildContext context) {
                             SizedBox(height: 15),
                             MaterialButton(
                               color: Theme.of(context).primaryColor,
-                              child: Text('Add'),
+                              child: Text(AppLocalizations.of(context)!.add),
                               onPressed: () {
                                 _formBuilderKey.currentState!.save();
                                 if (_formBuilderKey.currentState!.validate()) {

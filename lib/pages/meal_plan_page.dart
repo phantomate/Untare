@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:tare/blocs/meal_plan/meal_plan_bloc.dart';
@@ -46,8 +45,6 @@ class _MealPlanPageState extends State<MealPlanPage> {
     toDateTime = findLastDateOfTheWeek(dateTime).add(const Duration(days: 28));
     toDate = DateFormat('yyyy-MM-dd').format(toDateTime);
 
-    rangeTitleText = getTitleText();
-
     _mealPlanBloc = BlocProvider.of<MealPlanBloc>(context);
     _mealPlanBloc.add(FetchMealPlan(from: fromDate, to: toDate));
   }
@@ -58,6 +55,12 @@ class _MealPlanPageState extends State<MealPlanPage> {
 
   DateTime findLastDateOfTheWeek(DateTime dateTime) {
     return dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
+  }
+
+  @override
+  void didChangeDependencies() {
+    rangeTitleText = getTitleText();
+    super.didChangeDependencies();
   }
 
   void decreaseDate() {
@@ -96,13 +99,13 @@ class _MealPlanPageState extends State<MealPlanPage> {
     // Add and subtract one millisecond cause there is no <= and >=
     if (dateTime.add(Duration(microseconds: 1)).isAfter(findFirstDateOfTheWeek(today))
         && dateTime.subtract(Duration(microseconds: 1)).isBefore(findLastDateOfTheWeek(today))) {
-      return 'this week';
+      return AppLocalizations.of(context)!.mealPlanThisWeek;
     } else if (dateTime.add(Duration(microseconds: 1)).isAfter(findFirstDateOfTheWeek(todayNextWeek))
         && dateTime.subtract(Duration(microseconds: 1)).isBefore(findLastDateOfTheWeek(todayNextWeek))) {
-      return 'next week';
+      return AppLocalizations.of(context)!.mealPlanNextWeek;
     } else if (dateTime.add(Duration(microseconds: 1)).isAfter(findFirstDateOfTheWeek(todayLastWeek))
         && dateTime.subtract(Duration(microseconds: 1)).isBefore(findLastDateOfTheWeek(todayLastWeek))) {
-      return 'last week';
+      return AppLocalizations.of(context)!.mealPlanLastWeek;
     }
 
     return DateFormat('d. MMM').format(findFirstDateOfTheWeek(dateTime)) + ' - ' + DateFormat('d. MMM').format(findLastDateOfTheWeek(dateTime));
@@ -124,7 +127,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
             titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 55),
             expandedTitleScale: 1.3,
             title: Text(
-              'Meal plan',
+              AppLocalizations.of(context)!.mealPlanTitle,
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: (Theme.of(context).appBarTheme.titleTextStyle != null) ? Theme.of(context).appBarTheme.titleTextStyle!.color : null
@@ -133,7 +136,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
           ),
           actions: [
             IconButton(
-                tooltip: 'More',
+                tooltip: AppLocalizations.of(context)!.moreTooltip,
                 splashRadius: 20,
                 onPressed: () {
                   mealPlanMoreBottomSheet(context);
@@ -293,7 +296,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
               ),
               SizedBox(width: 8),
               (isToday)
-                  ? Text('today', style: TextStyle(color: Theme.of(context).primaryColor))
+                  ? Text(AppLocalizations.of(context)!.mealPlanToday.toLowerCase(), style: TextStyle(color: Theme.of(context).primaryColor))
                   : Text(DateFormat('d. MMM').format(day), style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText2!.color))
             ],
           ),
@@ -301,7 +304,8 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
               onPressed: () {
                 upsertMealPlanEntryDialog(context, date: day, referer: 'meal-plan');
               },
-              icon: Icon(Icons.add)
+              icon: Icon(Icons.add),
+              splashRadius: 20,
           ),
         ),
         BlocBuilder<SettingsCubit, AppSetting>(

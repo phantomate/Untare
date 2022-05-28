@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:tare/blocs/authentication/authentication_bloc.dart';
@@ -44,7 +44,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   titlePadding: const EdgeInsets.fromLTRB(20, 0, 0, 16),
                   expandedTitleScale: 1.3,
                   title: Text(
-                    'Settings',
+                    AppLocalizations.of(context)!.settingsTitle,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: (Theme.of(context).appBarTheme.titleTextStyle != null) ? Theme.of(context).appBarTheme.titleTextStyle!.color : null
@@ -59,27 +59,31 @@ class _SettingsPageState extends State<SettingsPage> {
           },
           body: BlocBuilder<SettingsCubit, AppSetting>(
               builder: (context, setting) {
+                String defaultPageLayout = setting.defaultPage.capitalize();
+                if (setting.defaultPage == 'recipes') {
+                  defaultPageLayout = AppLocalizations.of(context)!.recipesTitle;
+                } else if (setting.defaultPage == 'plan') {
+                  defaultPageLayout = AppLocalizations.of(context)!.mealPlanTitle;
+                } else if (setting.defaultPage == 'shopping') {
+                  defaultPageLayout = AppLocalizations.of(context)!.shoppingListTitle;
+                }
+
                 return SettingsList(
                   sections: [
                     SettingsSection(
-                        title: Text('Customization'),
+                        title: Text(AppLocalizations.of(context)!.settingsCustomization),
                         tiles: [
-                          SettingsTile.navigation(
-                            leading: Icon(Icons.language),
-                            title: Text('Language'),
-                            value: Text('English'),
-                          ),
                           SettingsTile.navigation(
                             onPressed: (context) => settingsDefaultPageBottomSheet(context),
                             leading: Icon(Icons.pageview_outlined),
-                            title: Text('Default page'),
-                            value: Text(setting.defaultPage.capitalize()),
+                            title: Text(AppLocalizations.of(context)!.settingsDefaultPage),
+                            value: Text(defaultPageLayout),
                           ),
                           SettingsTile.navigation(
                             onPressed: (context) => settingsLayoutBottomSheet(context),
                             leading: Icon(Icons.design_services_outlined),
-                            title: Text('Recipe layout'),
-                            value: Text(setting.layout.capitalize()),
+                            title: Text(AppLocalizations.of(context)!.settingsRecipeLayout),
+                            value: Text((setting.layout == 'card') ? AppLocalizations.of(context)!.settingRecipeLayoutCard : AppLocalizations.of(context)!.settingRecipeLayoutList),
                           ),
                           SettingsTile.switchTile(
                             onToggle: (bool value) {
@@ -94,30 +98,30 @@ class _SettingsPageState extends State<SettingsPage> {
                             },
                             initialValue: themeModeSwitch,
                             leading: Icon(Icons.format_paint),
-                            title: Text('Dark mode'),
+                            title: Text(AppLocalizations.of(context)!.settingsDarkMode),
                           ),
                         ]
                     ),
                     if (setting.userServerSetting != null)
                       SettingsSection(
-                          title: Text('Shopping list'),
+                          title: Text(AppLocalizations.of(context)!.shoppingListTitle),
                           tiles: [
                             SettingsTile(
                               leading: Icon(Icons.share_outlined),
-                              title: Text('Shared with'),
+                              title: Text(AppLocalizations.of(context)!.settingsSharedWith),
                               value: Text(setting.userServerSetting!.shoppingShare.isNotEmpty ? setting.userServerSetting!.shoppingShare.map((user) => user.username).toList().join(',') : '-'),
                               onPressed: (context) => editShareDialog(context, setting.userServerSetting!, 'shopping'),
                             ),
                             SettingsTile(
                               leading: Icon(Icons.refresh_outlined),
-                              title: Text('Refresh interval'),
-                              description: Text('Refreshes the shopping list every ' + setting.userServerSetting!.shoppingAutoSync.toString() + ' seconds when autosync is enabled'),
+                              title: Text(AppLocalizations.of(context)!.settingsRefreshInterval),
+                              description: Text(AppLocalizations.of(context)!.settingsRefreshIntervalDescription.replaceFirst('%s', setting.userServerSetting!.shoppingAutoSync.toString())),
                               onPressed: (context) => editShoppingListRefreshDialog(context, setting.userServerSetting!),
                             ),
                             SettingsTile(
                               leading: Icon(Icons.calendar_today_sharp),
-                              title: Text('Recent days'),
-                              description: Text('Displays the last ' + setting.userServerSetting!.shoppingRecentDays.toString() + ' days of the shopping list'),
+                              title: Text(AppLocalizations.of(context)!.settingsRecentDays),
+                              description: Text(AppLocalizations.of(context)!.settingsRecentDaysDescription.replaceFirst('%s', setting.userServerSetting!.shoppingRecentDays.toString())),
                               onPressed: (context) => editShoppingListRecentDaysDialog(context, setting.userServerSetting!),
                             ),
                            /* SettingsTile.switchTile(
@@ -134,12 +138,12 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     if (setting.userServerSetting != null)
                       SettingsSection(
-                          title: Text('Meal plan'),
+                          title: Text(AppLocalizations.of(context)!.mealPlanTitle),
                           tiles: [
                             SettingsTile(
                               enabled: false,
                               leading: Icon(Icons.share_outlined),
-                              title: Text('Shared with'),
+                              title: Text(AppLocalizations.of(context)!.settingsSharedWith),
                               value: Text(setting.userServerSetting!.planShare.isNotEmpty ? setting.userServerSetting!.planShare.map((user) => user.username).toList().join(',') : '-'),
                               onPressed: (context) => editShareDialog(context, setting.userServerSetting!, 'plan'),
                             ),
@@ -147,9 +151,9 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     if (setting.userServerSetting != null)
                       SettingsSection(
-                          title: Text('Miscellaneous'),
+                          title: Text(AppLocalizations.of(context)!.settingsMiscellaneous),
                           tiles: [
-                            SettingsTile(
+                            /*SettingsTile(
                               enabled: false,
                               leading: Icon(Icons.scale_outlined),
                               title: Text('Default unit'),
@@ -194,16 +198,16 @@ class _SettingsPageState extends State<SettingsPage> {
                               initialValue: setting.userServerSetting!.comments,
                               title: Text('Comments'),
                               description: Text('If you want to be able to create and see comments underneath recipes'),
-                            ),
+                            ),*/
                           ]
                       ),
                     SettingsSection(
-                        title: Text('Logout'),
+                        title: Text(AppLocalizations.of(context)!.settingsLogout),
                         tiles: [
                           SettingsTile(
                               onPressed: (context) => _authenticationBloc.add(UserLoggedOut()),
                               leading: Icon(Icons.logout_outlined),
-                              title: Text('Logout')
+                              title: Text(AppLocalizations.of(context)!.settingsLogout)
                           )
                         ]
                     )

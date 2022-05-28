@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -9,7 +9,7 @@ import 'package:tare/components/recipes/recipe_time_component.dart';
 import 'package:tare/models/recipe.dart';
 import 'package:tare/services/api/api_recipe.dart';
 
-Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> _formBuilderKey, {String? referer}) {
+Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context, {String? referer}) {
   final ApiRecipe _apiRecipe = ApiRecipe();
   final _recipeTextController = TextEditingController();
 
@@ -23,8 +23,8 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> _for
     initialValue: recipe,
     enabled: (referer == 'meal-plan' || referer == 'edit'),
     selectionToTextTransformer: (recipe) => recipe.name,
-    decoration: const InputDecoration(
-      labelText: 'Recipe'
+    decoration: InputDecoration(
+      labelText: AppLocalizations.of(context)!.recipe
     ),
     validator: FormBuilderValidators.compose([
       FormBuilderValidators.required()

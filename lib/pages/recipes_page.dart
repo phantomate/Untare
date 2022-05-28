@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
@@ -149,7 +148,7 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
       titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 60),
       expandedTitleScale: 1.3,
       title: Text(
-        'Recipes',
+        AppLocalizations.of(context)!.recipesTitle,
         style: TextStyle(
             fontWeight: FontWeight.bold,
             color: (Theme.of(context).appBarTheme.titleTextStyle != null) ? Theme.of(context).appBarTheme.titleTextStyle!.color : null
@@ -173,7 +172,7 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
                 controller: searchTextController,
                 cursorColor: Theme.of(context).primaryColor,
                 decoration: InputDecoration(
-                  hintText: 'Search',
+                  hintText: AppLocalizations.of(context)!.search,
                   contentPadding: const EdgeInsets.only(top: 10),
                   prefixIcon: Icon(Icons.search_outlined),
                   suffixIcon: showSearchClear ? IconButton(
@@ -199,7 +198,7 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
             ),
             IconButton(
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
-                tooltip: 'Sort',
+                tooltip: AppLocalizations.of(context)!.sort,
                 splashRadius: 20,
                 onPressed: () => sortBottomSheet(context, onSortSelected),
                 icon: Icon(
@@ -212,22 +211,22 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
     ),
     actions: [
       PopupMenuButton(
-        tooltip: 'Add recipe',
+        tooltip: AppLocalizations.of(context)!.recipesTooltipAddRecipe,
         icon: Icon(
           Icons.add,
         ),
         elevation: 3,
         shape: OutlineInputBorder(
             borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(10)
+            borderRadius: BorderRadius.circular(8)
         ),
         itemBuilder: (context) => [
           PopupMenuItem(
-            child: Text('Create'),
+            child: Text(AppLocalizations.of(context)!.create),
             value: 1,
           ),
           PopupMenuItem(
-            child: Text('Import'),
+            child: Text(AppLocalizations.of(context)!.import),
             value: 2,
           )
         ],

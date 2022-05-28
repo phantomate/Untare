@@ -6,6 +6,7 @@ import 'package:tare/blocs/meal_plan/meal_plan_bloc.dart';
 import 'package:tare/blocs/meal_plan/meal_plan_event.dart';
 import 'package:tare/models/meal_type.dart';
 import 'package:tare/services/api/api_meal_type.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future editMealTypeDialog(BuildContext context) async {
   final _formBuilderKey = GlobalKey<FormBuilderState>();
@@ -34,14 +35,14 @@ Future editMealTypeDialog(BuildContext context) async {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(bottom: 20),
-                            child: Text('Edit meal type', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                            child: Text(AppLocalizations.of(context)!.editMealType, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                           ),
                           FormBuilderDropdown(
                             name: 'type',
                             allowClear: true,
                             items: mealTypeWidgetList,
                             decoration: InputDecoration(
-                                label: Text('Meal type')
+                                label: Text(AppLocalizations.of(context)!.mealType)
                             ),
                             validator: FormBuilderValidators.compose(
                                 [FormBuilderValidators.required()]
@@ -62,7 +63,7 @@ Future editMealTypeDialog(BuildContext context) async {
                                   FormBuilderTextField(
                                     name: 'name',
                                     decoration: InputDecoration(
-                                        label: Text('New name')
+                                        label: Text(AppLocalizations.of(context)!.newCategoryName)
                                     ),
                                     validator: FormBuilderValidators.compose([
                                       FormBuilderValidators.required(),
@@ -89,7 +90,7 @@ Future editMealTypeDialog(BuildContext context) async {
                                       Navigator.pop(dContext);
                                     }
                                   } : null,
-                                  child: Text('Edit')
+                                  child: Text(AppLocalizations.of(context)!.edit)
                               )
                           )
                         ],

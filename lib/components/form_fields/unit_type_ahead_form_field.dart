@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:tare/models/unit.dart';
 import 'package:tare/services/api/api_unit.dart';
 
-Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuilderKey) {
+Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context) {
   final _unitTextController = TextEditingController();
   final ApiUnit _apiUnit = ApiUnit();
   final fieldName = 'unit';
@@ -19,8 +19,8 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuild
     controller: _unitTextController,
     initialValue: unit,
     selectionToTextTransformer: (unit) => unit.name,
-    decoration: const InputDecoration(
-      labelText: 'Unit'
+    decoration: InputDecoration(
+      labelText: AppLocalizations.of(context)!.unit
     ),
     itemBuilder: (context, unit) {
       return ListTile(title: Text(unit.name));

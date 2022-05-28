@@ -13,6 +13,7 @@ import 'package:tare/components/loading_component.dart';
 import 'package:tare/cubits/settings_cubit.dart';
 import 'package:tare/models/app_setting.dart';
 import 'package:tare/models/recipe.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNavBarStatefulWidget widget, BuildContext context) {
   final CustomScrollNotification customScrollNotification = CustomScrollNotification(widget: widget);
@@ -27,7 +28,7 @@ Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNav
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(12),
-          child: Text('No recipes found'),
+          child: Text(AppLocalizations.of(context)!.noRecipesFound),
         )
       );
     } else {

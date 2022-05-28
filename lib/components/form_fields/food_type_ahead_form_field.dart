@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/models/food.dart';
 import 'package:tare/services/api/api_food.dart';
 
-Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> _formBuilderKey) {
+Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context) {
   final _foodTextController = TextEditingController();
   final ApiFood _apiFood = ApiFood();
   final fieldName = 'food';
@@ -22,7 +22,7 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> _formBuild
     initialValue: food,
     selectionToTextTransformer: (food) => food.name,
     decoration: InputDecoration(
-      labelText: 'Food',
+      labelText: AppLocalizations.of(context)!.food,
     ),
     validator: FormBuilderValidators.compose([
       FormBuilderValidators.required()
