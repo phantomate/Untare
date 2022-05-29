@@ -111,5 +111,6 @@
   "importingRecipe": "Importing recipe",
   "removedRecipe": "Removed recipe",
   "shoppingListItemsAdded": "Added items to shopping list",
-  "updatingRecipe": "Updating recipe"
+  "updatingRecipe": "Updating recipe",
+  "addedToMealPlan": "Added to meal plan"
 }

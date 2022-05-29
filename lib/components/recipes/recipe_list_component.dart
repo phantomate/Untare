@@ -35,25 +35,18 @@ Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer
           width: 100,
           child: buildRecipeImage(recipe, BorderRadius.all(Radius.circular(10)), 100, boxShadow: boxShadow, referer: referer),
         ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(recipe.name),
-            if (recipe.lastCooked != null || (recipe.rating != null && recipe.rating! > 0) || mealPlan != null)
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      lastCooked(recipe, context),
-                      rating(recipe, context),
-                      if (mealPlan != null)
-                        Text(mealPlan.mealType.name, style: TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey, fontSize: 12))
-                    ],
-                  ),
-                ],
-              )
-          ],
-        ),
+        title: Text(recipe.name, maxLines: 2, overflow: TextOverflow.ellipsis),
+        subtitle: (recipe.lastCooked != null || (recipe.rating != null && recipe.rating! > 0) || mealPlan != null) ?
+          Row(
+            children: [
+              lastCooked(recipe, context),
+              rating(recipe, context),
+              if (mealPlan != null)
+                Flexible(
+                    child: Text(mealPlan.mealType.name, style: TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey, fontSize: 12))
+                )
+            ],
+          ) : null,
         trailing: buildRecipeTime(recipe)
     )
   );

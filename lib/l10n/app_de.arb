@@ -111,5 +111,6 @@
   "importingRecipe": "Importiere Rezept",
   "removedRecipe": "Rezept wurde entfernt",
   "shoppingListItemsAdded": "Zutaten wurden zur Einkaufsliste hinzugefügt",
-  "updatingRecipe": "Aktualisiere Rezept"
+  "updatingRecipe": "Aktualisiere Rezept",
+  "addedToMealPlan": "Rezept wurde zum Essensplan hinzugefügt"
 }

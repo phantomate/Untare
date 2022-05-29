@@ -19,8 +19,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Future<void> _onLoginWithToken(LoginWithTokenButtonPressed event, Emitter<LoginState> emit) async {
     emit(LoginLoading());
     try {
+      String url = event.url.trim();
+      if (url.endsWith('/')) {
+        url = url.substring(0, url.length - 1);
+      }
+
       box.put('token', event.token);
-      box.put('url', event.url);
+      box.put('url', url);
 
       final apiUser = new ApiUser();
       final response = await apiUser.getUsers();
@@ -28,7 +33,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       if (response.isNotEmpty) {
         // @todo identify user
         box.put('user', response.first);
-        authenticationBloc.add(UserLoggedIn(token: event.token, url: event.url));
+        authenticationBloc.add(UserLoggedIn(token: event.token, url: url));
         emit(LoginSuccess());
       } else {
         emit(LoginFailure(error: 'Something very weird just happened'));

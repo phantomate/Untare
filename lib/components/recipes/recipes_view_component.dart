@@ -56,7 +56,7 @@ Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNav
                   }
 
                   return Container(
-                      padding: const EdgeInsets.only(right: 12, bottom: 0, left: 12, top: 15),
+                      padding: const EdgeInsets.only(right: 12, bottom: 15, left: 12, top: 15),
                       child: CustomScrollView(
                         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                         cacheExtent: recipesWidgetList.length * 100,

@@ -8,7 +8,7 @@ Widget? buildRecipeTime(Recipe recipe, {BoxDecoration? boxDecoration, Color? col
   if (recipeSumTime > 0) {
     return Container(
       decoration: boxDecoration,
-      padding: EdgeInsets.all(3),
+      padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
