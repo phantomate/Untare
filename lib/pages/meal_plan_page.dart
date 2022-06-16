@@ -227,6 +227,8 @@ class _MealPlanPageState extends State<MealPlanPage> {
             return buildLoading();
           } else if (state is MealPlanFetched) {
             mealPlanList = state.mealPlanList;
+          } else if (state is MealPlanFetchedFromCache) {
+            mealPlanList = state.mealPlanList;
           }
 
           return Container(

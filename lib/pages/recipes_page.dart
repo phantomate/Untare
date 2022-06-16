@@ -28,6 +28,7 @@ class _RecipesPageState extends State<RecipesPage> {
   late RecipeBloc recipeBloc;
   bool showSearchClear = false;
   List<Recipe> recipes = [];
+  List<Recipe> fetchedRecipes = [];
   bool isLastPage = false;
   int page = 1;
   String query = '';
@@ -45,8 +46,7 @@ class _RecipesPageState extends State<RecipesPage> {
 
   void _fetchMoreRecipes() {
     if(recipeBloc.state is RecipeListFetched && !isLastPage) {
-      page += 1;
-      recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize));
+      recipeBloc.add(FetchRecipeList(query: query, random: random, page: page+1, pageSize: pageSize));
     }
   }
 
@@ -67,6 +67,7 @@ class _RecipesPageState extends State<RecipesPage> {
       page = 1;
       random = false;
       recipes = [];
+      fetchedRecipes = [];
       recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize));
     }
   }
@@ -75,6 +76,7 @@ class _RecipesPageState extends State<RecipesPage> {
     sortOrder = selected;
     page = 1;
     recipes = [];
+    fetchedRecipes = [];
     recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize, sortOrder: sortOrder));
   }
 
@@ -99,7 +101,18 @@ class _RecipesPageState extends State<RecipesPage> {
                   if (state.recipes.isEmpty) {
                     isLastPage = true;
                   }
-                  recipes.addAll(state.recipes);
+                  fetchedRecipes.addAll(state.recipes);
+                  recipes = fetchedRecipes;
+                } else if (state is RecipeListFetchedFromCache) {
+                  if (state.recipes.isEmpty) {
+                    isLastPage = true;
+                  }
+                  if (page != state.page) {
+                    page = state.page;
+                    recipes.addAll(state.recipes);
+                  } else {
+                    recipes = state.recipes;
+                  }
                 }
 
                 if (state is RecipeError) {

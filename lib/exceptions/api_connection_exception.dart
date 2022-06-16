@@ -1,0 +1,2 @@
+class ApiConnectionException implements Exception{
+}

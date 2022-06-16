@@ -4,15 +4,14 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_event.dart';
+import 'package:tare/futures/future_api_cache_supermarket_categories.dart';
 import 'package:tare/models/supermarket_category.dart';
-import 'package:tare/services/api/api_supermarket_category.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future editSupermarketCategoryDialog(BuildContext context) async {
   final _formBuilderKey = GlobalKey<FormBuilderState>();
   final ShoppingListBloc _shoppingListBloc = BlocProvider.of<ShoppingListBloc>(context);
-  final ApiSupermarketCategory _apiSupermarketCategory = ApiSupermarketCategory();
-  final List<SupermarketCategory> supermarketCategories = await _apiSupermarketCategory.getSupermarketCategories();
+  final List<SupermarketCategory> supermarketCategories = await getSupermarketCategoriesFromApiCache();
   final List<DropdownMenuItem> supermarketCategoriesWidgetList =
     supermarketCategories.map((category) => DropdownMenuItem(
       value: category,

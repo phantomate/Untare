@@ -97,6 +97,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               }
                             },
                             initialValue: themeModeSwitch,
+                            activeSwitchColor: Theme.of(context).primaryColor,
                             leading: Icon(Icons.format_paint),
                             title: Text(AppLocalizations.of(context)!.settingsDarkMode),
                           ),
@@ -130,6 +131,7 @@ class _SettingsPageState extends State<SettingsPage> {
                               onToggle: (bool value) {
 
                               },
+                              activeSwitchColor: Theme.of(context).primaryColor,
                               initialValue: setting.userServerSetting!.mealPlanAutoAddShopping,
                               title: Text('Auto add meal plan'),
                               description: Text('Automatically add meal plan ingredients to shopping list'),

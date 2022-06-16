@@ -191,6 +191,8 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                     return buildLoading();
                   } else if (state is ShoppingListEntriesFetched) {
                     shoppingListEntries = state.shoppingListEntries;
+                  } else if (state is ShoppingListEntriesFetchedFromCache) {
+                    shoppingListEntries = state.shoppingListEntries;
                   }
 
                   return BlocBuilder<ShoppingListEntryCubit, String>(
@@ -284,6 +286,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                                                             contentPadding: const EdgeInsets.fromLTRB(10, 0, 20, 0),
                                                             leading: Checkbox(
                                                                 value: checkBoxValue,
+                                                                activeColor: Theme.of(context).primaryColor,
                                                                 shape: RoundedRectangleBorder(
                                                                     borderRadius: BorderRadius.circular(3)
                                                                 ),
@@ -325,6 +328,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                                                                 contentPadding: const EdgeInsets.fromLTRB(10, 0, 20, 0),
                                                                 leading: Checkbox(
                                                                     value: checkBoxValue,
+                                                                    activeColor: Theme.of(context).primaryColor,
                                                                     shape: RoundedRectangleBorder(
                                                                         borderRadius: BorderRadius.circular(3)
                                                                     ),

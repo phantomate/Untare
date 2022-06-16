@@ -12,6 +12,11 @@ class ShoppingListEntriesFetched extends ShoppingListState {
   ShoppingListEntriesFetched({required this.shoppingListEntries});
 }
 
+class ShoppingListEntriesFetchedFromCache extends ShoppingListState {
+  final List<ShoppingListEntry> shoppingListEntries;
+  ShoppingListEntriesFetchedFromCache({required this.shoppingListEntries});
+}
+
 class ShoppingListEntriesSynced extends ShoppingListState {
   final List<ShoppingListEntry> shoppingListEntries;
   ShoppingListEntriesSynced({required this.shoppingListEntries});

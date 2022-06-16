@@ -1,11 +1,23 @@
+import 'package:hive/hive.dart';
+
+part 'recipe_meal_plan.g.dart';
+
+@HiveType(typeId: 12)
 class RecipeMealPlan {
 
+  @HiveField(0)
   final int? id;
+  @HiveField(1)
   final String recipeName;
+  @HiveField(2)
   final String name;
+  @HiveField(3)
   final int recipe;
+  @HiveField(4)
   final int? mealPlan;
+  @HiveField(5)
   final int servings;
+  @HiveField(6)
   final String? mealPlanNote;
 
   RecipeMealPlan({

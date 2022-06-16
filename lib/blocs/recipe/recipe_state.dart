@@ -17,6 +17,11 @@ class RecipeFetched extends RecipeState {
   RecipeFetched({required this.recipe});
 }
 
+class RecipeFetchedFromCache extends RecipeState {
+  final Recipe recipe;
+  RecipeFetchedFromCache({required this.recipe});
+}
+
 class RecipeUpdated extends RecipeState {
   final Recipe recipe;
   RecipeUpdated({required this.recipe});
@@ -43,7 +48,14 @@ class RecipeListLoading extends RecipeState {}
 
 class RecipeListFetched extends RecipeState {
   final List<Recipe> recipes;
-  RecipeListFetched({required this.recipes});
+  final int page;
+  RecipeListFetched({required this.recipes, required this.page});
+}
+
+class RecipeListFetchedFromCache extends RecipeState {
+  final List<Recipe> recipes;
+  final int page;
+  RecipeListFetchedFromCache({required this.recipes, required this.page});
 }
 
 class RecipeError extends RecipeState {

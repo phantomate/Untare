@@ -6,11 +6,10 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/components/recipes/recipe_image_component.dart';
 import 'package:tare/components/recipes/recipe_list_component.dart';
 import 'package:tare/components/recipes/recipe_time_component.dart';
+import 'package:tare/futures/future_api_cache_recipes.dart';
 import 'package:tare/models/recipe.dart';
-import 'package:tare/services/api/api_recipe.dart';
 
 Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context, {String? referer}) {
-  final ApiRecipe _apiRecipe = ApiRecipe();
   final _recipeTextController = TextEditingController();
 
   if (recipe != null) {
@@ -63,7 +62,7 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> _for
       );
     },
     suggestionsCallback: (query) async {
-      return await _apiRecipe.getRecipeList(query, false, 1, 25, null);
+      return await getRecipesFromApiCache(query);
     },
     onSuggestionSelected: (suggestion) {
       _recipeTextController.text = suggestion.name;

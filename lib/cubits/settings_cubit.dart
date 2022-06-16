@@ -1,54 +1,89 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:tare/exceptions/api_connection_exception.dart';
 import 'package:tare/models/app_setting.dart';
 import 'package:tare/models/user.dart';
 import 'package:tare/models/user_setting.dart';
 import 'package:tare/services/api/api_user.dart';
+import 'package:tare/services/cache/cache_user_service.dart';
 
 class SettingsCubit extends Cubit<AppSetting> {
-  var box = Hive.box('hydrated_box');
+  var box = Hive.box('unTaReBox');
   final ApiUser apiUser;
+  final CacheUserService cacheUserService;
 
-  SettingsCubit({required this.apiUser}) : super(AppSetting(layout: 'card', theme: 'light', defaultPage: 'recipes'));
+  SettingsCubit({required this.apiUser, required this.cacheUserService}) : super(AppSetting(layout: 'card', theme: 'light', defaultPage: 'recipes'));
 
   void changeLayoutTo(String? layout) {
     if (['list', 'card'].contains(layout)) {
-      emit(state.copyWith(layout: layout));
-      box.put('settings', state);
+      AppSetting newState = state.copyWith(layout: layout);
+      emit(newState);
+      box.put('settings', newState);
     }
   }
 
   void changeThemeTo(String? theme) {
     if (['light', 'dark'].contains(theme)) {
-      emit(state.copyWith(theme: theme));
-      box.put('settings', state);
+      AppSetting newState = state.copyWith(theme: theme);
+      emit(newState);
+      box.put('settings', newState);
     }
   }
 
   void changeDefaultPageTo(String? defaultPage) {
     if (['recipes', 'plan', 'shopping'].contains(defaultPage)) {
-      emit(state.copyWith(defaultPage: defaultPage));
-      box.put('settings', state);
+      AppSetting newState = state.copyWith(defaultPage: defaultPage);
+      emit(newState);
+      box.put('settings', newState);
     }
   }
 
   void initServerSetting() async {
     User? user = box.get('user');
     if (user != null) {
-      UserSetting userSetting = await apiUser.getUserSettings(user);
+      UserSetting? cacheUserSetting = cacheUserService.getUserSetting(user);
 
-      emit(state.copyWith(userServerSetting: userSetting));
-      box.put('settings', state);
+      if (cacheUserSetting != null) {
+        emit(state.copyWith(userServerSetting: cacheUserSetting));
+      }
+
+      try {
+        UserSetting userSetting = await apiUser.getUserSettings(user);
+        AppSetting newState = state.copyWith(userServerSetting: userSetting);
+        emit(newState);
+        box.put('settings', newState);
+
+        cacheUserService.upsertUserSetting(userSetting);
+      } on ApiConnectionException catch (e) {
+        // Do nothing
+      }
     }
+  }
+
+  void setServerSetting(UserSetting userSetting) {
+    AppSetting newState = state.copyWith(userServerSetting: userSetting);
+    emit(newState);
+    box.put('settings', newState);
   }
 
   void updateServerSetting(UserSetting userSetting) async {
     User? user = box.get('user');
     if (user != null) {
-      UserSetting newUserSetting = await apiUser.patchUserSettings(user, userSetting);
+      try {
+        UserSetting newUserSetting = await apiUser.patchUserSettings(user, userSetting);
 
-      emit(state.copyWith(userServerSetting: newUserSetting));
-      box.put('settings', state);
+        AppSetting newState = state.copyWith(userServerSetting: newUserSetting);
+        emit(newState);
+        box.put('settings', newState);
+
+        cacheUserService.upsertUserSetting(newUserSetting);
+      } on ApiConnectionException catch (e) {
+        AppSetting newState = state.copyWith(userServerSetting: userSetting);
+        emit(newState);
+        box.put('settings', newState);
+
+        cacheUserService.upsertUserSetting(userSetting);
+      }
     }
   }
 }

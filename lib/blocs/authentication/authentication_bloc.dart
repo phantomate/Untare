@@ -5,7 +5,7 @@ import 'authentication_event.dart';
 import 'authentication_state.dart';
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-  var box = Hive.box('hydrated_box');
+  var box = Hive.box('unTaReBox');
 
   AuthenticationBloc(): super(AuthenticationInitial()) {
     on<AppLoaded>(_onAppLoaded);

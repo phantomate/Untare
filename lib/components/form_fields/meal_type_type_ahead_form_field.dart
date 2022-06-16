@@ -3,13 +3,11 @@ import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:tare/futures/future_api_cache_meal_types.dart';
 import 'package:tare/models/meal_type.dart';
-import 'package:tare/services/api/api_meal_type.dart';
 
 Widget mealTypeTypeAheadFieldForm(MealType? mealType, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context) {
-  final ApiMealType _apiMealType = ApiMealType();
   final _mealTypeTextController = TextEditingController();
-  List<MealType> _mealTypeList = [];
 
   if (mealType != null) {
     _mealTypeTextController.text = mealType.name;
@@ -30,20 +28,17 @@ Widget mealTypeTypeAheadFieldForm(MealType? mealType, GlobalKey<FormBuilderState
       return ListTile(title: Text(mealType.name));
     },
     suggestionsCallback: (query) async {
-      if (_mealTypeList.isEmpty) {
-        _mealTypeList = await _apiMealType.getMealTypeList();
-      }
+      List<MealType> _mealTypeList = await getMealTypesFromApiCache();
 
       List<MealType> mealTypeListByQuery = [];
       _mealTypeList.forEach((element) {
-        if (element.name.contains(query)) {
+        if (element.name.toLowerCase().contains(query.toLowerCase())) {
           mealTypeListByQuery.add(element);
         }
       });
 
       bool hideOnEqual = false;
-      _mealTypeList.forEach((element) => (element.name == query) ? hideOnEqual = true : null);
-
+      _mealTypeList.forEach((element) => (element.name.toLowerCase() == query.toLowerCase()) ? hideOnEqual = true : null);
 
       if (query != '' && (mealTypeListByQuery.isEmpty || !hideOnEqual)) {
         mealTypeListByQuery.add(MealType(name: query, defaultType: false, order: 0, createdBy: 1));

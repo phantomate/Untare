@@ -1,13 +1,26 @@
 import 'package:tare/models/ingredient.dart';
+import 'package:hive/hive.dart';
 
+part 'step.g.dart';
+
+@HiveType(typeId: 4)
 class StepModel {
+
+  @HiveField(0)
   final int? id;
+  @HiveField(1)
   final String? name;
+  @HiveField(2)
   final String? instruction;
+  @HiveField(3)
   final List<Ingredient> ingredients;
+  @HiveField(4)
   final String? ingredientsMarkdown;
+  @HiveField(5)
   final String? ingredientsVue;
+  @HiveField(6)
   final int? time;
+  @HiveField(7)
   final int? order;
 
   StepModel({

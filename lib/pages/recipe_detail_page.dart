@@ -52,6 +52,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
               if (widget.recipe.id == state.recipe.id) {
                 recipe = state.recipe;
               }
+            } else if (state is RecipeFetchedFromCache) {
+              if (widget.recipe.id == state.recipe.id && state.recipe.steps.isNotEmpty) {
+                recipe = state.recipe;
+              }
             }
 
             return NestedScrollView(
@@ -62,7 +66,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
               },
               body: Container(
                   color: Theme.of(context).scaffoldBackgroundColor,
-                  child: (state is RecipeLoading)
+                  child: (state is RecipeLoading || (state is RecipeFetchedFromCache && state.recipe.steps.isEmpty))
                     ? buildLoading()
                     : RecipeDetailTabBarWidget(recipe: recipe)
               ),

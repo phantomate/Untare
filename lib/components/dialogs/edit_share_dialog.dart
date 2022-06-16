@@ -3,19 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:hive/hive.dart';
 import 'package:tare/cubits/settings_cubit.dart';
+import 'package:tare/futures/future_api_cache_users.dart';
 import 'package:tare/models/user.dart';
 import 'package:tare/models/user_setting.dart';
-import 'package:tare/services/api/api_user.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future editShareDialog(BuildContext context, UserSetting userSetting, String referer) async {
-  var box = Hive.box('hydrated_box');
+  var box = Hive.box('unTaReBox');
   User? loggedInUser = box.get('user');
   final _formBuilderKey = GlobalKey<FormBuilderState>();
   final SettingsCubit _settingsCubit = context.read<SettingsCubit>();
   List<FormBuilderFieldOption> shareOptionList = [];
-  final ApiUser _apiUser = ApiUser();
-  List<User> userList = await _apiUser.getUsers();
+  List<User> userList = await getUsersFromApiCache();
 
   userList.forEach((element) {
     if (loggedInUser == null || loggedInUser.id != element.id) {
@@ -73,7 +72,6 @@ Future editShareDialog(BuildContext context, UserSetting userSetting, String ref
                                       if (referer == 'shopping') {
                                         newUserSetting = userSetting.copyWith(shoppingShare: newUserList);
                                       } else {
-                                        print(newUserList);
                                         newUserSetting = userSetting.copyWith(planShare: newUserList);
                                       }
 

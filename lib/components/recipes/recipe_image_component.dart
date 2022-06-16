@@ -69,7 +69,8 @@ Widget buildRecipeImage(Recipe recipe, BorderRadius borderRadius, double height,
         color: (Theme.of(context).brightness.name == 'light') ? Colors.black12 : Colors.grey[700],
         borderRadius: borderRadius,
       ),
-      child: Center(
+      child: Container(
+        alignment: Alignment.center,
         child: Icon(
           Icons.restaurant_menu_outlined,
           color: (Theme.of(context).brightness.name == 'light') ? Colors.black38 : Colors.grey[400],

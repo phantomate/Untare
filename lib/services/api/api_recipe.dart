@@ -79,7 +79,7 @@ class ApiRecipe extends ApiService {
     }
     var url = '/api/recipe/' + recipe.id.toString() + '/image/';
 
-    Response res = await Response.fromStream(await httpPutImage(url, image));
+    Response res = await httpPutImage(url, image);
 
     if ([200, 201].contains(res.statusCode)) {
       Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));

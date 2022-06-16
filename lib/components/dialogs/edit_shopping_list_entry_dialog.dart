@@ -57,7 +57,6 @@ Future editShoppingListEntryDialog(BuildContext context, ShoppingListEntry shopp
                                     _formBuilderKey.currentState!.save();
                                     if (_formBuilderKey.currentState!.validate()) {
                                       Map<String, dynamic> formBuilderData = _formBuilderKey.currentState!.value;
-                                      print(_formBuilderKey.currentState!.value);
                                       double amount = double.tryParse(formBuilderData['quantity']) ?? 0;
 
                                       // Set supermarket category on food

@@ -4,15 +4,14 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/blocs/meal_plan/meal_plan_bloc.dart';
 import 'package:tare/blocs/meal_plan/meal_plan_event.dart';
+import 'package:tare/futures/future_api_cache_meal_types.dart';
 import 'package:tare/models/meal_type.dart';
-import 'package:tare/services/api/api_meal_type.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future editMealTypeDialog(BuildContext context) async {
   final _formBuilderKey = GlobalKey<FormBuilderState>();
   final MealPlanBloc _mealPlanBloc = BlocProvider.of<MealPlanBloc>(context);
-  final ApiMealType _apiMealType = ApiMealType();
-  final List<MealType> mealTypeList = await _apiMealType.getMealTypeList();
+  final List<MealType> mealTypeList = await getMealTypesFromApiCache();
   final List<DropdownMenuItem> mealTypeWidgetList =
   mealTypeList.map((type) => DropdownMenuItem(
     value: type,

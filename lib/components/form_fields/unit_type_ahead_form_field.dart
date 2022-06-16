@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
+import 'package:tare/futures/future_api_cache_units.dart';
 import 'package:tare/models/unit.dart';
-import 'package:tare/services/api/api_unit.dart';
 
 Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context) {
   final _unitTextController = TextEditingController();
-  final ApiUnit _apiUnit = ApiUnit();
   final fieldName = 'unit';
 
+  // Set text editors because type ahead field isn't aware of empty string
   if (unit != null) {
     _unitTextController.text = unit.name;
   }
@@ -26,7 +26,7 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuild
       return ListTile(title: Text(unit.name));
     },
     suggestionsCallback: (query) async {
-      List<Unit> units = await _apiUnit.getUnits(query, 1, 25);
+      List<Unit> units = await getUnitsFromApiCache(query);
       bool hideOnEqual = false;
       units.forEach((element) => (element.name == query) ? hideOnEqual = true : null);
       if (units.isEmpty || !hideOnEqual) {

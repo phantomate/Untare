@@ -1,11 +1,23 @@
+import 'package:hive/hive.dart';
+
+part 'meal_type.g.dart';
+
+@HiveType(typeId: 10)
 class MealType {
 
+  @HiveField(0)
   final int? id;
+  @HiveField(1)
   final String name;
+  @HiveField(2)
   final int order;
+  @HiveField(3)
   final String? icon;
+  @HiveField(4)
   final String? color;
+  @HiveField(5)
   final bool defaultType;
+  @HiveField(6)
   final int createdBy;
 
   MealType({

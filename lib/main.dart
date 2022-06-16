@@ -12,13 +12,22 @@ import 'package:tare/blocs/recipe/recipe_state.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_state.dart';
 import 'package:tare/constants/colors.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 import 'package:tare/cubits/settings_cubit.dart';
 import 'package:tare/cubits/shopping_list_entry_cubit.dart';
 import 'package:tare/extensions/theme_extension.dart';
 import 'package:tare/models/app_setting.dart';
+import 'package:tare/models/food.dart';
+import 'package:tare/models/ingredient.dart';
+import 'package:tare/models/meal_plan_entry.dart';
+import 'package:tare/models/meal_type.dart';
+import 'package:tare/models/recipe.dart';
+import 'package:tare/models/recipe_meal_plan.dart';
+import 'package:tare/models/shopping_list_entry.dart';
+import 'package:tare/models/step.dart';
+import 'package:tare/models/supermarket_category.dart';
+import 'package:tare/models/unit.dart';
 import 'package:tare/models/user.dart';
 import 'package:tare/models/user_setting.dart';
 import 'package:tare/pages/meal_plan_page.dart';
@@ -29,10 +38,15 @@ import 'package:tare/pages/starting_page.dart';
 import 'package:tare/services/api/api_meal_plan.dart';
 import 'package:tare/services/api/api_meal_type.dart';
 import 'package:tare/services/api/api_recipe.dart';
+import 'package:tare/services/api/api_service.dart';
 import 'package:tare/services/api/api_shopping_list.dart';
 import 'package:tare/services/api/api_supermarket_category.dart';
 import 'package:tare/services/api/api_user.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:tare/services/cache/cache_meal_plan_service.dart';
+import 'package:tare/services/cache/cache_recipe_service.dart';
+import 'package:tare/services/cache/cache_shopping_list_service.dart';
+import 'package:tare/services/cache/cache_user_service.dart';
+import 'package:workmanager/workmanager.dart';
 
 
 import 'blocs/authentication/authentication_bloc.dart';
@@ -41,29 +55,55 @@ import 'blocs/authentication/authentication_state.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
+  await _initHive();
+
+  await Workmanager().initialize(_callbackDispatcher);
+
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_){
+    runApp(
+        Phoenix(
+            child: Tare()
+        )
+    );
+  });
+}
+
+Future _initHive() async {
   await Hive.initFlutter();
+  Hive.registerAdapter(RecipeAdapter());
+  Hive.registerAdapter(StepModelAdapter());
+  Hive.registerAdapter(IngredientAdapter());
+  Hive.registerAdapter(FoodAdapter());
+  Hive.registerAdapter(UnitAdapter());
+  Hive.registerAdapter(SupermarketCategoryAdapter());
+  Hive.registerAdapter(MealPlanEntryAdapter());
+  Hive.registerAdapter(MealTypeAdapter());
+  Hive.registerAdapter(ShoppingListEntryAdapter());
+  Hive.registerAdapter(RecipeMealPlanAdapter());
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(AppSettingAdapter());
   Hive.registerAdapter(UserSettingAdapter());
-  await Hive.openBox('hydrated_box');
-  final storage = await HydratedStorage.build(storageDirectory: await getTemporaryDirectory());
+  await Hive.openBox('unTaReBox');
+}
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_){
-    HydratedBlocOverrides.runZoned(
-        () => runApp(
-            Phoenix(
-                child: Tare()
-            )
-        ),
-        storage: storage
-    );
+void _callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    // Retry failed request
+    if (task == 'retryFailedRequestTask') {
+      await _initHive();
+
+      final ApiService apiService = ApiService();
+      await apiService.retryRequest(inputData!);
+    }
+
+    return Future.value(true);
   });
 }
 
 class Tare extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var box = Hive.box('hydrated_box');
+    var box = Hive.box('unTaReBox');
 
     return MultiBlocProvider(
         providers: [
@@ -72,7 +112,7 @@ class Tare extends StatelessWidget {
           ),
           BlocProvider<SettingsCubit>(
               create: (context) {
-                SettingsCubit cubit = SettingsCubit(apiUser: ApiUser());
+                SettingsCubit cubit = SettingsCubit(apiUser: ApiUser(), cacheUserService: CacheUserService());
                 AppSetting? storedAppSetting = box.get('settings');
                 if (storedAppSetting != null) {
                   cubit.changeLayoutTo(storedAppSetting.layout);
@@ -83,16 +123,16 @@ class Tare extends StatelessWidget {
               }
           ),
           BlocProvider<RecipeBloc>(
-            create: (BuildContext context) => RecipeBloc(apiRecipe: ApiRecipe())
+            create: (BuildContext context) => RecipeBloc(apiRecipe: ApiRecipe(), cacheRecipeService: CacheRecipeService())
           ),
           BlocProvider<MealPlanBloc>(
-            create: (BuildContext context) => MealPlanBloc(apiMealPlan: ApiMealPlan(), apiMealType: ApiMealType())
+            create: (BuildContext context) => MealPlanBloc(apiMealPlan: ApiMealPlan(), apiMealType: ApiMealType(), cacheMealPlanService: CacheMealPlanService())
           ),
           BlocProvider<ShoppingListBloc>(
-            create: (BuildContext context) => ShoppingListBloc(apiShoppingList: ApiShoppingList(), apiSupermarketCategory: ApiSupermarketCategory())
+            create: (BuildContext context) => ShoppingListBloc(apiShoppingList: ApiShoppingList(), apiSupermarketCategory: ApiSupermarketCategory(), cacheShoppingListService: CacheShoppingListService())
           ),
           BlocProvider<ShoppingListEntryCubit>(
-            create: (BuildContext context) =>ShoppingListEntryCubit()
+            create: (BuildContext context) => ShoppingListEntryCubit()
           )
         ],
         child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
@@ -194,7 +234,7 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(state.error),
-                      duration: Duration(seconds: 8),
+                      duration: Duration(seconds: 5),
                     ),
                   );
                 } else if (state is MealPlanUnauthorized) {
@@ -202,7 +242,7 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
                 } else if (state is MealPlanCreated) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Added to meal plan'),
+                      content: Text(AppLocalizations.of(context)!.addedToMealPlan),
                       duration: Duration(seconds: 3),
                     ),
                   );
@@ -215,7 +255,7 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(state.error),
-                      duration: Duration(seconds: 8),
+                      duration: Duration(seconds: 5),
                     ),
                   );
                 } else if (state is RecipeUnauthorized) {
@@ -234,7 +274,7 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text((snackBarText ?? '') + ' ...'),
-                      duration: Duration(seconds: 2),
+                      duration: Duration(seconds: 1),
                     ),
                   );
                 } else if (state is RecipeDeleted) {
@@ -260,7 +300,7 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(state.error),
-                      duration: Duration(seconds: 8),
+                      duration: Duration(seconds: 5),
                     ),
                   );
                 } else if (state is ShoppingListUnauthorized) {

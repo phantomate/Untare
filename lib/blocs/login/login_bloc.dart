@@ -9,7 +9,7 @@ import 'login_event.dart';
 import 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  var box = Hive.box('hydrated_box');
+  var box = Hive.box('unTaReBox');
   final AuthenticationBloc authenticationBloc;
 
   LoginBloc({required this.authenticationBloc}): super(LoginInitial()) {
@@ -33,6 +33,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       if (response.isNotEmpty) {
         // @todo identify user
         box.put('user', response.first);
+        box.put('users', response);
         authenticationBloc.add(UserLoggedIn(token: event.token, url: url));
         emit(LoginSuccess());
       } else {

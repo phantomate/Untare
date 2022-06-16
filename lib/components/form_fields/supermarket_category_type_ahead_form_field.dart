@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
+import 'package:tare/futures/future_api_cache_supermarket_categories.dart';
 import 'package:tare/models/supermarket_category.dart';
-import 'package:tare/services/api/api_supermarket_category.dart';
 
 Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCategory, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context) {
   final _categoryTextController = TextEditingController();
-  final ApiSupermarketCategory _apiSupermarketCategory = ApiSupermarketCategory();
-  List<SupermarketCategory> _superMarketCategories = [];
 
   if (supermarketCategory != null) {
     _categoryTextController.text = supermarketCategory.name;
@@ -26,20 +24,17 @@ Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCat
       return ListTile(title: Text(category.name));
     },
     suggestionsCallback: (query) async {
-      if (_superMarketCategories.isEmpty) {
-        _superMarketCategories = await _apiSupermarketCategory.getSupermarketCategories();
-      }
+      List<SupermarketCategory> _superMarketCategories = await getSupermarketCategoriesFromApiCache();
 
       List<SupermarketCategory> supermarketCategoriesByQuery = [];
       _superMarketCategories.forEach((element) {
-        if (element.name.contains(query)) {
+        if (element.name.toLowerCase().contains(query.toLowerCase())) {
           supermarketCategoriesByQuery.add(element);
         }
       });
 
       bool hideOnEqual = false;
-      _superMarketCategories.forEach((element) => (element.name == query) ? hideOnEqual = true : null);
-
+      _superMarketCategories.forEach((element) => (element.name.toLowerCase() == query.toLowerCase()) ? hideOnEqual = true : null);
 
       if (query != '' && (supermarketCategoriesByQuery.isEmpty || !hideOnEqual)) {
         supermarketCategoriesByQuery.add(SupermarketCategory(name: query));
