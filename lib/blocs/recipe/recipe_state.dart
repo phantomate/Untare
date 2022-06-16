@@ -7,9 +7,19 @@ class RecipeInitial extends RecipeState {}
 
 class RecipeLoading extends RecipeState {}
 
+class RecipeProcessing extends RecipeState {
+  final String processingString;
+  RecipeProcessing({required this.processingString});
+}
+
 class RecipeFetched extends RecipeState {
   final Recipe recipe;
   RecipeFetched({required this.recipe});
+}
+
+class RecipeFetchedFromCache extends RecipeState {
+  final Recipe recipe;
+  RecipeFetchedFromCache({required this.recipe});
 }
 
 class RecipeUpdated extends RecipeState {
@@ -27,13 +37,25 @@ class RecipeDeleted extends RecipeState {
   RecipeDeleted({required this.recipe});
 }
 
+class RecipeImported extends RecipeState {
+  final Recipe recipe;
+  RecipeImported({required this.recipe});
+}
+
 class RecipeAddedIngredientsToShoppingList extends RecipeState {}
 
 class RecipeListLoading extends RecipeState {}
 
 class RecipeListFetched extends RecipeState {
   final List<Recipe> recipes;
-  RecipeListFetched({required this.recipes});
+  final int page;
+  RecipeListFetched({required this.recipes, required this.page});
+}
+
+class RecipeListFetchedFromCache extends RecipeState {
+  final List<Recipe> recipes;
+  final int page;
+  RecipeListFetchedFromCache({required this.recipes, required this.page});
 }
 
 class RecipeError extends RecipeState {

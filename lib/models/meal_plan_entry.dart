@@ -1,20 +1,37 @@
 import 'package:tare/models/meal_type.dart';
 import 'package:tare/models/recipe.dart';
+import 'package:hive/hive.dart';
 
+part 'meal_plan_entry.g.dart';
+
+@HiveType(typeId: 9)
 class MealPlanEntry {
 
+  @HiveField(0)
   final int? id;
+  @HiveField(1)
   final String title;
+  @HiveField(2)
   final Recipe? recipe;
+  @HiveField(3)
   final int servings;
+  @HiveField(4)
   final String note;
+  @HiveField(5)
   final String? noteMarkdown;
+  @HiveField(6)
   final String date;
+  @HiveField(7)
   final MealType mealType;
+  @HiveField(8)
   final int? createdBy;
+  @HiveField(9)
   final List? shared;
+  @HiveField(10)
   final String? recipeName;
+  @HiveField(11)
   final String? mealTypeName;
+  @HiveField(12)
   final bool? shopping;
 
   MealPlanEntry({

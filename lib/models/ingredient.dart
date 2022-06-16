@@ -1,15 +1,25 @@
 import 'package:tare/models/unit.dart';
-
 import 'food.dart';
+import 'package:hive/hive.dart';
 
+part 'ingredient.g.dart';
+
+@HiveType(typeId: 5)
 class Ingredient {
 
+  @HiveField(0)
   final int? id;
+  @HiveField(1)
   final Food? food;
+  @HiveField(2)
   final Unit? unit;
+  @HiveField(3)
   final double amount;
+  @HiveField(4)
   final String? note;
+  @HiveField(5)
   final int order;
+  @HiveField(6)
   final String? originalText;
 
   Ingredient({

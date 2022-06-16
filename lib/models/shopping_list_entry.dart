@@ -1,22 +1,40 @@
 import 'package:tare/models/food.dart';
 import 'package:tare/models/recipe_meal_plan.dart';
 import 'package:tare/models/unit.dart';
+import 'package:hive/hive.dart';
 
+part 'shopping_list_entry.g.dart';
+
+@HiveType(typeId: 11)
 class ShoppingListEntry {
 
+  @HiveField(0)
   final int? id;
+  @HiveField(1)
   final int? listRecipe;
+  @HiveField(2)
   final Food? food;
+  @HiveField(3)
   final Unit? unit;
+  @HiveField(4)
   final int? ingredient;
+  @HiveField(5)
   final String? ingredientNote;
+  @HiveField(6)
   final double amount;
+  @HiveField(7)
   final int? order;
+  @HiveField(8)
   final bool checked;
+  @HiveField(9)
   final RecipeMealPlan? recipeMealPlan;
+  @HiveField(10)
   final int? createdBy;
+  @HiveField(11)
   final String? createdAt;
+  @HiveField(12)
   final String? completedAt;
+  @HiveField(13)
   final String? delayUntil;
 
 

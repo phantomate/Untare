@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
+import 'package:tare/futures/future_api_cache_units.dart';
 import 'package:tare/models/unit.dart';
-import 'package:tare/services/api/api_unit.dart';
 
-Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuilderKey, {int? index, dynamicKey}) {
+Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context) {
   final _unitTextController = TextEditingController();
-  final ApiUnit _apiUnit = ApiUnit();
-  final fieldName = 'unit' + ((index != null) ? index.toString() : '');
+  final fieldName = 'unit';
 
+  // Set text editors because type ahead field isn't aware of empty string
   if (unit != null) {
     _unitTextController.text = unit.name;
   }
@@ -17,28 +17,16 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuild
   return FormBuilderTypeAhead<Unit>(
     name: fieldName,
     controller: _unitTextController,
-    key: dynamicKey,
     initialValue: unit,
     selectionToTextTransformer: (unit) => unit.name,
-    decoration: const InputDecoration(
-      labelText: 'Unit',
-      labelStyle: TextStyle(
-        color: Colors.black26,
-      ),
-      isDense: true,
-      contentPadding: const EdgeInsets.all(10),
-      border: OutlineInputBorder(),
-      disabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.black12,
-          )
-      ),
+    decoration: InputDecoration(
+      labelText: AppLocalizations.of(context)!.unit
     ),
     itemBuilder: (context, unit) {
       return ListTile(title: Text(unit.name));
     },
     suggestionsCallback: (query) async {
-      List<Unit> units = await _apiUnit.getUnits(query, 1, 25);
+      List<Unit> units = await getUnitsFromApiCache(query);
       bool hideOnEqual = false;
       units.forEach((element) => (element.name == query) ? hideOnEqual = true : null);
       if (units.isEmpty || !hideOnEqual) {
@@ -54,13 +42,7 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuild
       
       if (_unitTextController.text.isEmpty) {
         // Invalidate empty string because type ahead field isn't aware
-        if (dynamicKey != null)  {
-          _formBuilderKey.currentState!.setInternalFieldValue(fieldName, null, isSetState: true);
-          // Do own validation, because the package validation doesn't work on dynamically generated fields
-          dynamicKey.currentState!.invalidate('');
-        } else {
-          _formBuilderKey.currentState!.fields[fieldName]!.didChange(null);
-        }
+        _formBuilderKey.currentState!.fields[fieldName]!.didChange(null);
       } else {
         // Overwrite unit, if changed in form
         if (unit != null && formUnit != null) {
@@ -74,16 +56,7 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> _formBuild
           newUnit = Unit(id: formUnit.id, name: formUnit.name, description: formUnit.description);
         }
 
-        // If we have a dynamic key the form field is generated dynamically and therefore we have to use an other method
-        if (dynamicKey != null) {
-          if (newUnit == null) {
-            // Do own validation, because the package validation doesn't work on dynamically generated fields
-            dynamicKey.currentState!.invalidate('');
-          }
-          _formBuilderKey.currentState!.setInternalFieldValue(fieldName, newUnit, isSetState: true);
-        } else {
-          _formBuilderKey.currentState!.fields[fieldName]!.didChange(newUnit);
-        }
+        _formBuilderKey.currentState!.fields[fieldName]!.didChange(newUnit);
       }
     },
     hideOnEmpty: true,

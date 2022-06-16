@@ -1,4 +1,5 @@
 import 'package:tare/models/meal_plan_entry.dart';
+import 'package:tare/models/meal_type.dart';
 
 abstract class MealPlanState {}
 
@@ -9,6 +10,11 @@ class MealPlanLoading extends MealPlanState {}
 class MealPlanFetched extends MealPlanState {
   final List<MealPlanEntry> mealPlanList;
   MealPlanFetched({required this.mealPlanList});
+}
+
+class MealPlanFetchedFromCache extends MealPlanState {
+  final List<MealPlanEntry> mealPlanList;
+  MealPlanFetchedFromCache({required this.mealPlanList});
 }
 
 class MealPlanCreated extends MealPlanState {
@@ -35,3 +41,13 @@ class MealPlanError extends MealPlanState {
 }
 
 class MealPlanUnauthorized extends MealPlanState {}
+
+class MealPlanUpdatedType extends MealPlanState {
+  final MealType mealType;
+  MealPlanUpdatedType({required this.mealType});
+}
+
+class MealPlanDeletedType extends MealPlanState {
+  final MealType mealType;
+  MealPlanDeletedType({required this.mealType});
+}

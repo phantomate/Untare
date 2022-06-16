@@ -1,4 +1,5 @@
 import 'package:tare/models/meal_plan_entry.dart';
+import 'package:tare/models/meal_type.dart';
 
 import '../abstract_event.dart';
 
@@ -29,4 +30,14 @@ class DeleteMealPlan extends MealPlanEvent {
   final MealPlanEntry mealPlan;
 
   DeleteMealPlan({required this.mealPlan});
+}
+
+class UpdateMealType extends MealPlanEvent {
+  final MealType mealType;
+  UpdateMealType({required this.mealType});
+}
+
+class DeleteMealType extends MealPlanEvent {
+  final MealType mealType;
+  DeleteMealType({required this.mealType});
 }

@@ -26,7 +26,7 @@ class ApiShoppingList extends ApiService {
       return [];
     } else {
       throw ApiException(
-          message: 'Shopping list api error',
+          message: 'Shopping list api error - could not fetch shopping list entries',
           statusCode: res.statusCode
       );
     }
@@ -42,7 +42,7 @@ class ApiShoppingList extends ApiService {
       return ShoppingListEntry.fromJson(json);
     } else {
       throw ApiException(
-          message: 'Shopping list api error',
+          message: 'Shopping list api error - could not create shopping list entry',
           statusCode: res.statusCode
       );
     }
@@ -62,7 +62,7 @@ class ApiShoppingList extends ApiService {
       return ShoppingListEntry.fromJson(json);
     } else {
       throw ApiException(
-          message: 'Shopping list api error',
+          message: 'Shopping list api error - could not update shopping list entry',
           statusCode: res.statusCode
       );
     }
@@ -87,7 +87,7 @@ class ApiShoppingList extends ApiService {
       return ShoppingListEntry.fromJson(json);
     } else {
       throw ApiException(
-          message: 'Shopping list api error',
+          message: 'Shopping list api error - could not update shopping list entry',
           statusCode: res.statusCode
       );
     }
@@ -97,7 +97,7 @@ class ApiShoppingList extends ApiService {
     if (entry.id == null) {
       throw MappingException(message: 'Id missing for deleting shopping list entry');
     }
-    var url = '/api/shopping-list-entry/' + entry.id.toString();
+    var url = '/api/shopping-list-entry/' + entry.id.toString() + '/';
 
     Response res = await httpDelete(url);
 
@@ -105,7 +105,7 @@ class ApiShoppingList extends ApiService {
       return entry;
     } else {
       throw ApiException(
-          message: 'Shopping list api error',
+          message: 'Shopping list api error - could not delete shopping list entry',
           statusCode: res.statusCode
       );
     }

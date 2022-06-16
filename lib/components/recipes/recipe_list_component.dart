@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
-import 'package:tare/components/bottom_sheets/meal_plan_more_bottom_sheet_component.dart';
+import 'package:tare/components/bottom_sheets/meal_plan_entry_more_bottom_sheet_component.dart';
 import 'package:tare/components/bottom_sheets/recipe_more_bottom_sheet_component.dart';
 import 'package:tare/components/recipes/recipe_image_component.dart';
 import 'package:tare/components/recipes/recipe_time_component.dart';
@@ -26,7 +24,7 @@ Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer
     },
     onLongPress: () {
       if (mealPlan != null) {
-        mealPlanMoreBottomSheet(context, mealPlan);
+        mealPlanEntryMoreBottomSheet(context, mealPlan);
       } else {
         recipeMoreBottomSheet(context, recipe);
       }
@@ -37,42 +35,36 @@ Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer
           width: 100,
           child: buildRecipeImage(recipe, BorderRadius.all(Radius.circular(10)), 100, boxShadow: boxShadow, referer: referer),
         ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(recipe.name),
-            if (recipe.lastCooked != null || (recipe.rating != null && recipe.rating! > 0))
-              Row(
-                children: [
-                  Row(
-                    children: [
-                      lastCooked(recipe),
-                      rating(recipe)
-                    ],
-                  ),
-                ],
-              )
-          ],
-        ),
+        title: Text(recipe.name, maxLines: 2, overflow: TextOverflow.ellipsis),
+        subtitle: (recipe.lastCooked != null || (recipe.rating != null && recipe.rating! > 0) || mealPlan != null) ?
+          Row(
+            children: [
+              lastCooked(recipe, context),
+              rating(recipe, context),
+              if (mealPlan != null)
+                Flexible(
+                    child: Text(mealPlan.mealType.name, style: TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey, fontSize: 12))
+                )
+            ],
+          ) : null,
         trailing: buildRecipeTime(recipe)
     )
   );
 }
 
-Widget lastCooked(Recipe recipe) {
+Widget lastCooked(Recipe recipe, BuildContext context) {
   if (recipe.lastCooked != null) {
     return Row(
       children: [
         Icon(
           Icons.restaurant_outlined,
           size: 12,
+          color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey
         ),
         SizedBox(width: 2),
         Text(
             DateFormat('dd.MM.yy').format(DateTime.parse(recipe.lastCooked!)),
-            style: TextStyle(
-              fontSize: 12,
-            )
+            style: TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey, fontSize: 12)
         ),
         SizedBox(width: 8)
       ],
@@ -81,7 +73,7 @@ Widget lastCooked(Recipe recipe) {
   return Text('');
 }
 
-Widget rating (Recipe recipe) {
+Widget rating (Recipe recipe, BuildContext context) {
   if (recipe.rating != null && recipe.rating! > 0) {
     return Row(
       children: [
@@ -89,6 +81,7 @@ Widget rating (Recipe recipe) {
             recipe.rating.toString(),
             style: TextStyle(
               fontSize: 12,
+              color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey
             )
         ),
         SizedBox(width: 2),
@@ -96,7 +89,8 @@ Widget rating (Recipe recipe) {
           Icons.star,
           size: 12,
           color: Colors.amberAccent,
-        )
+        ),
+        SizedBox(width: 8)
       ],
     );
   }

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_event.dart';
-import 'package:tare/components/bottom_sheets/meal_plan_upsert_bottom_sheet_component.dart';
 import 'package:tare/components/bottom_sheets/recipe_shopping_list_bottom_sheet_component.dart';
+import 'package:tare/components/dialogs/upsert_meal_plan_entry_dialog.dart';
 import 'package:tare/models/recipe.dart';
 import 'package:tare/pages/recipe_upsert_page.dart';
 
@@ -24,67 +24,34 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
               MaterialPageRoute(builder: (context) => RecipeUpsertPage(recipe: recipe)),
             );
           },
-          icon: Icon(
-            Icons.edit_outlined,
-            color: Colors.black87,
-          ),
-          label: Text(
-            'Edit',
-            style: TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.bold
-            ),
-          ),
+          icon: Icon(Icons.edit_outlined),
+          label: Text(AppLocalizations.of(context)!.edit),
         ),
         TextButton.icon(
           onPressed: () {
             Navigator.pop(btsContext);
-            mealPlanUpsertBottomSheet(context, recipe: recipe, referer: 'recipe');
+            upsertMealPlanEntryDialog(context, recipe: recipe, referer: 'recipe');
           },
-          icon: Icon(
-            Icons.calendar_today_outlined,
-            color: Colors.black87,
-          ),
-          label: Text(
-            'Add to meal plan',
-            style: TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.bold
-            ),
-          ),
+          icon: Icon(Icons.calendar_today_outlined),
+          label: Text(AppLocalizations.of(context)!.addToMealPlan),
         ),
         TextButton.icon(
           onPressed: () {
             Navigator.pop(btsContext);
             recipeShoppingListBottomSheet(context, recipe);
           },
-          icon: Icon(
-            Icons.add_shopping_cart_outlined,
-            color: Colors.black87,
-          ),
-          label: Text(
-            'Add to shopping list',
-            style: TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.bold
-            ),
-          ),
+          icon: Icon(Icons.add_shopping_cart_outlined),
+          label: Text(AppLocalizations.of(context)!.addToShoppingList),
         ),
         TextButton.icon(
           onPressed: () {
             Navigator.pop(btsContext);
             _recipeBloc.add(DeleteRecipe(recipe: recipe));
           },
-          icon: Icon(
-            Icons.delete_outline,
-            color: Colors.redAccent,
-          ),
+          icon: Icon(Icons.delete_outline, color: Colors.redAccent),
           label: Text(
-            'Remove',
-            style: TextStyle(
-                color: Colors.redAccent,
-                fontWeight: FontWeight.bold
-            ),
+            AppLocalizations.of(context)!.remove,
+            style: TextStyle(color: Colors.redAccent),
           ),
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:tare/models/shopping_list_entry.dart';
+import 'package:tare/models/supermarket_category.dart';
 
 abstract class ShoppingListState {}
 
@@ -9,6 +10,16 @@ class ShoppingListLoading extends ShoppingListState {}
 class ShoppingListEntriesFetched extends ShoppingListState {
   final List<ShoppingListEntry> shoppingListEntries;
   ShoppingListEntriesFetched({required this.shoppingListEntries});
+}
+
+class ShoppingListEntriesFetchedFromCache extends ShoppingListState {
+  final List<ShoppingListEntry> shoppingListEntries;
+  ShoppingListEntriesFetchedFromCache({required this.shoppingListEntries});
+}
+
+class ShoppingListEntriesSynced extends ShoppingListState {
+  final List<ShoppingListEntry> shoppingListEntries;
+  ShoppingListEntriesSynced({required this.shoppingListEntries});
 }
 
 class ShoppingListEntryCreated extends ShoppingListState {
@@ -42,3 +53,13 @@ class ShoppingListError extends ShoppingListState {
 }
 
 class ShoppingListUnauthorized extends ShoppingListState {}
+
+class ShoppingListUpdatedSupermarketCategory extends ShoppingListState {
+  final SupermarketCategory supermarketCategory;
+  ShoppingListUpdatedSupermarketCategory({required this.supermarketCategory});
+}
+
+class ShoppingListDeletedSupermarketCategory extends ShoppingListState {
+  final SupermarketCategory supermarketCategory;
+  ShoppingListDeletedSupermarketCategory({required this.supermarketCategory});
+}

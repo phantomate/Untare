@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_event.dart';
 import 'package:tare/blocs/recipe/recipe_state.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:tare/components/loading_component.dart';
-import 'package:tare/constants/colors.dart';
 import 'package:tare/models/food.dart';
 import 'package:tare/models/ingredient.dart';
 import 'package:tare/models/recipe.dart';
@@ -84,7 +83,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
           if (widget.recipe.id == state.recipe.id) {
             recipe = state.recipe;
 
-            recipeIngredients = (recipe.steps != null) ? recipe.steps!.first.ingredients : [];
+            recipeIngredients = (recipe.steps.isNotEmpty) ? recipe.steps.first.ingredients : [];
 
             // Get all food ids from this recipe to check if we have this already on our shopping list
             recipeIngredients.forEach((element) {
@@ -123,14 +122,14 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                         padding: const EdgeInsets.only(left: 20),
                         child: Row(
                           children: [
-                            Text('Servings:'),
+                            Text(AppLocalizations.of(context)!.servings + ':'),
                             IconButton(
                               onPressed: () => {
                                 decrement()
                               },
                               icon: Icon(
                                 Icons.remove_circle_outline,
-                                color: primaryColor,
+                                color: Theme.of(context).primaryColor,
                               ),
                             ),
                             Text(newServings.toString()),
@@ -140,7 +139,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                                 },
                                 icon: Icon(
                                   Icons.add_circle_outline_outlined,
-                                  color: primaryColor,
+                                  color: Theme.of(context).primaryColor,
                                 )
                             )
                           ],
@@ -168,21 +167,17 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
                         decoration: BoxDecoration(
-                            color: Colors.grey[50],
                             border: Border(
                                 top: BorderSide(
-                                    color: Colors.grey[300]!,
+                                    color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
                                     width: 1
                                 )
                             )
                         ),
                         child: MaterialButton(
-                          color: primaryColor,
+                          color: Theme.of(context).primaryColor,
                           minWidth: double.maxFinite,
-                          child: Text(
-                            'Add',
-                            style: TextStyle(color: Colors.white),
-                          ),
+                          child: Text(AppLocalizations.of(context)!.add),
                           onPressed: () {
                             recipeBloc.add(AddIngredientsToShoppingList(
                                 recipeId: recipe.id!,
@@ -199,7 +194,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
             ],
           );
         } else {
-          return Center(child: Text('No ingredients found'));
+          return Center(child: Text(AppLocalizations.of(context)!.recipeNoIngredientsPresent));
         }
       }
     );
@@ -221,8 +216,8 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
-                  color: Colors.grey[200]!,
-                  width: 1.0
+                  color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                  width: 0.8
               )
           )
       ),
@@ -233,6 +228,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
             visualDensity: VisualDensity(horizontal: 0, vertical: -4),
             contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             leading: Checkbox(
+                activeColor: Theme.of(context).primaryColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(3)
                 ),
@@ -262,7 +258,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                 if (isAlreadyOnShoppingList)
                   Tooltip(
                     triggerMode: TooltipTriggerMode.tap,
-                    message: 'Is already on your shopping list',
+                    message: AppLocalizations.of(context)!.addToShoppingListTooltipAlreadyOnShoppingList,
                     child: Icon(
                       Icons.shopping_cart_outlined,
                       size: 18,
@@ -271,7 +267,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                 if (ingredient.food != null)
                 IconButton(
                   padding: const EdgeInsets.fromLTRB(0, 6, 0, 8),
-                    tooltip: (ingredient.food!.onHand) ? 'Is in stock' : 'Add to stock',
+                    tooltip: (ingredient.food!.onHand) ? AppLocalizations.of(context)!.addToShoppingListTooltipIsInStock : AppLocalizations.of(context)!.addToShoppingListTooltipAddToStock,
                     onPressed: () {
                       Food newFood = ingredient.food!.copyWith(onHand: !(ingredient.food!.onHand));
 
@@ -289,7 +285,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                     icon: Icon(
                       Icons.home_outlined,
                       size: 20,
-                      color: (ingredient.food != null && ingredient.food!.onHand) ? primaryColor : null,
+                      color: (ingredient.food != null && ingredient.food!.onHand) ? Theme.of(context).primaryColor : null,
                     )
                 ),
               ],

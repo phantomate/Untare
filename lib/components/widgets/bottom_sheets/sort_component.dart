@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Widget buildSort(BuildContext context, Function(String) sortButtonPressed) {
   return Container(
@@ -7,12 +7,12 @@ Widget buildSort(BuildContext context, Function(String) sortButtonPressed) {
     padding: const EdgeInsets.only(left: 12, right: 12),
     child: Table(
       children: [
-        sortTableRow(context, sortButtonPressed, 'Search rank', 'score'),
-        sortTableRow(context, sortButtonPressed, 'Name', 'name'),
-        sortTableRow(context, sortButtonPressed, 'Last cooked', 'lastcooked'),
-        sortTableRow(context, sortButtonPressed, 'Rating', 'rating'),
-        sortTableRow(context, sortButtonPressed, 'Favorite', 'favorite'),
-        sortTableRow(context, sortButtonPressed, 'Created', 'created_at'),
+        sortTableRow(context, sortButtonPressed, AppLocalizations.of(context)!.sortBySearchRank, 'score'),
+        sortTableRow(context, sortButtonPressed, AppLocalizations.of(context)!.name, 'name'),
+        sortTableRow(context, sortButtonPressed, AppLocalizations.of(context)!.lastCooked, 'lastcooked'),
+        sortTableRow(context, sortButtonPressed, AppLocalizations.of(context)!.rating, 'rating'),
+        sortTableRow(context, sortButtonPressed, AppLocalizations.of(context)!.sortByFavorite, 'favorite'),
+        sortTableRow(context, sortButtonPressed, AppLocalizations.of(context)!.sortByCreated, 'created_at'),
       ],
     ),
   );
@@ -40,13 +40,11 @@ TableCell sortTableCell(BuildContext context, Function(String) sortButtonPressed
             Text(
               label,
               style: TextStyle(
-                  color: Colors.black87,
                   fontWeight: FontWeight.w400
               ),
             ),
             Icon(
               isAsc ? Icons.arrow_drop_up_outlined : Icons.arrow_drop_down_outlined ,
-              color: Colors.black87,
             )
           ],
         ),

@@ -30,6 +30,11 @@ class DeleteRecipe extends RecipeEvent {
   DeleteRecipe({required this.recipe});
 }
 
+class ImportRecipe extends RecipeEvent {
+  final String url;
+  ImportRecipe({required this.url});
+}
+
 class AddIngredientsToShoppingList extends RecipeEvent {
   final int recipeId;
   final List<int> ingredientIds;

@@ -1,24 +1,46 @@
 import 'package:tare/models/step.dart';
+import 'package:hive/hive.dart';
 
+part 'recipe.g.dart';
+
+@HiveType(typeId: 3)
 class Recipe {
 
+  @HiveField(0)
   final int? id;
+  @HiveField(1)
   final String name;
+  @HiveField(2)
   final String? description;
+  @HiveField(3)
   final String? image;
+  @HiveField(4)
   final List keywords;
-  final steps;
+  @HiveField(5)
+  final List<StepModel> steps;
+  @HiveField(6)
   final int? workingTime;
+  @HiveField(7)
   final int? waitingTime;
+  @HiveField(8)
   final int? createdBy;
+  @HiveField(9)
   final String? createdAt;
+  @HiveField(10)
   final String? updatedAt;
+  @HiveField(11)
   final bool internal;
+  @HiveField(12)
   final int? servings;
+  @HiveField(13)
   final String? servingsText;
+  @HiveField(14)
   final int? rating;
+  @HiveField(15)
   final String? lastCooked;
+  @HiveField(16)
   final bool? isNew;
+  @HiveField(17)
   final int? recent;
 
   Recipe({
@@ -48,7 +70,7 @@ class Recipe {
     String? description,
     String? image,
     List? keywords,
-    steps,
+    List<StepModel>? steps,
     int? workingTime,
     int? waitingTime,
     int? createdBy,
@@ -87,7 +109,7 @@ class Recipe {
   Map<String, dynamic> toJson() {
     List<Map<String,dynamic>> steps = [];
 
-    if (this.steps != null && this.steps.isNotEmpty) {
+    if (this.steps.isNotEmpty) {
       this.steps.forEach((StepModel step) {
         steps.add(step.toJson());
       });
@@ -97,13 +119,21 @@ class Recipe {
       'id': this.id,
       'name': this.name,
       'description': this.description,
+      'image': this.image,
       'keywords': this.keywords,
       'steps': steps,
       'working_time': this.workingTime ?? 0,
       'waiting_time': this.waitingTime ?? 0,
+      'created_by': this.createdBy,
+      'created_at': this.createdAt,
+      'updated_at': this.updatedAt,
       'internal': this.internal,
       'servings': this.servings ?? 0,
-      'servings_text': this.servingsText ?? ''
+      'servings_text': this.servingsText ?? '',
+      'rating': this.rating,
+      'last_cooked': this.lastCooked,
+      'is_new': this.isNew,
+      'recent': this.recent
     };
   }
 
@@ -114,7 +144,7 @@ class Recipe {
       description: json['description'] as String?,
       image: json['image'] as String?,
       keywords: json['keywords'] as List,
-      steps: (json['steps'] != null) ? json['steps'].map((item) => StepModel.fromJson(item)) : null,
+      steps: (json['steps'] != null) ? json['steps'].map((item) => StepModel.fromJson(item)).toList().cast<StepModel>() : [],
       workingTime: json['working_time'] as int?,
       waitingTime: json['waiting_time'] as int?,
       createdBy: json['created_by'] as int,

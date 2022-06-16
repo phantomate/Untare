@@ -37,7 +37,7 @@ class ApiFood extends ApiService {
     if (food.id == null) {
       throw MappingException(message: 'Id missing for patching food');
     }
-    var url = '/api/food/' + food.id.toString();
+    var url = '/api/food/' + food.id.toString() + '/';
 
     Map<String, dynamic> requestJson = {
       'food_onhand': food.onHand
@@ -45,13 +45,12 @@ class ApiFood extends ApiService {
 
     Response res = await httpPatch(url, requestJson);
 
-    Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
-
     if ([200, 201].contains(res.statusCode)) {
+      Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
       return Food.fromJson(json);
     } else {
       throw ApiException(
-          message: 'Food api error',
+          message: 'Food api error - could not update food on hand',
           statusCode: res.statusCode
       );
     }

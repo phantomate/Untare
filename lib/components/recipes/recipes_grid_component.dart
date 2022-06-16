@@ -13,7 +13,7 @@ Widget buildRecipesGrid(List<Widget> recipesWidgetList, BoxConstraints constrain
         crossAxisCount: (axisCount > 1) ? axisCount : 1,
         crossAxisSpacing: 5,
         mainAxisSpacing: 5,
-        mainAxisExtent: 182
+        mainAxisExtent: 196
     ),
   );
 }

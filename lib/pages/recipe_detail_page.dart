@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -7,7 +7,7 @@ import 'package:tare/blocs/recipe/recipe_bloc.dart';
 import 'package:tare/blocs/recipe/recipe_event.dart';
 import 'package:tare/blocs/recipe/recipe_state.dart';
 import 'package:tare/components/bottom_sheets/recipe_more_bottom_sheet_component.dart';
-import 'package:tare/components/widgets/recipe_detail_ingredients_stateful_widget.dart';
+import 'package:tare/components/widgets/recipe_detail_tabbar_widget.dart';
 import 'package:tare/components/recipes/recipe_image_component.dart';
 import 'package:tare/components/loading_component.dart';
 import 'package:tare/models/recipe.dart';
@@ -52,6 +52,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
               if (widget.recipe.id == state.recipe.id) {
                 recipe = state.recipe;
               }
+            } else if (state is RecipeFetchedFromCache) {
+              if (widget.recipe.id == state.recipe.id && state.recipe.steps.isNotEmpty) {
+                recipe = state.recipe;
+              }
             }
 
             return NestedScrollView(
@@ -61,16 +65,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 ];
               },
               body: Container(
-                  margin: const EdgeInsets.only(top: 50),
                   color: Theme.of(context).scaffoldBackgroundColor,
-                  child: (state is RecipeLoading)
+                  child: (state is RecipeLoading || (state is RecipeFetchedFromCache && state.recipe.steps.isEmpty))
                     ? buildLoading()
-                    : TabBarView(
-                        children: [
-                          RecipeDetailIngredientsWidget(recipe: recipe),
-                          buildRecipeInstructions(recipe)
-                        ],
-                      )
+                    : RecipeDetailTabBarWidget(recipe: recipe)
               ),
             );
           }
@@ -99,7 +97,6 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
               leadingWidth: 50,
               titleSpacing: 0,
               automaticallyImplyLeading: false,
-              iconTheme: const IconThemeData(color: Colors.black87),
               leading: IconButton(
                 iconSize: 30,
                 padding: const EdgeInsets.all(0),
@@ -112,21 +109,18 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
               title: Text(
                 recipe.name,
                 style: TextStyle(
-                    color: Colors.black87,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18
                 ),
               ),
               actions: [
                 IconButton(
-                    tooltip: 'More',
+                    tooltip: AppLocalizations.of(context)!.moreTooltip,
                     splashRadius: 20,
                     onPressed: () {
                       recipeMoreBottomSheet(context, recipe);
                     },
-                    icon: Icon(
-                      Icons.more_vert_outlined,
-                      color: Colors.black87,
-                    )
+                    icon: Icon(Icons.more_vert_outlined)
                 )
               ],
               elevation: (scrolled) ? 1.5 : 0,
@@ -154,24 +148,22 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                               children: [
                                 Icon(
                                   Icons.restaurant_outlined,
-                                  size: 12,
-                                  color: Colors.black87,
+                                  size: 13
                                 ),
                                 SizedBox(width: 2),
                                 Text(
                                   lastCooked,
                                   style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black87,
+                                    fontSize: 13,
                                   ),
                                 ),
                               ],
                             ),
                             SizedBox(height: 3),
                             Text(
-                              'Last cooked',
+                              AppLocalizations.of(context)!.lastCooked,
                               style: TextStyle(
-                                  fontSize: 9,
+                                  fontSize: 10,
                                   color: Colors.grey
                               ),
                             )
@@ -184,24 +176,21 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                               children: [
                                 Text(
                                   recipe.rating.toString(),
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black87,
-                                  ),
+                                  style: TextStyle(fontSize: 13),
                                 ),
                                 SizedBox(width: 2),
                                 Icon(
                                   Icons.star,
-                                  size: 12,
+                                  size: 13,
                                   color: Colors.amberAccent,
                                 ),
                               ],
                             ),
                             SizedBox(height: 3),
                             Text(
-                              'Rating',
+                              AppLocalizations.of(context)!.rating,
                               style: TextStyle(
-                                  fontSize: 9,
+                                  fontSize: 10,
                                   color: Colors.grey
                               ),
                             )
@@ -214,24 +203,20 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                               children: [
                                 Icon(
                                   Icons.timer_outlined,
-                                  size: 12,
-                                  color: Colors.black87,
+                                  size: 13,
                                 ),
                                 SizedBox(width: 2),
                                 Text(
                                   recipe.workingTime.toString() + ' min',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black87,
-                                  ),
+                                  style: TextStyle(fontSize: 13),
                                 ),
                               ],
                             ),
                             SizedBox(height: 3),
                             Text(
-                              'Prep. time',
+                              AppLocalizations.of(context)!.prepTime,
                               style: TextStyle(
-                                fontSize: 9,
+                                fontSize: 10,
                                 color: Colors.grey
                               ),
                             )
@@ -244,24 +229,22 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                               children: [
                                 Icon(
                                   Icons.hourglass_bottom_outlined,
-                                  size: 12,
-                                  color: Colors.black87,
+                                  size: 13
                                 ),
                                 SizedBox(width: 2),
                                 Text(
                                   recipe.waitingTime.toString() + ' min',
                                   style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.black87,
+                                    fontSize: 13,
                                   ),
                                 ),
                               ],
                             ),
                             SizedBox(height: 3),
                             Text(
-                              'Waiting time',
+                              AppLocalizations.of(context)!.waitingTime,
                               style: TextStyle(
-                                  fontSize: 9,
+                                  fontSize: 10,
                                   color: Colors.grey
                               ),
                             )
@@ -276,76 +259,16 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
         SliverPersistentHeader(
           delegate: _SliverAppBarDelegate(
             TabBar(
-              labelColor: Colors.black87,
+              indicatorColor: Theme.of(context).primaryColor,
               unselectedLabelColor: Colors.grey,
               tabs: [
-                Tab(text: 'Ingredients'),
-                Tab(text: 'Instructions'),
+                Tab(text: AppLocalizations.of(context)!.ingredients),
+                Tab(text: AppLocalizations.of(context)!.directions),
               ],
             ),
           ),
           pinned: true,
         ),
-      ],
-    ),
-  );
-}
-
-Widget buildRecipeInstructions(Recipe recipe) {
-  if (recipe.steps != null && recipe.steps!.first.instruction != null && recipe.steps!.first.instruction != '') {
-    List<String> splitInstructions = recipe.steps!.first.instruction.split("\n\n");
-
-    if (splitInstructions.length <= 2) {
-      List<String> tmpSplitInstructions = splitInstructions;
-      splitInstructions = [];
-      for(int i = 0; i < tmpSplitInstructions.length; i++) {
-        splitInstructions.addAll(tmpSplitInstructions[i].split("\n"));
-      }
-    }
-
-    List<Widget> instructionSteps = [];
-
-    for(int i = 0; i < splitInstructions.length; i++) {
-      final splitInstruction = splitInstructions[i].replaceAll("\r", "");
-
-      if (i < splitInstructions.length - 1) {
-        instructionSteps.add(buildInstructionStep(i+1, splitInstruction));
-      } else {
-        instructionSteps.add(
-          Container(
-            padding: const EdgeInsets.only(top: 10),
-            child: Text(splitInstruction, style: TextStyle(color: Colors.black45)),
-        ));
-      }
-    }
-
-    return ListView(
-      padding: const EdgeInsets.only(top: 10, right: 20, bottom: 0, left: 20),
-      physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-      children: instructionSteps,
-    );
-  } else {
-    return Center(child: Text('No instructions found'));
-  }
-}
-
-Widget buildInstructionStep(int stepCount, String step) {
-  return Container(
-    padding: const EdgeInsets.only(top: 15, bottom: 15),
-    decoration: BoxDecoration(
-      border: Border(
-          bottom: BorderSide(
-            color: Colors.grey[200]!,
-            width: 1
-          )
-      )
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Step $stepCount', style: TextStyle(color: Colors.black45, fontSize: 12)),
-        SizedBox(height: 5),
-        Text(step)
       ],
     ),
   );

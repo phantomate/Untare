@@ -8,7 +8,7 @@ Widget? buildRecipeTime(Recipe recipe, {BoxDecoration? boxDecoration, Color? col
   if (recipeSumTime > 0) {
     return Container(
       decoration: boxDecoration,
-      padding: EdgeInsets.all(3),
+      padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -16,14 +16,14 @@ Widget? buildRecipeTime(Recipe recipe, {BoxDecoration? boxDecoration, Color? col
         children: [
           Icon(
             Icons.timer_outlined,
-            size: 12,
+            size: 11,
             color: color,
           ),
           SizedBox(width: 2),
           Text(
             recipeSumTime.toString() + ' min',
             style: TextStyle(
-              fontSize: 12,
+              fontSize: 11,
               color: color
             ),
           ),

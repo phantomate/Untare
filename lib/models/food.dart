@@ -1,12 +1,22 @@
 import 'package:tare/models/supermarket_category.dart';
+import 'package:hive/hive.dart';
 
+part 'food.g.dart';
+
+@HiveType(typeId: 6)
 class Food {
 
+  @HiveField(0)
   final int? id;
+  @HiveField(1)
   final String name;
+  @HiveField(2)
   final String? description;
+  @HiveField(3)
   final bool onHand;
+  @HiveField(4)
   final SupermarketCategory? supermarketCategory;
+  @HiveField(5)
   final bool? ignoreShopping;
 
   Food({

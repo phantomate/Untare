@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -14,19 +12,41 @@ import 'package:tare/blocs/recipe/recipe_state.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:tare/blocs/shopping_list/shopping_list_state.dart';
 import 'package:tare/constants/colors.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
-import 'package:tare/cubits/recipe_layout_cubit.dart';
+import 'package:tare/cubits/settings_cubit.dart';
 import 'package:tare/cubits/shopping_list_entry_cubit.dart';
-import 'package:tare/cubits/theme_mode_cubit.dart';
 import 'package:tare/extensions/theme_extension.dart';
+import 'package:tare/models/app_setting.dart';
+import 'package:tare/models/food.dart';
+import 'package:tare/models/ingredient.dart';
+import 'package:tare/models/meal_plan_entry.dart';
+import 'package:tare/models/meal_type.dart';
+import 'package:tare/models/recipe.dart';
+import 'package:tare/models/recipe_meal_plan.dart';
+import 'package:tare/models/shopping_list_entry.dart';
+import 'package:tare/models/step.dart';
+import 'package:tare/models/supermarket_category.dart';
+import 'package:tare/models/unit.dart';
+import 'package:tare/models/user.dart';
+import 'package:tare/models/user_setting.dart';
 import 'package:tare/pages/meal_plan_page.dart';
 import 'package:tare/pages/recipes_page.dart';
 import 'package:tare/pages/settings_page.dart';
 import 'package:tare/pages/shopping_list_page.dart';
 import 'package:tare/pages/starting_page.dart';
 import 'package:tare/services/api/api_meal_plan.dart';
+import 'package:tare/services/api/api_meal_type.dart';
 import 'package:tare/services/api/api_recipe.dart';
+import 'package:tare/services/api/api_service.dart';
 import 'package:tare/services/api/api_shopping_list.dart';
+import 'package:tare/services/api/api_supermarket_category.dart';
+import 'package:tare/services/api/api_user.dart';
+import 'package:tare/services/cache/cache_meal_plan_service.dart';
+import 'package:tare/services/cache/cache_recipe_service.dart';
+import 'package:tare/services/cache/cache_shopping_list_service.dart';
+import 'package:tare/services/cache/cache_user_service.dart';
+import 'package:workmanager/workmanager.dart';
 
 
 import 'blocs/authentication/authentication_bloc.dart';
@@ -34,10 +54,11 @@ import 'blocs/authentication/authentication_event.dart';
 import 'blocs/authentication/authentication_state.dart';
 
 void main() async{
-  await Hive.initFlutter();
-  await Hive.openBox('appBox');
-
   WidgetsFlutterBinding.ensureInitialized();
+  await _initHive();
+
+  await Workmanager().initialize(_callbackDispatcher);
+
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_){
     runApp(
         Phoenix(
@@ -47,47 +68,97 @@ void main() async{
   });
 }
 
+Future _initHive() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(RecipeAdapter());
+  Hive.registerAdapter(StepModelAdapter());
+  Hive.registerAdapter(IngredientAdapter());
+  Hive.registerAdapter(FoodAdapter());
+  Hive.registerAdapter(UnitAdapter());
+  Hive.registerAdapter(SupermarketCategoryAdapter());
+  Hive.registerAdapter(MealPlanEntryAdapter());
+  Hive.registerAdapter(MealTypeAdapter());
+  Hive.registerAdapter(ShoppingListEntryAdapter());
+  Hive.registerAdapter(RecipeMealPlanAdapter());
+  Hive.registerAdapter(UserAdapter());
+  Hive.registerAdapter(AppSettingAdapter());
+  Hive.registerAdapter(UserSettingAdapter());
+  await Hive.openBox('unTaReBox');
+}
+
+void _callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    // Retry failed request
+    if (task == 'retryFailedRequestTask') {
+      await _initHive();
+
+      final ApiService apiService = ApiService();
+      await apiService.retryRequest(inputData!);
+    }
+
+    return Future.value(true);
+  });
+}
+
 class Tare extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var box = Hive.box('appBox');
+    var box = Hive.box('unTaReBox');
 
     return MultiBlocProvider(
         providers: [
           BlocProvider<AuthenticationBloc>(
               create: (context) => AuthenticationBloc()..add(AppLoaded())
           ),
-          BlocProvider<RecipeLayoutCubit>(
+          BlocProvider<SettingsCubit>(
               create: (context) {
-                RecipeLayoutCubit cubit = RecipeLayoutCubit();
-                cubit.initLayout(box.get('layout'));
-                return cubit;
-              }
-          ),
-          BlocProvider<ThemeModeCubit>(
-              create: (context) {
-                ThemeModeCubit cubit = ThemeModeCubit();
-                cubit.initThemeMode(box.get('theme'));
+                SettingsCubit cubit = SettingsCubit(apiUser: ApiUser(), cacheUserService: CacheUserService());
+                AppSetting? storedAppSetting = box.get('settings');
+                if (storedAppSetting != null) {
+                  cubit.changeLayoutTo(storedAppSetting.layout);
+                  cubit.changeThemeTo(storedAppSetting.theme);
+                  cubit.changeDefaultPageTo(storedAppSetting.defaultPage);
+                }
                 return cubit;
               }
           ),
           BlocProvider<RecipeBloc>(
-            create: (BuildContext context) => RecipeBloc(apiRecipe: ApiRecipe())
+            create: (BuildContext context) => RecipeBloc(apiRecipe: ApiRecipe(), cacheRecipeService: CacheRecipeService())
           ),
           BlocProvider<MealPlanBloc>(
-            create: (BuildContext context) => MealPlanBloc(apiMealPlan: ApiMealPlan())
+            create: (BuildContext context) => MealPlanBloc(apiMealPlan: ApiMealPlan(), apiMealType: ApiMealType(), cacheMealPlanService: CacheMealPlanService())
           ),
           BlocProvider<ShoppingListBloc>(
-            create: (BuildContext context) => ShoppingListBloc(apiShoppingList: ApiShoppingList())
+            create: (BuildContext context) => ShoppingListBloc(apiShoppingList: ApiShoppingList(), apiSupermarketCategory: ApiSupermarketCategory(), cacheShoppingListService: CacheShoppingListService())
           ),
           BlocProvider<ShoppingListEntryCubit>(
-            create: (BuildContext context) =>ShoppingListEntryCubit()
+            create: (BuildContext context) => ShoppingListEntryCubit()
           )
         ],
         child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
             if (state is AuthenticationAuthenticated) {
-              return TarePage();
+              SettingsCubit settingsCubit = context.watch<SettingsCubit>();
+
+              return MaterialApp(
+                  localizationsDelegates: [
+                    AppLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                    FormBuilderLocalizations.delegate,
+                  ],
+                  supportedLocales: [
+                    Locale('en'),
+                    Locale('de')
+                  ],
+                  debugShowCheckedModeBanner: false,
+                  title: 'Tare App',
+                  theme: AppTheme.lightTheme,
+                  darkTheme: AppTheme.darkTheme,
+                  themeMode: (settingsCubit.state.theme == 'light') ? ThemeMode.light : ThemeMode.dark,
+                  home: TarePage()
+              );
             }
             return StartingPage();
           },
@@ -133,6 +204,11 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
     _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    if (context.read<SettingsCubit>().state.defaultPage == 'plan') {
+      _selectedScreenIndex = 1;
+    } else if (context.read<SettingsCubit>().state.defaultPage == 'shopping') {
+      _selectedScreenIndex = 2;
+    }
   }
 
   void _selectScreen(int index) {
@@ -149,130 +225,127 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    ThemeModeCubit themeModeCubit = context.watch<ThemeModeCubit>();
-    return MaterialApp(
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        FormBuilderLocalizations.delegate,
-      ],
-      supportedLocales: [
-        Locale('de'),
-        Locale('en'),
-        Locale('es'),
-        Locale('fr'),
-        Locale('it'),
-      ],
-      debugShowCheckedModeBanner: false,
-      title: 'Tare App',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: (themeModeCubit.state == 'light') ? ThemeMode.light : ThemeMode.dark,
-      home: MultiBlocListener(
-          listeners: [
-            BlocListener<MealPlanBloc, MealPlanState>(
-                listener: (context, state) {
-                  if (state is MealPlanError) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.error),
-                        duration: Duration(seconds: 8),
-                      ),
-                    );
-                  } else if (state is MealPlanUnauthorized) {
-                    Phoenix.rebirth(context);
-                  } else if (state is MealPlanCreated) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Added to meal plan'),
-                        duration: Duration(seconds: 3),
-                      ),
-                    );
-                  }
+
+    return MultiBlocListener(
+        listeners: [
+          BlocListener<MealPlanBloc, MealPlanState>(
+              listener: (context, state) {
+                if (state is MealPlanError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error),
+                      duration: Duration(seconds: 5),
+                    ),
+                  );
+                } else if (state is MealPlanUnauthorized) {
+                  Phoenix.rebirth(context);
+                } else if (state is MealPlanCreated) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context)!.addedToMealPlan),
+                      duration: Duration(seconds: 3),
+                    ),
+                  );
                 }
-            ),
-            BlocListener<RecipeBloc, RecipeState>(
+              }
+          ),
+          BlocListener<RecipeBloc, RecipeState>(
               listener: (context, state) {
                 if (state is RecipeError) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(state.error),
-                      duration: Duration(seconds: 8),
+                      duration: Duration(seconds: 5),
                     ),
                   );
                 } else if (state is RecipeUnauthorized) {
                   Phoenix.rebirth(context);
+                } else if (state is RecipeProcessing) {
+                  String? snackBarText;
+
+                  if (state.processingString == 'updatingRecipe') {
+                    snackBarText = AppLocalizations.of(context)!.updatingRecipe;
+                  } else if (state.processingString == 'addingIngredientsToShoppingList') {
+                    snackBarText = AppLocalizations.of(context)!.addingIngredientsToShoppingList;
+                  } else if (state.processingString == 'importingRecipe') {
+                    snackBarText = AppLocalizations.of(context)!.importingRecipe;
+                  }
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text((snackBarText ?? '') + ' ...'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
                 } else if (state is RecipeDeleted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Recipe deleted'),
+                      content: Text(AppLocalizations.of(context)!.removedRecipe),
                       duration: Duration(seconds: 3),
                     ),
                   );
                 } else if (state is RecipeAddedIngredientsToShoppingList) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Items added'),
+                      content: Text(AppLocalizations.of(context)!.shoppingListItemsAdded),
                       duration: Duration(seconds: 3),
                     ),
                   );
                 }
               }
-            ),
-            BlocListener<ShoppingListBloc, ShoppingListState>(
-                listener: (context, state) {
-                  if (state is ShoppingListError) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(state.error),
-                        duration: Duration(seconds: 8),
-                      ),
-                    );
-                  } else if (state is ShoppingListUnauthorized) {
-                    Phoenix.rebirth(context);
-                  }
-                }
-            )
-          ],
-          child: Scaffold(
-              body: IndexedStack(
-                  index: _selectedScreenIndex,
-                  children: _pages
-              ),
-              bottomNavigationBar: Container(
-                decoration: BoxDecoration(
-                  boxShadow:[
-                    BoxShadow(
-                        color: Colors.black12.withOpacity(0.4), //color of shadow
-                        spreadRadius: 0.5, //spread radius
-                        blurRadius: 1, // blur radius
-                        offset: Offset(0, 0)
+          ),
+          BlocListener<ShoppingListBloc, ShoppingListState>(
+              listener: (context, state) {
+                if (state is ShoppingListError) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(state.error),
+                      duration: Duration(seconds: 5),
                     ),
-                  ],
-                ),
-                child: SizeTransition(
-                    sizeFactor: _animationController,
-                    axisAlignment: -1.0,
-                    child: BottomNavigationBar(
-                      type: BottomNavigationBarType.fixed,
-                      currentIndex: _selectedScreenIndex,
-                      selectedItemColor: primaryColor,
-                      unselectedItemColor: Colors.grey,
-                      showSelectedLabels: true,
-                      showUnselectedLabels: true,
-                      onTap: _selectScreen,
-                      items: [
-                        BottomNavigationBarItem(icon: Icon(Icons.restaurant_menu_outlined), label: 'Recipes'),
-                        BottomNavigationBarItem(icon: Icon(Icons.calendar_today_outlined), label: "Plan"),
-                        BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), label: 'List'),
-                        BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
-                      ],
-                    )
-                ),
-              )
+                  );
+                } else if (state is ShoppingListUnauthorized) {
+                  Phoenix.rebirth(context);
+                }
+              }
           )
-      ),
+        ],
+        child: Scaffold(
+            body: IndexedStack(
+                index: _selectedScreenIndex,
+                children: _pages
+            ),
+            bottomNavigationBar: Container(
+              decoration: BoxDecoration(
+                boxShadow:[
+                  BoxShadow(
+                      color: Colors.black12.withOpacity(0.4), //color of shadow
+                      spreadRadius: 0.5, //spread radius
+                      blurRadius: 1, // blur radius
+                      offset: Offset(0, 0)
+                  ),
+                ],
+              ),
+              child: SizeTransition(
+                  sizeFactor: _animationController,
+                  axisAlignment: -1.0,
+                  child: BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
+                    currentIndex: _selectedScreenIndex,
+                    selectedItemColor: primaryColor,
+                    unselectedItemColor: Colors.grey,
+                    showSelectedLabels: true,
+                    showUnselectedLabels: false,
+                    onTap: _selectScreen,
+                    items: [
+                      BottomNavigationBarItem(icon: Icon(Icons.restaurant_menu_outlined), label: AppLocalizations.of(context)!.recipesTitle),
+                      BottomNavigationBarItem(icon: Icon(Icons.calendar_today_outlined), label: AppLocalizations.of(context)!.mealPlanTitle),
+                      BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), label: AppLocalizations.of(context)!.shoppingListTitle),
+                      BottomNavigationBarItem(icon: Icon(Icons.settings), label: AppLocalizations.of(context)!.settingsTitle),
+                    ],
+                  )
+              ),
+            )
+        )
     );
   }
 }

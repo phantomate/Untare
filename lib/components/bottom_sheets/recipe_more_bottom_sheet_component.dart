@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:tare/components/widgets/bottom_sheets/recipe_more_component.dart';
 import 'package:tare/models/recipe.dart';
 
 Future recipeMoreBottomSheet(BuildContext context, Recipe recipe) {
-  return showMaterialModalBottomSheet(
+  return showModalBottomSheet(
       backgroundColor: Colors.transparent,
       useRootNavigator: true,
-      duration: Duration(milliseconds: 300),
       context: context,
       builder: (btsContext) => Container(
         decoration: BoxDecoration(
@@ -16,31 +13,28 @@ Future recipeMoreBottomSheet(BuildContext context, Recipe recipe) {
             borderRadius: BorderRadius.all(Radius.circular(10))
         ),
         margin: const EdgeInsets.all(12),
-        height: 250,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Wrap(
+          spacing: 15,
           children: [
             Container(
-              height: 50,
+              height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                  color: Colors.grey[300]
+                  color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300] : Colors.grey[700]
               ),
               child: Text(
                 recipe.name,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Colors.black87
+                    fontSize: 18
                 ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            Expanded(
-                child: buildRecipeMore(context, btsContext, recipe)
-            )
+            buildRecipeMore(context, btsContext, recipe)
           ],
         ),
       )

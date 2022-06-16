@@ -1,7 +1,15 @@
+import 'package:hive/hive.dart';
+
+part 'unit.g.dart';
+
+@HiveType(typeId: 7)
 class Unit {
 
+  @HiveField(0)
   final int? id;
+  @HiveField(1)
   final String name;
+  @HiveField(2)
   final String? description;
 
   Unit({

@@ -1,7 +1,15 @@
+import 'package:hive/hive.dart';
+
+part 'supermarket_category.g.dart';
+
+@HiveType(typeId: 8)
 class SupermarketCategory {
 
+  @HiveField(0)
   final int? id;
+  @HiveField(1)
   final String name;
+  @HiveField(2)
   final String? description;
 
   SupermarketCategory({

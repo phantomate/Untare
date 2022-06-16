@@ -1,44 +1,64 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:tare/components/widgets/bottom_sheets/meal_plan_more_component.dart';
-import 'package:tare/models/meal_plan_entry.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
+import 'package:tare/components/dialogs/delete_meal_type_dialog.dart';
+import 'package:tare/components/dialogs/edit_meal_type_dialog.dart';
 
-Future mealPlanMoreBottomSheet(BuildContext context, MealPlanEntry mealPlan) {
-  return showMaterialModalBottomSheet(
+Future mealPlanMoreBottomSheet(BuildContext context) {
+  return showModalBottomSheet(
       backgroundColor: Colors.transparent,
       useRootNavigator: true,
-      duration: Duration(milliseconds: 300),
       context: context,
       builder: (btsContext) => Container(
-        alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: BorderRadius.all(Radius.circular(10))
         ),
         margin: const EdgeInsets.all(12),
-        height: 200,
-        child: Column(
+        child: Wrap(
+          spacing: 15,
           children: [
             Container(
-              height: 50,
+              height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                  color: Colors.grey[300]
+                  color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300] : Colors.grey[700]
               ),
               child: Text(
-                mealPlan.recipe!.name,
+                AppLocalizations.of(context)!.mealPlanTitle,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: Colors.black87
+                    fontSize: 18
                 ),
               ),
             ),
-            Expanded(
-                child: buildMealPlanMore(context, btsContext, mealPlan)
+            Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.only(left: 12, right: 12),
+                child: Column(
+                    children: [
+                      TextButton.icon(
+                        onPressed: () {
+                          Navigator.pop(btsContext);
+                          editMealTypeDialog(context);
+                        },
+                        icon: Icon(Icons.edit_outlined),
+                        label: Text(AppLocalizations.of(context)!.editMealType),
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          Navigator.pop(btsContext);
+                          deleteMealTypeDialog(context);
+                        },
+                        icon: Icon(Icons.delete_outline, color: Colors.redAccent),
+                        label: Text(
+                          AppLocalizations.of(context)!.removeMealType,
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
+                      ),
+                    ]
+                )
             )
           ],
         ),
