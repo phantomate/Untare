@@ -31,10 +31,8 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       }
 
       List<Recipe> recipes = await apiRecipe.getRecipeList(event.query, event.random, event.page, event.pageSize, event.sortOrder);
-      if (recipes.isNotEmpty) {
-        emit(RecipeListFetched(recipes: recipes, page: event.page));
-        cacheRecipeService.upsertRecipeList(recipes);
-      }
+      emit(RecipeListFetched(recipes: recipes, page: event.page));
+      cacheRecipeService.upsertRecipeList(recipes);
     } on ApiException catch (e) {
       if (e.statusCode == 401) {
         emit(RecipeUnauthorized());

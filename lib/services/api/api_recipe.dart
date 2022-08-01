@@ -116,6 +116,7 @@ class ApiRecipe extends ApiService {
 
     Response res = await httpPost(url, recipe.toJson());
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
+    print(json);
 
     if ([200, 201].contains(res.statusCode)) {
       return Recipe.fromJson(json);

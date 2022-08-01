@@ -7,7 +7,7 @@ Future getFoodsFromApiCache(String query) async {
   final CacheFoodService _cacheFoodService = CacheFoodService();
   final ApiFood _apiFood = ApiFood();
 
-  List<Food>? cacheFoods = _cacheFoodService.getFoods(query, 1, 20);
+  List<Food>? cacheFoods = _cacheFoodService.getFoods(query, 1, 25);
 
   if (cacheFoods != null) {
     return cacheFoods;

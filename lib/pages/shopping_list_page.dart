@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:configurable_expansion_tile_null_safety/configurable_expansion_tile_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,6 @@ import 'package:tare/cubits/shopping_list_entry_cubit.dart';
 import 'package:tare/models/food.dart';
 import 'package:tare/models/shopping_list_entry.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:configurable_expansion_tile_null_safety/configurable_expansion_tile.dart';
 import 'package:tare/extensions/double_extension.dart';
 
 class ShoppingListPage extends HideBottomNavBarStatefulWidget {

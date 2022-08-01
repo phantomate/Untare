@@ -20,7 +20,7 @@ class FoodAdapter extends TypeAdapter<Food> {
       id: fields[0] as int?,
       name: fields[1] as String,
       description: fields[2] as String?,
-      onHand: fields[3] as bool,
+      onHand: fields[3] as bool?,
       supermarketCategory: fields[4] as SupermarketCategory?,
       ignoreShopping: fields[5] as bool?,
     );

@@ -7,17 +7,18 @@ Future getUnitsFromApiCache(String query) async {
   final CacheUnitService _cacheUnitService = CacheUnitService();
   final ApiUnit _apiUnit = ApiUnit();
 
-  List<Unit>? cacheUnits = _cacheUnitService.getUnits(query, 1, 20);
+  List<Unit>? cacheUnits = _cacheUnitService.getUnits(query, 1, 25);
+print('dude');
 
-  if (cacheUnits != null) {
-    return cacheUnits;
-  }
 
   try {
+    print('jsojdosdjsod');
     Future<List<Unit>> units = _apiUnit.getUnits(query, 1, 25);
     units.then((value) => _cacheUnitService.upsertUnits(value));
     return units;
-  } on ApiConnectionException catch (e) {
-    // Do nothing
+  } catch (e) {
+    if (cacheUnits != null) {
+      return cacheUnits;
+    }
   }
 }

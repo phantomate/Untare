@@ -77,7 +77,7 @@ class StepModel {
 
   factory StepModel.fromJson(Map<String, dynamic> json) {
     return StepModel(
-      id: json['id'] as int,
+      id: json['id'] as int?,
       name: json['name'] as String?,
       instruction: json['instruction'] as String?,
       ingredients: json['ingredients'].map((item) => Ingredient.fromJson(item)).toList().cast<Ingredient>(),

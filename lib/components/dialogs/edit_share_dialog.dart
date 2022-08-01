@@ -13,13 +13,13 @@ Future editShareDialog(BuildContext context, UserSetting userSetting, String ref
   User? loggedInUser = box.get('user');
   final _formBuilderKey = GlobalKey<FormBuilderState>();
   final SettingsCubit _settingsCubit = context.read<SettingsCubit>();
-  List<FormBuilderFieldOption> shareOptionList = [];
+  List<FormBuilderChipOption> shareOptionList = [];
   List<User> userList = await getUsersFromApiCache();
 
   userList.forEach((element) {
     if (loggedInUser == null || loggedInUser.id != element.id) {
       shareOptionList.add(
-          FormBuilderFieldOption(
+          FormBuilderChipOption(
               value: element.id, child: Text(element.username)
           )
       );

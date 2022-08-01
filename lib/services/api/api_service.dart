@@ -21,8 +21,8 @@ class ApiService {
     return sendRequest(request);
   }
 
-  Future httpPost(String url, data) async {
-    Request request = prepareRequest('post', url, jsonBody: data);
+  Future httpPost(String url, data, {bool? withoutToken}) async {
+    Request request = prepareRequest('post', url, jsonBody: data, withoutToken: withoutToken);
     return sendRequest(request);
   }
 
@@ -47,24 +47,29 @@ class ApiService {
     File file = File(image.path);
 
     var request = MultipartRequest('put', Uri.parse(baseUrl! + url));
-    request.files.add(new MultipartFile('image', file.readAsBytes().asStream(), file.lengthSync(), filename: image.path.split('/').last));
+    request.files.add(MultipartFile('image', file.readAsBytes().asStream(), file.lengthSync(), filename: image.path.split('/').last));
     request.headers.addAll(headers);
 
     return sendRequest(request);
   }
 
-  Map<String, String> getHeaders() {
+  Map<String, String> getHeaders({bool? withoutToken}) {
     Map<String, String> headers = {
       'content-type': 'application/json',
-      'authorization': 'token ' + (token ?? ''),
       'charset': 'UTF-8'
     };
+
+    if (withoutToken == null || !withoutToken) {
+      token ??= box.get('token');
+
+      headers['authorization'] = 'token ' + (token ?? '');
+    }
 
     return headers;
   }
 
-  Request prepareRequest(String method, String url, {Map<String, dynamic>? jsonBody}) {
-    Map<String, String> headers = getHeaders();
+  Request prepareRequest(String method, String url, {Map<String, dynamic>? jsonBody, bool? withoutToken}) {
+    Map<String, String> headers = getHeaders(withoutToken: withoutToken);
 
     Request request = Request(method, Uri.parse(baseUrl! + url));
 
@@ -105,7 +110,7 @@ class ApiService {
           );
         }
 
-        throw new ApiConnectionException();
+        throw ApiConnectionException();
       } else {
         throw e;
       }

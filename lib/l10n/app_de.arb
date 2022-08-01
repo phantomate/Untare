@@ -43,6 +43,7 @@
   "waitingTime": "Wartezeit",
 
   "name": "Name",
+  "keywords": "Schlagwörter",
 
   "mealPlanTitle": "Essensplan",
   "mealPlanThisWeek": "Diese Woche",
@@ -112,5 +113,9 @@
   "removedRecipe": "Rezept wurde entfernt",
   "shoppingListItemsAdded": "Zutaten wurden zur Einkaufsliste hinzugefügt",
   "updatingRecipe": "Aktualisiere Rezept",
-  "addedToMealPlan": "Rezept wurde zum Essensplan hinzugefügt"
+  "addedToMealPlan": "Rezept wurde zum Essensplan hinzugefügt",
+
+  "officialServer": "Offizieller Server",
+  "username": "Benutzername",
+  "password": "Passwort"
 }

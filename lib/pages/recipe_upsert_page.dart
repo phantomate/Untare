@@ -3,6 +3,7 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:tare/blocs/recipe/recipe_bloc.dart';
@@ -12,7 +13,9 @@ import 'package:tare/components/dialogs/upsert_recipe_ingredient_dialog.dart';
 import 'package:tare/components/loading_component.dart';
 import 'package:tare/components/recipes/recipe_image_component.dart';
 import 'package:tare/extensions/double_extension.dart';
+import 'package:tare/futures/future_api_cache_keywords.dart';
 import 'package:tare/models/ingredient.dart';
+import 'package:tare/models/keyword.dart';
 import 'package:tare/models/recipe.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:tare/models/step.dart';
@@ -37,7 +40,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
   void initState() {
     super.initState();
     _recipeBloc = BlocProvider.of<RecipeBloc>(context);
-    if (widget.recipe != null) {
+    if (widget.recipe != null && widget.recipe!.id != null) {
       _recipeBloc.add(FetchRecipe(id: widget.recipe!.id!));
     }
     recipe = widget.recipe;
@@ -54,6 +57,17 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
       stepList = steps ?? recipe!.steps;
     } else {
       stepList = steps ?? [];
+    }
+
+    // Reset order, if step order or ingredient order have changed
+    for(int i = 0; i < stepList.length; i++) {
+      if (stepList[i].order == null) {
+        stepList[i] = stepList[i].copyWith(order: i);
+      }
+
+      for(int j = 0; j < stepList[i].ingredients.length; j++) {
+        stepList[i].ingredients[j] = stepList[i].ingredients[j].copyWith(order: j);
+      }
     }
 
     // Update recipe name, if changed in form
@@ -96,7 +110,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
     // Here we can use the form builder data because we already hydrated the values in the form save methods
     if (['add', 'edit'].contains(map['method'])) {
       if (map['method'] == 'add') {
-        Ingredient ingredient = Ingredient(food: map['food'], unit: map['unit'], amount: double.tryParse(map['quantity']) ?? 0, note: map['note'], order: 0);
+        Ingredient ingredient = Ingredient(food: map['food'], unit: map['unit'], amount: double.tryParse(map['quantity']) ?? 0, note: map['note']);
         ingredientList.add(ingredient);
       }
 
@@ -183,7 +197,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                   padding: const EdgeInsets.all(0),
                   onPressed: () => Navigator.pop(hsbContext),
                   splashRadius: 20,
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.chevron_left,
                   ),
                 ),
@@ -197,20 +211,20 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                           image = formKey.currentState!.value['image'].first;
                         }
 
-                        if (widget.recipe != null) {
+                        if (widget.recipe != null && widget.recipe!.id != null) {
                           _recipeBloc.add(UpdateRecipe(recipe: rebuildRecipe(), image: image));
                         } else {
                           _recipeBloc.add(CreateRecipe(recipe: rebuildRecipe(), image: image));
                         }
                       }
                     },
-                    icon: Icon(Icons.save_outlined),
+                    icon: const Icon(Icons.save_outlined),
                     splashRadius: 20,
                   )
                 ],
                 title: Text(
                   (widget.recipe != null) ? AppLocalizations.of(context)!.recipeEdit : AppLocalizations.of(context)!.recipeCreate,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18
                   ),
@@ -262,18 +276,18 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                                       labelText: AppLocalizations.of(context)!.prepTime,
                                       isDense: true,
                                       contentPadding: const EdgeInsets.all(10),
-                                      border: OutlineInputBorder(),
+                                      border: const OutlineInputBorder(),
                                     ),
                                     validator: FormBuilderValidators.compose([
                                       FormBuilderValidators.numeric(),
                                       FormBuilderValidators.min(0)
                                     ]),
                                     keyboardType: TextInputType.number,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 15
                                     ),
                                   ),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   FormBuilderTextField(
                                     name: 'waitingTime',
                                     initialValue: (recipe != null) ? recipe!.waitingTime.toString() : null,
@@ -281,18 +295,18 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                                       labelText: AppLocalizations.of(context)!.waitingTime,
                                       isDense: true,
                                       contentPadding: const EdgeInsets.all(10),
-                                      border: OutlineInputBorder(),
+                                      border: const OutlineInputBorder(),
                                     ),
                                     validator: FormBuilderValidators.compose([
                                       FormBuilderValidators.numeric(),
                                       FormBuilderValidators.min(0)
                                     ]),
                                     keyboardType: TextInputType.number,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 15
                                     ),
                                   ),
-                                  SizedBox(height: 10),
+                                  const SizedBox(height: 10),
                                   FormBuilderTextField(
                                     name: 'servings',
                                     initialValue: (recipe != null) ? recipe!.servings.toString() : null,
@@ -300,14 +314,14 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                                       labelText: AppLocalizations.of(context)!.servings,
                                       isDense: true,
                                       contentPadding: const EdgeInsets.all(10),
-                                      border: OutlineInputBorder(),
+                                      border: const OutlineInputBorder(),
                                     ),
                                     validator: FormBuilderValidators.compose([
                                       FormBuilderValidators.numeric(),
                                       FormBuilderValidators.min(1)
                                     ]),
                                     keyboardType: TextInputType.number,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 15
                                     ),
                                   )
@@ -326,15 +340,63 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                         labelText: AppLocalizations.of(context)!.name,
                         isDense: true,
                         contentPadding: const EdgeInsets.all(10),
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                       ),
                       validator: FormBuilderValidators.compose([
                         FormBuilderValidators.required(),
                         FormBuilderValidators.max(128),
                       ]),
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 15
                       ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(top: 15, right: 20, bottom: 10, left: 20),
+                    child: FormBuilderChipsInput<Keyword>(
+                      name: 'keywords',
+                      decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.keywords,
+                        isDense: true,
+                        contentPadding: const EdgeInsets.all(10),
+                        border: const OutlineInputBorder(),
+                      ),
+                      initialValue: (recipe != null) ? recipe!.keywords: [],
+                      chipBuilder: (context, state, keyword) {
+                        return InputChip(
+                          key: ObjectKey(keyword),
+                          label: Text(keyword.name ?? keyword.label!),
+                          onDeleted: () => state.deleteChip(keyword),
+                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        );
+                      },
+                      suggestionBuilder: (context, state, keyword) {
+                        return Card(
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: ListTile(
+                            key: ObjectKey(keyword),
+                            title: Text(keyword.name ?? keyword.label!),
+                            onTap: () => state.selectSuggestion(keyword),
+                          ),
+                        );
+                      },
+                      findSuggestions: (String query) async {
+                        List<Keyword> keywords = await getKeywordsFromApiCache(query);
+                        bool hideOnEqual = false;
+                        for (var keyword in keywords) {
+                          String text = keyword.name ?? keyword.label!;
+                          if (text.toLowerCase() == query.toLowerCase()) {
+                            hideOnEqual = true;
+                          }
+                        }
+                        if (keywords.isEmpty || !hideOnEqual) {
+                          keywords.add(Keyword(id: null, name: query, description: ''));
+                        }
+                        return keywords;
+                      },
                     ),
                   ),
                   BlocConsumer<RecipeBloc, RecipeState>(
@@ -343,7 +405,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(AppLocalizations.of(context)!.saved),
-                              duration: Duration(seconds: 3),
+                              duration: const Duration(seconds: 3),
                             ),
                           );
                           recipe = state.recipe;
@@ -354,7 +416,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(AppLocalizations.of(context)!.saved),
-                              duration: Duration(seconds: 3),
+                              duration: const Duration(seconds: 3),
                             ),
                           );
 
@@ -435,7 +497,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                   child: IconButton(
                     padding: const EdgeInsets.all(0),
                     splashRadius: 18,
-                    visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                    visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                     icon: Icon(
                       Icons.add,
                       color: Theme.of(context).primaryColor,
@@ -470,7 +532,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
     return DragAndDropList(
       canDrag: false,
       children: ingredientWidgetList,
-      contentsWhenEmpty: Text(AppLocalizations.of(context)!.recipeNoIngredientsPresent, style: TextStyle(fontStyle: FontStyle.italic)),
+      contentsWhenEmpty: Text(AppLocalizations.of(context)!.recipeNoIngredientsPresent, style: const TextStyle(fontStyle: FontStyle.italic)),
       header: Container(
         alignment: Alignment.centerLeft,
         margin: const EdgeInsets.only(top: 20),
@@ -503,9 +565,9 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                   )
               ),
               child: ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
                 contentPadding: const EdgeInsets.fromLTRB(20, 0, 13, 0),
-                title: Text(AppLocalizations.of(context)!.ingredients, style: TextStyle(fontWeight: FontWeight.bold)),
+                title: Text(AppLocalizations.of(context)!.ingredients, style: const TextStyle(fontWeight: FontWeight.bold)),
                 trailing: IconButton(
                   splashRadius: 20,
                   icon: Icon(
@@ -546,7 +608,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
     return Slidable(
         key: UniqueKey(),
         endActionPane: ActionPane(
-          motion: ScrollMotion(),
+          motion: const ScrollMotion(),
           children: [
             SlidableAction(
               autoClose: false,
@@ -584,13 +646,13 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                 )
             ),
             child: ListTile(
-              visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+              visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
               contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
               title: Wrap(
                 children: [
-                  Text(amount, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                  Text(unit, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                  Text(food, style: TextStyle(fontSize: 15)),
+                  Text(amount, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  Text(unit, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  Text(food, style: const TextStyle(fontSize: 15)),
                   Text(
                       note,
                       style: TextStyle(
@@ -601,7 +663,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                   )
                 ],
               ),
-              trailing: Icon(Icons.drag_handle_outlined),
+              trailing: const Icon(Icons.drag_handle_outlined),
             )
         )
     );
@@ -616,13 +678,13 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
           labelText: AppLocalizations.of(context)!.directions,
           isDense: true,
           contentPadding: const EdgeInsets.all(10),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
         keyboardType: TextInputType.multiline,
         maxLines: null,
         minLines: null,
         onChanged: (String? text) => _editDirections(text, stepIndex),
-        style: TextStyle(
+        style: const TextStyle(
             fontSize: 15
         ),
       ),

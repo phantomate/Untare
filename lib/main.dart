@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -20,6 +21,7 @@ import 'package:tare/extensions/theme_extension.dart';
 import 'package:tare/models/app_setting.dart';
 import 'package:tare/models/food.dart';
 import 'package:tare/models/ingredient.dart';
+import 'package:tare/models/keyword.dart';
 import 'package:tare/models/meal_plan_entry.dart';
 import 'package:tare/models/meal_type.dart';
 import 'package:tare/models/recipe.dart';
@@ -83,6 +85,7 @@ Future _initHive() async {
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(AppSettingAdapter());
   Hive.registerAdapter(UserSettingAdapter());
+  Hive.registerAdapter(KeywordAdapter());
   await Hive.openBox('unTaReBox');
 }
 
@@ -137,30 +140,42 @@ class Tare extends StatelessWidget {
         ],
         child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
           builder: (context, state) {
-            if (state is AuthenticationAuthenticated) {
-              SettingsCubit settingsCubit = context.watch<SettingsCubit>();
 
-              return MaterialApp(
-                  localizationsDelegates: [
-                    AppLocalizations.delegate,
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    GlobalCupertinoLocalizations.delegate,
-                    FormBuilderLocalizations.delegate,
-                  ],
-                  supportedLocales: [
-                    Locale('en'),
-                    Locale('de')
-                  ],
-                  debugShowCheckedModeBanner: false,
-                  title: 'Tare App',
-                  theme: AppTheme.lightTheme,
-                  darkTheme: AppTheme.darkTheme,
-                  themeMode: (settingsCubit.state.theme == 'light') ? ThemeMode.light : ThemeMode.dark,
-                  home: TarePage()
-              );
+            SettingsCubit settingsCubit = context.watch<SettingsCubit>();
+
+            ThemeMode themeMode = ThemeMode.system;
+            if (settingsCubit.state.theme != null) {
+              themeMode = (settingsCubit.state.theme == 'light') ? ThemeMode.light : ThemeMode.dark;
+            } else {
+              String systemThemeMode = 'light';
+              if (SchedulerBinding.instance.window.platformBrightness == Brightness.dark) {
+                systemThemeMode = 'dark';
+              }
+
+              settingsCubit.changeThemeTo(systemThemeMode);
             }
-            return StartingPage();
+
+            return MaterialApp(
+                localizationsDelegates: [
+                  AppLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                  FormBuilderLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  Locale('en'),
+                  Locale('de')
+                ],
+                debugShowCheckedModeBanner: false,
+                title: 'UnTaRe App',
+                theme: AppTheme.lightTheme,
+                darkTheme: AppTheme.darkTheme,
+                themeMode: themeMode,
+                home: (state is AuthenticationAuthenticated)
+                    ? TarePage()
+                    : StartingPage()
+            );
           },
         )
     );

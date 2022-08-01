@@ -1,41 +1,41 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'app_setting.dart';
+part of 'keyword.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class AppSettingAdapter extends TypeAdapter<AppSetting> {
+class KeywordAdapter extends TypeAdapter<Keyword> {
   @override
-  final int typeId = 1;
+  final int typeId = 13;
 
   @override
-  AppSetting read(BinaryReader reader) {
+  Keyword read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return AppSetting(
-      layout: fields[0] as String,
-      theme: fields[1] as String?,
-      defaultPage: fields[2] as String,
-      userServerSetting: fields[3] as UserSetting?,
+    return Keyword(
+      id: fields[0] as int?,
+      name: fields[1] as String?,
+      label: fields[2] as String?,
+      description: fields[3] as String?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, AppSetting obj) {
+  void write(BinaryWriter writer, Keyword obj) {
     writer
       ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.layout)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.theme)
+      ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.defaultPage)
+      ..write(obj.label)
       ..writeByte(3)
-      ..write(obj.userServerSetting);
+      ..write(obj.description);
   }
 
   @override
@@ -44,7 +44,7 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AppSettingAdapter &&
+      other is KeywordAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

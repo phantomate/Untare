@@ -18,7 +18,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -30,33 +30,34 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  http: ^0.13.3
+  http: ^0.13.4
   equatable: ^2.0.3
   flutter_bloc: ^8.0.1
   flutter_phoenix: ^1.0.0
-  cached_network_image: ^3.2.0
+  cached_network_image: ^3.2.1
   shimmer: ^2.0.0
   settings_ui: ^2.0.2
   sliver_tools: ^0.2.5
-  hive: ^2.1.0
+  hive: ^2.2.2
   hive_flutter: ^1.1.0
-  flutter_form_builder: ^7.1.1
+  flutter_form_builder: ^7.3.1
   form_builder_validators: ^8.1.1
-  form_builder_extra_fields: 7.0.0
+  form_builder_extra_fields: ^8.1.0
   form_builder_image_picker: ^2.0.0
-  flutter_slidable: ^1.2.0
+  flutter_slidable: ^2.0.0
   intl: ^0.17.0
-  grouped_list: ^4.2.0
+  grouped_list: ^5.1.2
   configurable_expansion_tile_null_safety: ^2.0.0
   lazy_load_scrollview: 1.3.0
   drag_and_drop_lists: ^0.3.2+2
-  workmanager: ^0.4.1
+  workmanager: ^0.5.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   hive_generator: ^1.1.2
   build_runner: ^2.1.11
+  flutter_lints: ^1.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -64,7 +65,7 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
   assets:
-    - assets/
+    - images/
 
   generate: true
 

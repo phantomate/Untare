@@ -10,6 +10,7 @@ import 'package:tare/components/bottom_sheets/recipe_more_bottom_sheet_component
 import 'package:tare/components/widgets/recipe_detail_tabbar_widget.dart';
 import 'package:tare/components/recipes/recipe_image_component.dart';
 import 'package:tare/components/loading_component.dart';
+import 'package:tare/models/keyword.dart';
 import 'package:tare/models/recipe.dart';
 
 class RecipeDetailPage extends StatefulWidget {
@@ -80,10 +81,21 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
 
 Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe, {String? referer}) {
   String? lastCooked;
+  List<Widget> keywordsWidget = [];
+
   if (recipe.lastCooked != null) {
     DateTime tempDate = DateTime.parse(recipe.lastCooked!);
     lastCooked = DateFormat("dd.MM.yy").format(tempDate);
   }
+
+  int keywordsLength = (recipe.keywords.length > 5) ? 5 : recipe.keywords.length;
+  recipe.keywords.sublist(0, keywordsLength).forEach((keyword) {
+    Widget? keywordWidget = getKeywordWidget(context, keyword);
+
+    if (keywordWidget != null) {
+      keywordsWidget.add(keywordWidget);
+    }
+  });
 
   return SliverOverlapAbsorber(
     handle: NestedScrollView.sliverOverlapAbsorberHandleFor(hsbContext),
@@ -132,9 +144,22 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
         SliverList(
             delegate: SliverChildListDelegate(
                 [
-                  Container(
-                    height: 250,
-                    child: buildRecipeImage(recipe, BorderRadius.zero, 250, referer: referer),
+                  Stack(
+                    children: [
+                      Container(
+                        height: 250,
+                        child: buildRecipeImage(recipe, BorderRadius.zero, 250, referer: referer),
+                      ),
+                      Container(
+                        height: 250,
+                        width: double.maxFinite,
+                        alignment: Alignment.bottomLeft,
+                        child: Wrap(
+                          direction: Axis.horizontal,
+                          children: keywordsWidget
+                        )
+                      ),
+                    ],
                   ),
                   Container(
                     height: 45,
@@ -308,4 +333,21 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
     return false;
   }
+}
+
+Widget? getKeywordWidget(BuildContext context, Keyword keyword) {
+  if (keyword.name != null || keyword.label != null) {
+    String text = keyword.name ?? keyword.label!;
+    return Container(
+        padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+        margin: const EdgeInsets.fromLTRB(5, 5, 0, 5),
+        decoration: BoxDecoration(
+            color: (Theme.of(context).brightness.name == 'light') ? Colors.white.withOpacity(0.8) : Colors.grey[800]!.withOpacity(0.8),
+            borderRadius: BorderRadius.circular(30)
+        ),
+        child: Text(text, style: TextStyle(fontSize: 11))
+    );
+  }
+
+  return null;
 }

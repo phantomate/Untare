@@ -42,7 +42,7 @@ abstract class CacheService {
 
     if (cacheEntities != null && cacheEntities.isNotEmpty) {
       entities.forEach((entity) {
-        int cacheEntityIndex = cacheEntities!.indexWhere((cacheRecipe) => cacheRecipe.id == entity.id);
+        int cacheEntityIndex = cacheEntities!.indexWhere((cacheEntity) => cacheEntity.id == entity.id);
 
         // If we found the entity in cache entities, overwrite data, if not add entity
         if (cacheEntityIndex >= 0) {

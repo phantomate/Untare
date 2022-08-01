@@ -1,3 +1,4 @@
+import 'package:tare/models/keyword.dart';
 import 'package:tare/models/step.dart';
 import 'package:hive/hive.dart';
 
@@ -15,7 +16,7 @@ class Recipe {
   @HiveField(3)
   final String? image;
   @HiveField(4)
-  final List keywords;
+  final List<Keyword> keywords;
   @HiveField(5)
   final List<StepModel> steps;
   @HiveField(6)
@@ -69,7 +70,7 @@ class Recipe {
     String? name,
     String? description,
     String? image,
-    List? keywords,
+    List<Keyword>? keywords,
     List<StepModel>? steps,
     int? workingTime,
     int? waitingTime,
@@ -108,10 +109,17 @@ class Recipe {
 
   Map<String, dynamic> toJson() {
     List<Map<String,dynamic>> steps = [];
+    List<Map<String,dynamic>> keywords = [];
 
     if (this.steps.isNotEmpty) {
       this.steps.forEach((StepModel step) {
         steps.add(step.toJson());
+      });
+    }
+
+    if (this.keywords.isNotEmpty) {
+      this.keywords.forEach((Keyword keyword) {
+        keywords.add(keyword.toJson());
       });
     }
 
@@ -120,7 +128,7 @@ class Recipe {
       'name': this.name,
       'description': this.description,
       'image': this.image,
-      'keywords': this.keywords,
+      'keywords': keywords,
       'steps': steps,
       'working_time': this.workingTime ?? 0,
       'waiting_time': this.waitingTime ?? 0,
@@ -139,20 +147,20 @@ class Recipe {
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
     return Recipe(
-      id: json['id'] as int,
+      id: json['id'] as int?,
       name: json['name'] as String,
       description: json['description'] as String?,
       image: json['image'] as String?,
-      keywords: json['keywords'] as List,
+      keywords: (json['keywords'] != null && json['keywords'].isNotEmpty) ? json['keywords'].map((item) => Keyword.fromJson(item)).toList().cast<Keyword>() : [],
       steps: (json['steps'] != null) ? json['steps'].map((item) => StepModel.fromJson(item)).toList().cast<StepModel>() : [],
-      workingTime: json['working_time'] as int?,
-      waitingTime: json['waiting_time'] as int?,
-      createdBy: json['created_by'] as int,
-      createdAt: json['created_at'] as String,
-      updatedAt: json['updated_at'] as String,
+      workingTime: (json['working_time'] is double) ? json['working_time'].toInt() : json['working_time'] as int?,
+      waitingTime: (json['waiting_time'] is double) ? json['waiting_time'].toInt() : json['waiting_time'] as int?,
+      createdBy: json['created_by'] as int?,
+      createdAt: json['created_at'] as String?,
+      updatedAt: json['updated_at'] as String?,
       internal: json['internal'] as bool,
       servings: (json['servings'] is int) ? json['servings'] : ((json['servings'] is double) ? json['servings'].toInt() : null),
-      servingsText: json['servings_text'] as String,
+      servingsText: json['servings_text'] as String?,
       rating: (json['rating'] is int) ? json['rating'] : ((json['rating'] is double) ? json['rating'].toInt() : null),
       lastCooked: json['last_cooked'] as String?,
       isNew: json['new'] as bool?,

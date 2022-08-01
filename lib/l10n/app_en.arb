@@ -43,6 +43,7 @@
   "waitingTime": "Waiting time",
 
   "name": "Name",
+  "keywords": "Keywords",
 
   "mealPlanTitle": "Meal plan",
   "mealPlanThisWeek": "This week",
@@ -112,5 +113,9 @@
   "removedRecipe": "Removed recipe",
   "shoppingListItemsAdded": "Added items to shopping list",
   "updatingRecipe": "Updating recipe",
-  "addedToMealPlan": "Added to meal plan"
+  "addedToMealPlan": "Added to meal plan",
+
+  "officialServer": "Official server",
+  "username": "Username",
+  "password": "Password"
 }

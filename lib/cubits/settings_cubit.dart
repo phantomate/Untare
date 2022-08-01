@@ -12,7 +12,7 @@ class SettingsCubit extends Cubit<AppSetting> {
   final ApiUser apiUser;
   final CacheUserService cacheUserService;
 
-  SettingsCubit({required this.apiUser, required this.cacheUserService}) : super(AppSetting(layout: 'card', theme: 'light', defaultPage: 'recipes'));
+  SettingsCubit({required this.apiUser, required this.cacheUserService}) : super(AppSetting(layout: 'card', defaultPage: 'recipes'));
 
   void changeLayoutTo(String? layout) {
     if (['list', 'card'].contains(layout)) {

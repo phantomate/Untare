@@ -13,7 +13,7 @@ class Food {
   @HiveField(2)
   final String? description;
   @HiveField(3)
-  final bool onHand;
+  final bool? onHand;
   @HiveField(4)
   final SupermarketCategory? supermarketCategory;
   @HiveField(5)
@@ -23,7 +23,7 @@ class Food {
     this.id,
     required this.name,
     this.description,
-    required this.onHand,
+    this.onHand,
     this.supermarketCategory,
     this.ignoreShopping
   });
@@ -48,14 +48,14 @@ class Food {
 
   factory Food.fromJson(Map<String, dynamic> json) {
     return Food(
-        id: json['id'] as int,
+        id: json['id'] as int?,
         name: json['name'] as String,
         description: json['description'] as String?,
-        onHand: json['food_onhand'] as bool,
+        onHand: json['food_onhand'] as bool?,
         supermarketCategory: (json['supermarket_category'] != null)
             ? SupermarketCategory.fromJson(json['supermarket_category'])
             : null,
-        ignoreShopping: json['ignore_shopping'] as bool
+        ignoreShopping: json['ignore_shopping'] as bool?
     );
   }
 

@@ -204,7 +204,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
     String amount = (ingredient.amount > 0) ? ((ingredient.amount * (((newServing/initServing))*100).ceil()/100).toString() + ' ') : '';
     String unit = (ingredient.unit != null) ? (ingredient.unit!.name + ' ') : '';
     String food = (ingredient.food != null) ? (ingredient.food!.name + ' ') : '';
-    bool? checkBoxValue = !(ingredient.food != null && ingredient.food!.onHand);
+    bool? checkBoxValue = !(ingredient.food != null && ingredient.food!.onHand!);
     bool isAlreadyOnShoppingList = false;
     shoppingListEntries.forEach((element) {
       if(element.ingredient == ingredient.id) {
@@ -267,12 +267,12 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                 if (ingredient.food != null)
                 IconButton(
                   padding: const EdgeInsets.fromLTRB(0, 6, 0, 8),
-                    tooltip: (ingredient.food!.onHand) ? AppLocalizations.of(context)!.addToShoppingListTooltipIsInStock : AppLocalizations.of(context)!.addToShoppingListTooltipAddToStock,
+                    tooltip: (ingredient.food!.onHand!) ? AppLocalizations.of(context)!.addToShoppingListTooltipIsInStock : AppLocalizations.of(context)!.addToShoppingListTooltipAddToStock,
                     onPressed: () {
-                      Food newFood = ingredient.food!.copyWith(onHand: !(ingredient.food!.onHand));
+                      Food newFood = ingredient.food!.copyWith(onHand: !(ingredient.food!.onHand!));
 
                       // Add to add list if we remove it from stock and vice versa
-                      if ((ingredient.food!.onHand)) {
+                      if ((ingredient.food!.onHand!)) {
                         ingredientIdsToAdd.add(ingredient.id!);
                       } else {
                         ingredientIdsToAdd.removeWhere((element) => element == ingredient.id);
@@ -285,7 +285,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                     icon: Icon(
                       Icons.home_outlined,
                       size: 20,
-                      color: (ingredient.food != null && ingredient.food!.onHand) ? Theme.of(context).primaryColor : null,
+                      color: (ingredient.food != null && ingredient.food!.onHand!) ? Theme.of(context).primaryColor : null,
                     )
                 ),
               ],

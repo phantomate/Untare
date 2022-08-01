@@ -11,22 +11,26 @@ class ApiUnit extends ApiService {
     url += '&page=' + page.toString();
     url += '&page_size=' + pageSize.toString();
 
-    Response res = await httpGet(url);
-    Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
+    try {
+      Response res = await httpGet(url);
+      Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
 
-    if ([200, 201].contains(res.statusCode)) {
-      List<dynamic> jsonUnits = json['results'];
+      if ([200, 201].contains(res.statusCode)) {
+        List<dynamic> jsonUnits = json['results'];
 
-      List<Unit> units = jsonUnits.map((item) => Unit.fromJson(item)).toList();
+        List<Unit> units = jsonUnits.map((item) => Unit.fromJson(item)).toList();
 
-      return units;
-    } else if (res.statusCode == 404) {
-      return [];
-    } else {
-      throw ApiException(
-          message: 'Unit api error: ' + (json['detail'] ?? json['error']),
-          statusCode: res.statusCode
-      );
+        return units;
+      } else if (res.statusCode == 404) {
+        return [];
+      } else {
+        throw ApiException(
+            message: 'Unit api error: ' + (json['detail'] ?? json['error']),
+            statusCode: res.statusCode
+        );
+      }
+    } catch (e) {
+      throw e;
     }
   }
 }

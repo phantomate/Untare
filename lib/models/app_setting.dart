@@ -9,7 +9,7 @@ class AppSetting {
   @HiveField(0)
   final String layout;
   @HiveField(1)
-  final String theme;
+  final String? theme;
   @HiveField(2)
   final String defaultPage;
   @HiveField(3)
@@ -17,7 +17,7 @@ class AppSetting {
 
   AppSetting({
     required this.layout,
-    required this.theme,
+    this.theme,
     required this.defaultPage,
     this.userServerSetting
   });
