@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
-import 'package:tare/exceptions/api_connection_exception.dart';
+import 'package:untare/exceptions/api_connection_exception.dart';
 import 'package:workmanager/workmanager.dart';
 
 class ApiService {
@@ -62,7 +62,7 @@ class ApiService {
     if (withoutToken == null || !withoutToken) {
       token ??= box.get('token');
 
-      headers['authorization'] = 'token ' + (token ?? '');
+      headers['authorization'] = 'token ${token ?? ''}';
     }
 
     return headers;
@@ -106,13 +106,13 @@ class ApiService {
             },
             constraints: Constraints(networkType: NetworkType.connected),
             existingWorkPolicy: ExistingWorkPolicy.append,
-            initialDelay: Duration(minutes: 1)
+            initialDelay: const Duration(minutes: 1)
           );
         }
 
         throw ApiConnectionException();
       } else {
-        throw e;
+        rethrow;
       }
     }
   }

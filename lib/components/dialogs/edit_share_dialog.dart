@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:hive/hive.dart';
-import 'package:tare/cubits/settings_cubit.dart';
-import 'package:tare/futures/future_api_cache_users.dart';
-import 'package:tare/models/user.dart';
-import 'package:tare/models/user_setting.dart';
+import 'package:untare/cubits/settings_cubit.dart';
+import 'package:untare/futures/future_api_cache_users.dart';
+import 'package:untare/models/user.dart';
+import 'package:untare/models/user_setting.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future editShareDialog(BuildContext context, UserSetting userSetting, String referer) async {
   var box = Hive.box('unTaReBox');
   User? loggedInUser = box.get('user');
-  final _formBuilderKey = GlobalKey<FormBuilderState>();
-  final SettingsCubit _settingsCubit = context.read<SettingsCubit>();
+  final formBuilderKey = GlobalKey<FormBuilderState>();
+  final SettingsCubit settingsCubit = context.read<SettingsCubit>();
   List<FormBuilderChipOption> shareOptionList = [];
   List<User> userList = await getUsersFromApiCache();
 
-  userList.forEach((element) {
+  for (var element in userList) {
     if (loggedInUser == null || loggedInUser.id != element.id) {
       shareOptionList.add(
           FormBuilderChipOption(
@@ -24,16 +24,16 @@ Future editShareDialog(BuildContext context, UserSetting userSetting, String ref
           )
       );
     }
-  });
+  }
 
   return showDialog(context: context, builder: (BuildContext dContext){
     return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        insetPadding: EdgeInsets.all(20),
+        insetPadding: const EdgeInsets.all(20),
         child: Padding(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
             child: FormBuilder(
-                key: _formBuilderKey,
+                key: formBuilderKey,
                 autovalidateMode: AutovalidateMode.disabled,
                 child: StatefulBuilder(
                     builder: (context, setState) {
@@ -42,10 +42,11 @@ Future editShareDialog(BuildContext context, UserSetting userSetting, String ref
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(bottom: 20),
-                            child: Text(((referer == 'shopping') ? AppLocalizations.of(context)!.editShoppingListSharing : AppLocalizations.of(context)!.editMealPlanSharing), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
+                            child: Text(((referer == 'shopping') ? AppLocalizations.of(context)!.editShoppingListSharing : AppLocalizations.of(context)!.editMealPlanSharing), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                           ),
                           FormBuilderFilterChip (
                             name: 'share',
+                            checkmarkColor: Theme.of(context).primaryColor,
                             initialValue: (referer == 'shopping') ? userSetting.shoppingShare.map((user) => user.id).toList() : userSetting.planShare.map((user) => user.id).toList(),
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(context)!.shareWith,
@@ -54,17 +55,17 @@ Future editShareDialog(BuildContext context, UserSetting userSetting, String ref
                             ),
                             options: shareOptionList,
                           ),
-                          SizedBox(height: 15),
+                          const SizedBox(height: 15),
                           Container(
                               alignment: Alignment.bottomRight,
                               child: MaterialButton(
                                   color: Theme.of(context).primaryColor,
                                   onPressed: () {
-                                    _formBuilderKey.currentState!.save();
+                                    formBuilderKey.currentState!.save();
 
-                                    if (_formBuilderKey.currentState!.validate()) {
+                                    if (formBuilderKey.currentState!.validate()) {
                                       List<User> newUserList = [];
-                                      _formBuilderKey.currentState!.value['share'].forEach((id) {
+                                      formBuilderKey.currentState!.value['share'].forEach((id) {
                                         newUserList.add(userList.firstWhere((user) => user.id == id));
                                       });
 
@@ -75,7 +76,7 @@ Future editShareDialog(BuildContext context, UserSetting userSetting, String ref
                                         newUserSetting = userSetting.copyWith(planShare: newUserList);
                                       }
 
-                                      _settingsCubit.updateServerSetting(newUserSetting);
+                                      settingsCubit.updateServerSetting(newUserSetting);
 
                                       Navigator.pop(dContext);
                                     }

@@ -1,15 +1,15 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:tare/exceptions/api_exception.dart';
-import 'package:tare/models/user.dart';
-import 'package:tare/models/userToken.dart';
-import 'package:tare/models/user_setting.dart';
-import 'package:tare/services/api/api_service.dart';
+import 'package:untare/exceptions/api_exception.dart';
+import 'package:untare/models/user.dart';
+import 'package:untare/models/userToken.dart';
+import 'package:untare/models/user_setting.dart';
+import 'package:untare/services/api/api_service.dart';
 
 class ApiUser extends ApiService {
   Future<List<User>> getUsers() async {
-    var url = '/api/user-name/';
+    var url = '/api/user/';
 
     Response res = await httpGet(url);
 
@@ -45,14 +45,14 @@ class ApiUser extends ApiService {
       return UserToken.fromJson(json);
     } else {
       throw ApiException(
-          message: 'User api error - could not fetch user settings',
+          message: 'User api error - wrong credentials',
           statusCode: res.statusCode
       );
     }
   }
 
   Future<UserSetting> getUserSettings(User user) async {
-    var url = '/api/user-preference/' + user.id.toString() + '/';
+    var url = '/api/user-preference/${user.id}/';
 
     Response res = await httpGet(url);
 
@@ -69,7 +69,7 @@ class ApiUser extends ApiService {
   }
 
   Future<UserSetting> patchUserSettings(User user, UserSetting userSetting) async {
-    var url = '/api/user-preference/' + user.id.toString() + '/';
+    var url = '/api/user-preference/${user.id}/';
 
     Response res = await httpPatch(url, userSetting.toJson());
 

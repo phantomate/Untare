@@ -1,3 +1,7 @@
+// ignore_for_file: depend_on_referenced_packages
+
+import 'dart:io';
+
 import 'package:cross_file/cross_file.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
@@ -6,32 +10,35 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:tare/blocs/recipe/recipe_bloc.dart';
-import 'package:tare/blocs/recipe/recipe_event.dart';
-import 'package:tare/blocs/recipe/recipe_state.dart';
-import 'package:tare/components/dialogs/upsert_recipe_ingredient_dialog.dart';
-import 'package:tare/components/loading_component.dart';
-import 'package:tare/components/recipes/recipe_image_component.dart';
-import 'package:tare/extensions/double_extension.dart';
-import 'package:tare/futures/future_api_cache_keywords.dart';
-import 'package:tare/models/ingredient.dart';
-import 'package:tare/models/keyword.dart';
-import 'package:tare/models/recipe.dart';
+import 'package:http/http.dart';
+import 'package:untare/blocs/recipe/recipe_bloc.dart';
+import 'package:untare/blocs/recipe/recipe_event.dart';
+import 'package:untare/blocs/recipe/recipe_state.dart';
+import 'package:untare/components/dialogs/upsert_recipe_ingredient_dialog.dart';
+import 'package:untare/components/loading_component.dart';
+import 'package:untare/components/recipes/recipe_image_component.dart';
+import 'package:untare/extensions/double_extension.dart';
+import 'package:untare/futures/future_api_cache_keywords.dart';
+import 'package:untare/models/ingredient.dart';
+import 'package:untare/models/keyword.dart';
+import 'package:untare/models/recipe.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:tare/models/step.dart';
-import 'package:tare/pages/recipe_detail_page.dart';
+import 'package:untare/models/step.dart';
+import 'package:untare/pages/recipe_detail_page.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
+import 'package:path_provider/path_provider.dart';
 
 class RecipeUpsertPage extends StatefulWidget {
   final Recipe? recipe;
+  final bool? splitDirections;
 
-  RecipeUpsertPage({this.recipe});
+  const RecipeUpsertPage({Key? key, this.recipe, this.splitDirections}) : super(key: key);
 
   @override
-  _RecipeUpsertPageState createState() => _RecipeUpsertPageState();
+  RecipeUpsertPageState createState() => RecipeUpsertPageState();
 }
 
-class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
+class RecipeUpsertPageState extends State<RecipeUpsertPage> {
   final formKey = GlobalKey<FormBuilderState>();
   Recipe? recipe;
   late RecipeBloc _recipeBloc;
@@ -43,7 +50,42 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
     if (widget.recipe != null && widget.recipe!.id != null) {
       _recipeBloc.add(FetchRecipe(id: widget.recipe!.id!));
     }
-    recipe = widget.recipe;
+
+    if (widget.splitDirections != null && widget.splitDirections!) {
+      splitDirections();
+    } else {
+      recipe = widget.recipe;
+    }
+  }
+
+  void splitDirections() {
+    if (widget.recipe != null && widget.recipe!.steps.isNotEmpty && widget.recipe!.steps.length == 1) {
+      List<StepModel> newSteps = [];
+
+      List<String> splitDirectionsStrings = (widget.recipe!.steps.first.instruction != null && widget.recipe!.steps.first.instruction != '')
+          ? widget.recipe!.steps.first.instruction!.split("\n\n")
+          : [];
+
+      if (splitDirectionsStrings.length <= 2) {
+        List<String> tmpSplitInstructions = splitDirectionsStrings;
+        splitDirectionsStrings = [];
+        for(int i = 0; i < tmpSplitInstructions.length; i++) {
+          splitDirectionsStrings.addAll(tmpSplitInstructions[i].split("\n"));
+        }
+      }
+
+      for(int i = 0; i < splitDirectionsStrings.length; i++) {
+        final splitInstruction = splitDirectionsStrings[i].replaceAll("\r", "");
+
+        if (i == 0) {
+          newSteps.add(widget.recipe!.steps.first.copyWith(instruction: splitInstruction));
+        } else {
+          newSteps.add(StepModel(ingredients: [], instruction: splitInstruction));
+        }
+      }
+
+      recipe = widget.recipe!.copyWith(steps: newSteps);
+    }
   }
 
   // Rebuild recipe for upsert
@@ -94,10 +136,16 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
       servings = (!["", null].contains(formBuilderData['servings'])) ? int.parse(formBuilderData['servings']) : 1;
     }
 
+    // Overwrite keywords
+    List<Keyword> keywords = [];
+    if (formBuilderData.containsKey('keywords')) {
+      keywords = formBuilderData['keywords'];
+    }
+
     if (recipe != null) {
-      recipe = recipe!.copyWith(name: name, workingTime: workingTime, waitingTime: waitingTime, servings: servings , steps: stepList);
+      recipe = recipe!.copyWith(name: name, workingTime: workingTime, waitingTime: waitingTime, servings: servings, keywords: keywords, steps: stepList);
     } else {
-      recipe = Recipe(name: name, workingTime: workingTime, waitingTime: waitingTime, servings: servings , steps: stepList, keywords: [], internal: true);
+      recipe = Recipe(name: name, workingTime: workingTime, waitingTime: waitingTime, servings: servings , steps: stepList, keywords: keywords, internal: true);
     }
 
     return recipe!;
@@ -150,6 +198,15 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
     });
   }
 
+  void _removeStep(int stepIndex) {
+    List<StepModel> newStepList = (recipe != null && recipe!.steps.isNotEmpty) ? recipe!.steps : [];
+    newStepList.removeAt(stepIndex);
+
+    setState(() {
+      recipe = rebuildRecipe(steps: newStepList);
+    });
+  }
+
   void _editDirections(String? text, int stepIndex) {
     List<StepModel> newStepList = (recipe != null && recipe!.steps.isNotEmpty) ? recipe!.steps : [];
 
@@ -182,274 +239,299 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
     // We don't use list reorder but it's required
   }
 
+  Future<File?> _downloadImageAsFile(String url, String fileName) async {
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final String filePath = '${directory.path}/$fileName.png';
+    final Response response = await get(Uri.parse(url));
+    File? file;
+
+    if ([200, 201].contains(response.statusCode)) {
+      file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+    }
+
+    return file;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: NestedScrollView(
-          headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
-            return <Widget>[
-              SliverAppBar(
-                leadingWidth: 50,
-                titleSpacing: 0,
-                automaticallyImplyLeading: false,
-                leading: IconButton(
-                  iconSize: 30,
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () => Navigator.pop(hsbContext),
-                  splashRadius: 20,
-                  icon: const Icon(
-                    Icons.chevron_left,
-                  ),
-                ),
-                actions: [
-                  IconButton(
-                    onPressed: () {
-                      formKey.currentState!.save();
-                      if (formKey.currentState!.validate()) {
-                        XFile? image;
-                        if (formKey.currentState!.value['image'].first is XFile) {
-                          image = formKey.currentState!.value['image'].first;
-                        }
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+          body: NestedScrollView(
+              headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    leadingWidth: 50,
+                    titleSpacing: 0,
+                    automaticallyImplyLeading: false,
+                    leading: IconButton(
+                      iconSize: 30,
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () => Navigator.pop(hsbContext),
+                      splashRadius: 20,
+                      icon: const Icon(
+                        Icons.chevron_left,
+                      ),
+                    ),
+                    actions: [
+                      IconButton(
+                        onPressed: () async {
+                          formKey.currentState!.save();
+                          if (formKey.currentState!.validate()) {
+                            Recipe newRecipe = rebuildRecipe();
 
-                        if (widget.recipe != null && widget.recipe!.id != null) {
-                          _recipeBloc.add(UpdateRecipe(recipe: rebuildRecipe(), image: image));
-                        } else {
-                          _recipeBloc.add(CreateRecipe(recipe: rebuildRecipe(), image: image));
-                        }
-                      }
-                    },
-                    icon: const Icon(Icons.save_outlined),
-                    splashRadius: 20,
+                            File? image;
+                            if (formKey.currentState!.value['image'].first is XFile) {
+                              image = File(formKey.currentState!.value['image'].first.path);
+                            } else if (newRecipe.image != null) {
+                              image = await _downloadImageAsFile(newRecipe.image!, newRecipe.name);
+                            }
+
+                            if (widget.recipe != null && widget.recipe!.id != null) {
+                              _recipeBloc.add(UpdateRecipe(recipe: newRecipe, image: image));
+                            } else {
+                              _recipeBloc.add(CreateRecipe(recipe: newRecipe, image: image));
+                            }
+                          }
+                        },
+                        icon: const Icon(Icons.save_outlined),
+                        splashRadius: 20,
+                      )
+                    ],
+                    title: Text(
+                      (widget.recipe != null) ? AppLocalizations.of(context)!.recipeEdit : AppLocalizations.of(context)!.recipeCreate,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18
+                      ),
+                    ),
+                    elevation: 1.5,
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    pinned: true,
                   )
-                ],
-                title: Text(
-                  (widget.recipe != null) ? AppLocalizations.of(context)!.recipeEdit : AppLocalizations.of(context)!.recipeCreate,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18
-                  ),
-                ),
-                elevation: 1.5,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                pinned: true,
-              )
-            ];
-          },
-          body: FormBuilder(
-              key: formKey,
-              autovalidateMode: AutovalidateMode.disabled,
-              child: ListView(
-                physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                padding: const EdgeInsets.only(top: 15, bottom: 10),
-                children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Container(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: FormBuilderImagePicker(
-                              name: 'image',
-                              initialValue: [
-                                (recipe != null && recipe!.image != null && recipe!.image != '') ? buildRecipeImage(recipe!, BorderRadius.circular(12), 220) : null
-                              ],
-                              decoration: const InputDecoration(
-                                  border: OutlineInputBorder(
-                                      borderSide: BorderSide.none
-                                  )
-                              ),
-                              maxImages: 1,
-                              iconColor: Colors.grey[400],
-                              previewWidth: 166,
-                              previewHeight: 140,
+                ];
+              },
+              body: FormBuilder(
+                key: formKey,
+                autovalidateMode: AutovalidateMode.disabled,
+                child: ListView(
+                  physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                  padding: const EdgeInsets.only(top: 15, bottom: 10),
+                  children: [
+                    Row(
+                      children: [
+                        Flexible(
+                          child: Container(
+                              padding: const EdgeInsets.only(left: 10),
+                              child: FormBuilderImagePicker(
+                                name: 'image',
+                                initialValue: [
+                                  (recipe != null && recipe!.image != null && recipe!.image != '') ? buildRecipeImage(recipe!, BorderRadius.circular(12), 220) : null
+                                ],
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(
+                                        borderSide: BorderSide.none
+                                    )
+                                ),
+                                maxImages: 1,
+                                iconColor: Colors.grey[400],
+                                previewWidth: 166,
+                                previewHeight: 140,
+                              )
+                          ),
+                        ),
+                        Flexible(
+                            child: Container(
+                                padding: const EdgeInsets.only(right: 20),
+                                child: Column(
+                                  children: [
+                                    FormBuilderTextField(
+                                      name: 'workingTime',
+                                      initialValue: (recipe != null) ? recipe!.workingTime.toString() : null,
+                                      decoration: InputDecoration(
+                                        labelText: AppLocalizations.of(context)!.prepTime,
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.all(10),
+                                        border: const OutlineInputBorder(),
+                                      ),
+                                      validator: FormBuilderValidators.compose([
+                                        FormBuilderValidators.numeric(),
+                                        FormBuilderValidators.min(0)
+                                      ]),
+                                      keyboardType: TextInputType.number,
+                                      style: const TextStyle(
+                                          fontSize: 15
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    FormBuilderTextField(
+                                      name: 'waitingTime',
+                                      initialValue: (recipe != null) ? recipe!.waitingTime.toString() : null,
+                                      decoration: InputDecoration(
+                                        labelText: AppLocalizations.of(context)!.waitingTime,
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.all(10),
+                                        border: const OutlineInputBorder(),
+                                      ),
+                                      validator: FormBuilderValidators.compose([
+                                        FormBuilderValidators.numeric(),
+                                        FormBuilderValidators.min(0)
+                                      ]),
+                                      keyboardType: TextInputType.number,
+                                      style: const TextStyle(
+                                          fontSize: 15
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    FormBuilderTextField(
+                                      name: 'servings',
+                                      initialValue: (recipe != null) ? recipe!.servings.toString() : null,
+                                      decoration: InputDecoration(
+                                        labelText: AppLocalizations.of(context)!.servings,
+                                        isDense: true,
+                                        contentPadding: const EdgeInsets.all(10),
+                                        border: const OutlineInputBorder(),
+                                      ),
+                                      validator: FormBuilderValidators.compose([
+                                        FormBuilderValidators.numeric(),
+                                        FormBuilderValidators.min(1)
+                                      ]),
+                                      keyboardType: TextInputType.number,
+                                      style: const TextStyle(
+                                          fontSize: 15
+                                      ),
+                                    )
+                                  ],
+                                )
                             )
                         ),
-                      ),
-                      Flexible(
-                          child: Container(
-                              padding: const EdgeInsets.only(right: 20),
-                              child: Column(
-                                children: [
-                                  FormBuilderTextField(
-                                    name: 'workingTime',
-                                    initialValue: (recipe != null) ? recipe!.workingTime.toString() : null,
-                                    decoration: InputDecoration(
-                                      labelText: AppLocalizations.of(context)!.prepTime,
-                                      isDense: true,
-                                      contentPadding: const EdgeInsets.all(10),
-                                      border: const OutlineInputBorder(),
-                                    ),
-                                    validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.numeric(),
-                                      FormBuilderValidators.min(0)
-                                    ]),
-                                    keyboardType: TextInputType.number,
-                                    style: const TextStyle(
-                                        fontSize: 15
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  FormBuilderTextField(
-                                    name: 'waitingTime',
-                                    initialValue: (recipe != null) ? recipe!.waitingTime.toString() : null,
-                                    decoration: InputDecoration(
-                                      labelText: AppLocalizations.of(context)!.waitingTime,
-                                      isDense: true,
-                                      contentPadding: const EdgeInsets.all(10),
-                                      border: const OutlineInputBorder(),
-                                    ),
-                                    validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.numeric(),
-                                      FormBuilderValidators.min(0)
-                                    ]),
-                                    keyboardType: TextInputType.number,
-                                    style: const TextStyle(
-                                        fontSize: 15
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  FormBuilderTextField(
-                                    name: 'servings',
-                                    initialValue: (recipe != null) ? recipe!.servings.toString() : null,
-                                    decoration: InputDecoration(
-                                      labelText: AppLocalizations.of(context)!.servings,
-                                      isDense: true,
-                                      contentPadding: const EdgeInsets.all(10),
-                                      border: const OutlineInputBorder(),
-                                    ),
-                                    validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.numeric(),
-                                      FormBuilderValidators.min(1)
-                                    ]),
-                                    keyboardType: TextInputType.number,
-                                    style: const TextStyle(
-                                        fontSize: 15
-                                    ),
-                                  )
-                                ],
-                              )
-                          )
-                      ),
-                    ],
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 15, right: 20, bottom: 10, left: 20),
-                    child: FormBuilderTextField(
-                      name: 'name',
-                      initialValue: (recipe != null) ? recipe!.name : null,
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.name,
-                        isDense: true,
-                        contentPadding: const EdgeInsets.all(10),
-                        border: const OutlineInputBorder(),
-                      ),
-                      validator: FormBuilderValidators.compose([
-                        FormBuilderValidators.required(),
-                        FormBuilderValidators.max(128),
-                      ]),
-                      style: const TextStyle(
-                          fontSize: 15
+                      ],
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(top: 15, right: 20, bottom: 10, left: 20),
+                      child: FormBuilderTextField(
+                        name: 'name',
+                        initialValue: (recipe != null) ? recipe!.name : null,
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.name,
+                          isDense: true,
+                          contentPadding: const EdgeInsets.all(10),
+                          border: const OutlineInputBorder(),
+                        ),
+                        validator: FormBuilderValidators.compose([
+                          FormBuilderValidators.required(),
+                          FormBuilderValidators.max(128),
+                        ]),
+                        style: const TextStyle(
+                            fontSize: 15
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(top: 15, right: 20, bottom: 10, left: 20),
-                    child: FormBuilderChipsInput<Keyword>(
-                      name: 'keywords',
-                      decoration: InputDecoration(
-                        labelText: AppLocalizations.of(context)!.keywords,
-                        isDense: true,
-                        contentPadding: const EdgeInsets.all(10),
-                        border: const OutlineInputBorder(),
-                      ),
-                      initialValue: (recipe != null) ? recipe!.keywords: [],
-                      chipBuilder: (context, state, keyword) {
-                        return InputChip(
-                          key: ObjectKey(keyword),
-                          label: Text(keyword.name ?? keyword.label!),
-                          onDeleted: () => state.deleteChip(keyword),
-                          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        );
-                      },
-                      suggestionBuilder: (context, state, keyword) {
-                        return Card(
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: ListTile(
+                    Container(
+                      padding: const EdgeInsets.only(top: 15, right: 20, bottom: 10, left: 20),
+                      child: FormBuilderChipsInput<Keyword>(
+                        name: 'keywords',
+                        decoration: InputDecoration(
+                          labelText: AppLocalizations.of(context)!.keywords,
+                          isDense: true,
+                          contentPadding: const EdgeInsets.all(10),
+                          border: const OutlineInputBorder(),
+                        ),
+                        initialValue: (recipe != null) ? recipe!.keywords: [],
+                        chipBuilder: (context, state, keyword) {
+                          return InputChip(
                             key: ObjectKey(keyword),
-                            title: Text(keyword.name ?? keyword.label!),
-                            onTap: () => state.selectSuggestion(keyword),
-                          ),
-                        );
-                      },
-                      findSuggestions: (String query) async {
-                        List<Keyword> keywords = await getKeywordsFromApiCache(query);
-                        bool hideOnEqual = false;
-                        for (var keyword in keywords) {
-                          String text = keyword.name ?? keyword.label!;
-                          if (text.toLowerCase() == query.toLowerCase()) {
-                            hideOnEqual = true;
+                            label: Text(keyword.name ?? keyword.label!),
+                            onDeleted: () => state.deleteChip(keyword),
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          );
+                        },
+                        suggestionsBoxMaxHeight: 250,
+                        suggestionBuilder: (context, state, keyword) {
+                          return Card(
+                            margin: const EdgeInsets.all(3),
+                            elevation: 1.5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: ListTile(
+                              visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                              key: ObjectKey(keyword),
+                              title: Text(keyword.name ?? keyword.label!),
+                              onTap: () => state.selectSuggestion(keyword),
+                            ),
+                          );
+                        },
+                        findSuggestions: (String query) async {
+                          List<Keyword> keywords = await getKeywordsFromApiCache(query);
+                          bool hideOnEqual = false;
+                          for (var keyword in keywords) {
+                            String text = keyword.name ?? keyword.label!;
+                            if (text.toLowerCase() == query.toLowerCase()) {
+                              hideOnEqual = true;
+                            }
                           }
-                        }
-                        if (keywords.isEmpty || !hideOnEqual) {
-                          keywords.add(Keyword(id: null, name: query, description: ''));
-                        }
-                        return keywords;
-                      },
+                          if (keywords.isEmpty || !hideOnEqual) {
+                            keywords.add(Keyword(id: null, name: query, description: ''));
+                          }
+                          return keywords;
+                        },
+                      ),
                     ),
-                  ),
-                  BlocConsumer<RecipeBloc, RecipeState>(
-                      listener: (context, state) {
-                        if (state is RecipeUpdated) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(AppLocalizations.of(context)!.saved),
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
-                          recipe = state.recipe;
-
-                          Navigator.pop(context);
-                        } else if (state is RecipeCreated) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(AppLocalizations.of(context)!.saved),
-                              duration: const Duration(seconds: 3),
-                            ),
-                          );
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: state.recipe)),
-                          );
-                        }
-                      },
-                      builder: (context, state) {
-                        if (state is RecipeFetched) {
-                          if (recipe != null && recipe!.id == state.recipe.id) {
+                    BlocConsumer<RecipeBloc, RecipeState>(
+                        listener: (context, state) {
+                          if (state is RecipeUpdated) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(AppLocalizations.of(context)!.saved),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
                             recipe = state.recipe;
-                            return buildUpsertStepsWidget();
-                          }
-                        } else if (state is RecipeFetchedFromCache) {
-                          if (recipe != null && recipe!.id == state.recipe.id) {
-                            recipe = state.recipe;
-                            return buildUpsertStepsWidget();
-                          }
-                        }
 
-                        if (recipe == null || recipe != null) {
+                            Navigator.pop(context);
+                          } else if (state is RecipeCreated) {
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(AppLocalizations.of(context)!.saved),
+                                duration: const Duration(seconds: 3),
+                              ),
+                            );
+
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: state.recipe)),
+                            );
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state is RecipeFetched) {
+                            if (recipe != null && recipe!.id == state.recipe.id) {
+                              recipe = state.recipe;
+                              return buildUpsertStepsWidget();
+                            }
+                          } else if (state is RecipeFetchedFromCache && state.recipe.steps.isNotEmpty) {
+                            if (recipe != null && recipe!.id == state.recipe.id) {
+                              recipe = state.recipe;
+                              return buildUpsertStepsWidget();
+                            }
+                          } else if (state is RecipeFetchedFromCache && state.recipe.steps.isEmpty) {
+                            // If loading from cache but we don't have steps, show loading
+                            return buildLoading();
+                          } else if (state is RecipeLoading) {
+                            return buildLoading();
+                          }
+
                           return buildUpsertStepsWidget();
                         }
-
-                        return buildLoading();
-                      }
-                  )
-                ],
+                    )
+                  ],
+                ),
               )
           )
-      )
+      ),
     );
   }
 
@@ -502,7 +584,10 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                       Icons.add,
                       color: Theme.of(context).primaryColor,
                     ),
-                    onPressed: () => _addStep(),
+                    onPressed: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
+                      _addStep();
+                    },
                   ),
                 )
             )
@@ -521,6 +606,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
           DragAndDropItem(
               child: GestureDetector(
                 onTap: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
                   upsertRecipeIngredientDialog(context, stepIndex, j, _upsertIngredient, ingredient: ingredients[j]);
                 },
                 child: buildIngredient(ingredients[j], stepIndex, j),
@@ -539,20 +625,54 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-                width: 60,
-                alignment: Alignment.center,
-                margin: const EdgeInsets.only(bottom: 5),
-                child: Container(
-                  height: 30,
-                  width: 30,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                    width: 60,
+                    alignment: Alignment.center,
+                    margin: const EdgeInsets.only(bottom: 5),
+                    child: Container(
+                      height: 30,
+                      width: 30,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+                      ),
+                      child: Text((stepIndex+1).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+                    )
+                ),
+                PopupMenuButton(
+                  padding: const EdgeInsets.only(right: 25),
+                  icon: const Icon(Icons.more_vert_outlined),
+                  splashRadius: 20,
+                  elevation: 3,
+                  shape: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(8)
                   ),
-                  child: Text((stepIndex+1).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
-                )
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      height: 18,
+                      value: 1,
+                      child: Row(
+                        children: [
+                          const Icon(Icons.delete_outline, color: Colors.redAccent),
+                          Text(
+                            AppLocalizations.of(context)!.remove,
+                            style: const TextStyle(color: Colors.redAccent),
+                          )
+                      ]),
+                    ),
+                  ],
+                  onSelected: (value) {
+                    if (value == 1) {
+                      _removeStep(stepIndex);
+                    }
+                  },
+                ),
+              ],
             ),
             Container(
               margin: const EdgeInsets.only(left: 30),
@@ -575,6 +695,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
                     color: Theme.of(context).primaryColor,
                   ),
                   onPressed: () {
+                    FocusManager.instance.primaryFocus?.unfocus();
                     upsertRecipeIngredientDialog(context, stepIndex, ingredients.length, _upsertIngredient);
                   },
                 ),
@@ -583,7 +704,7 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
           ],
         ),
       ),
-      lastTarget: buildDirections(recipe!.steps[stepIndex].instruction, stepIndex),
+      lastTarget: buildDirections(recipe!.steps[stepIndex], stepIndex),
       leftSide: Container(
         margin: const EdgeInsets.only(left: 30),
         decoration: BoxDecoration(
@@ -600,20 +721,26 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
 
   Widget buildIngredient(Ingredient ingredient, int stepIndex, int ingredientIndex) {
     // Build ingredient text layout
-    String amount = (ingredient.amount > 0) ? (ingredient.amount.toFormattedString() + ' ') : '';
-    String unit = (ingredient.unit != null) ? (ingredient.unit!.name + ' ') : '';
-    String food = (ingredient.food != null) ? (ingredient.food!.name + ' ') : '';
-    String note = (ingredient.note != null && ingredient.note != '') ? ('(' + ingredient.note !+ ')') : '';
+    String amount = (ingredient.amount > 0) ? ('${ingredient.amount.toFormattedString()} ') : '';
+    String unit = (ingredient.unit != null) ? ('${ingredient.unit!.name} ') : '';
+    String food = (ingredient.food != null) ? ('${ingredient.food!.name} ') : '';
+    String note = (ingredient.note != null && ingredient.note != '') ? ('(${ingredient.note !})') : '';
 
     return Slidable(
         key: UniqueKey(),
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
+          dismissible: DismissiblePane(
+              onDismissed: () {
+                _removeIngredientOnDismiss(ingredientIndex, stepIndex);
+              }
+          ),
           children: [
             SlidableAction(
               autoClose: false,
               flex: 1,
               onPressed: (slideContext) {
+                FocusManager.instance.primaryFocus?.unfocus();
                 Slidable.of(slideContext)!.dismiss(
                     ResizeRequest(
                         const Duration(milliseconds: 300),
@@ -629,11 +756,6 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
               icon: Icons.delete_outline,
             ),
           ],
-          dismissible: DismissiblePane(
-              onDismissed: () {
-                _removeIngredientOnDismiss(ingredientIndex, stepIndex);
-              }
-          ),
         ),
         child: Container(
             margin: const EdgeInsets.only(left: 15, right: 20),
@@ -669,14 +791,14 @@ class _RecipeUpsertPageState extends State<RecipeUpsertPage> {
     );
   }
 
-  Widget buildDirections(String? directions, int stepIndex) {
+  Widget buildDirections(StepModel step, int stepIndex) {
     return Container(
       padding: const EdgeInsets.only(top: 25, right: 20, bottom: 10, left: 15),
       child: TextFormField(
-        initialValue: directions,
+        key: ObjectKey(step.id),
+        initialValue: step.instruction,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.directions,
-          isDense: true,
           contentPadding: const EdgeInsets.all(10),
           border: const OutlineInputBorder(),
         ),

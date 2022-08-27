@@ -1,20 +1,22 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'package:http/http.dart';
-import 'package:tare/exceptions/api_exception.dart';
-import 'package:tare/exceptions/mapping_exception.dart';
-import 'package:tare/models/recipe.dart';
+import 'package:untare/exceptions/api_exception.dart';
+import 'package:untare/exceptions/mapping_exception.dart';
+import 'package:untare/models/recipe.dart';
 import 'dart:convert';
-import 'package:tare/services/api/api_service.dart';
+import 'package:untare/services/api/api_service.dart';
 
 class ApiRecipe extends ApiService {
   Future<List<Recipe>> getRecipeList(String query, bool random, int page, int pageSize, String? sortOrder) async {
     var url = '/api/recipe/';
-    url += '?query=' + query;
-    url += '&random=' + random.toString();
-    url += '&page=' + page.toString();
-    url += '&page_size=' + pageSize.toString();
+    url += '?query=$query';
+    url += '&random=$random';
+    url += '&page=$page';
+    url += '&page_size=$pageSize';
 
     if (sortOrder != null) {
-      url += '&sort_order=' + sortOrder;
+      url += '&sort_order=$sortOrder';
     }
 
     Response res = await httpGet(url);
@@ -37,7 +39,7 @@ class ApiRecipe extends ApiService {
   }
 
   Future<Recipe?> getRecipe(int id) async {
-    var url = '/api/recipe/' + id.toString() + '/';
+    var url = '/api/recipe/$id/';
 
     Response res = await httpGet(url);
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
@@ -56,9 +58,9 @@ class ApiRecipe extends ApiService {
 
   Future<Recipe> updateRecipe(Recipe recipe) async {
     if (recipe.id == null) {
-      throw MappingException(message: 'Id missing for updating recipe ' + recipe.name);
+      throw MappingException(message: 'Id missing for updating recipe ${recipe.name}');
     }
-    var url = '/api/recipe/' + recipe.id.toString() + '/';
+    var url = '/api/recipe/${recipe.id}/';
     Response res = await httpPut(url, recipe.toJson());
 
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
@@ -75,9 +77,9 @@ class ApiRecipe extends ApiService {
 
   Future<Recipe> updateImage(Recipe recipe, image) async {
     if (recipe.id == null) {
-      throw MappingException(message: 'Id missing for recipe image update ' + recipe.name);
+      throw MappingException(message: 'Id missing for recipe image update ${recipe.name}');
     }
-    var url = '/api/recipe/' + recipe.id.toString() + '/image/';
+    var url = '/api/recipe/${recipe.id}/image/';
 
     Response res = await httpPutImage(url, image);
 
@@ -93,7 +95,7 @@ class ApiRecipe extends ApiService {
   }
 
   Future addIngredientsToShoppingList(int recipeId, List<int> ingredientIds, int servings) async {
-    var url = '/api/recipe/' + recipeId.toString() + '/shopping/';
+    var url = '/api/recipe/$recipeId/shopping/';
 
     Map<String, dynamic> requestData = {
       'id': recipeId,
@@ -116,7 +118,6 @@ class ApiRecipe extends ApiService {
 
     Response res = await httpPost(url, recipe.toJson());
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
-    print(json);
 
     if ([200, 201].contains(res.statusCode)) {
       return Recipe.fromJson(json);
@@ -130,9 +131,9 @@ class ApiRecipe extends ApiService {
 
   Future<Recipe> deleteRecipe(Recipe recipe) async {
     if (recipe.id == null) {
-      throw MappingException(message: 'Id missing for deleting recipe ' + recipe.name);
+      throw MappingException(message: 'Id missing for deleting recipe ${recipe.name}');
     }
-    var url = '/api/recipe/' + recipe.id.toString() + '/';
+    var url = '/api/recipe/${recipe.id}/';
 
     Response res = await httpDelete(url);
 
@@ -154,11 +155,8 @@ class ApiRecipe extends ApiService {
       'url': recipeUrl
     };
 
-    print(jsonEncode(requestData));
-    print('dude');
     Response res = await httpPost(url, requestData);
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
-    print(res.statusCode);
 
     if ([200, 201].contains(res.statusCode)) {
       return Recipe.fromJson(json['recipe_json']);

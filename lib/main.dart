@@ -6,48 +6,48 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:tare/blocs/meal_plan/meal_plan_bloc.dart';
-import 'package:tare/blocs/meal_plan/meal_plan_state.dart';
-import 'package:tare/blocs/recipe/recipe_bloc.dart';
-import 'package:tare/blocs/recipe/recipe_state.dart';
-import 'package:tare/blocs/shopping_list/shopping_list_bloc.dart';
-import 'package:tare/blocs/shopping_list/shopping_list_state.dart';
-import 'package:tare/constants/colors.dart';
+import 'package:untare/blocs/meal_plan/meal_plan_bloc.dart';
+import 'package:untare/blocs/meal_plan/meal_plan_state.dart';
+import 'package:untare/blocs/recipe/recipe_bloc.dart';
+import 'package:untare/blocs/recipe/recipe_state.dart';
+import 'package:untare/blocs/shopping_list/shopping_list_bloc.dart';
+import 'package:untare/blocs/shopping_list/shopping_list_state.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
-import 'package:tare/cubits/settings_cubit.dart';
-import 'package:tare/cubits/shopping_list_entry_cubit.dart';
-import 'package:tare/extensions/theme_extension.dart';
-import 'package:tare/models/app_setting.dart';
-import 'package:tare/models/food.dart';
-import 'package:tare/models/ingredient.dart';
-import 'package:tare/models/keyword.dart';
-import 'package:tare/models/meal_plan_entry.dart';
-import 'package:tare/models/meal_type.dart';
-import 'package:tare/models/recipe.dart';
-import 'package:tare/models/recipe_meal_plan.dart';
-import 'package:tare/models/shopping_list_entry.dart';
-import 'package:tare/models/step.dart';
-import 'package:tare/models/supermarket_category.dart';
-import 'package:tare/models/unit.dart';
-import 'package:tare/models/user.dart';
-import 'package:tare/models/user_setting.dart';
-import 'package:tare/pages/meal_plan_page.dart';
-import 'package:tare/pages/recipes_page.dart';
-import 'package:tare/pages/settings_page.dart';
-import 'package:tare/pages/shopping_list_page.dart';
-import 'package:tare/pages/starting_page.dart';
-import 'package:tare/services/api/api_meal_plan.dart';
-import 'package:tare/services/api/api_meal_type.dart';
-import 'package:tare/services/api/api_recipe.dart';
-import 'package:tare/services/api/api_service.dart';
-import 'package:tare/services/api/api_shopping_list.dart';
-import 'package:tare/services/api/api_supermarket_category.dart';
-import 'package:tare/services/api/api_user.dart';
-import 'package:tare/services/cache/cache_meal_plan_service.dart';
-import 'package:tare/services/cache/cache_recipe_service.dart';
-import 'package:tare/services/cache/cache_shopping_list_service.dart';
-import 'package:tare/services/cache/cache_user_service.dart';
+import 'package:untare/cubits/settings_cubit.dart';
+import 'package:untare/cubits/shopping_list_entry_cubit.dart';
+import 'package:untare/extensions/theme_extension.dart';
+import 'package:untare/models/app_setting.dart';
+import 'package:untare/models/food.dart';
+import 'package:untare/models/ingredient.dart';
+import 'package:untare/models/keyword.dart';
+import 'package:untare/models/meal_plan_entry.dart';
+import 'package:untare/models/meal_type.dart';
+import 'package:untare/models/recipe.dart';
+import 'package:untare/models/recipe_meal_plan.dart';
+import 'package:untare/models/shopping_list_entry.dart';
+import 'package:untare/models/space.dart';
+import 'package:untare/models/step.dart';
+import 'package:untare/models/supermarket_category.dart';
+import 'package:untare/models/unit.dart';
+import 'package:untare/models/user.dart';
+import 'package:untare/models/user_setting.dart';
+import 'package:untare/pages/meal_plan_page.dart';
+import 'package:untare/pages/recipes_page.dart';
+import 'package:untare/pages/settings_page.dart';
+import 'package:untare/pages/shopping_list_page.dart';
+import 'package:untare/pages/starting_page.dart';
+import 'package:untare/services/api/api_meal_plan.dart';
+import 'package:untare/services/api/api_meal_type.dart';
+import 'package:untare/services/api/api_recipe.dart';
+import 'package:untare/services/api/api_service.dart';
+import 'package:untare/services/api/api_shopping_list.dart';
+import 'package:untare/services/api/api_supermarket_category.dart';
+import 'package:untare/services/api/api_user.dart';
+import 'package:untare/services/cache/cache_meal_plan_service.dart';
+import 'package:untare/services/cache/cache_recipe_service.dart';
+import 'package:untare/services/cache/cache_shopping_list_service.dart';
+import 'package:untare/services/cache/cache_user_service.dart';
 import 'package:workmanager/workmanager.dart';
 
 
@@ -64,7 +64,7 @@ void main() async{
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_){
     runApp(
         Phoenix(
-            child: Tare()
+            child: const Tare()
         )
     );
   });
@@ -86,6 +86,7 @@ Future _initHive() async {
   Hive.registerAdapter(AppSettingAdapter());
   Hive.registerAdapter(UserSettingAdapter());
   Hive.registerAdapter(KeywordAdapter());
+  Hive.registerAdapter(SpaceAdapter());
   await Hive.openBox('unTaReBox');
 }
 
@@ -104,6 +105,8 @@ void _callbackDispatcher() {
 }
 
 class Tare extends StatelessWidget {
+  const Tare({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     var box = Hive.box('unTaReBox');
@@ -121,6 +124,7 @@ class Tare extends StatelessWidget {
                   cubit.changeLayoutTo(storedAppSetting.layout);
                   cubit.changeThemeTo(storedAppSetting.theme);
                   cubit.changeDefaultPageTo(storedAppSetting.defaultPage);
+                  cubit.changeColorTo(storedAppSetting.materialHexColor);
                 }
                 return cubit;
               }
@@ -156,25 +160,25 @@ class Tare extends StatelessWidget {
             }
 
             return MaterialApp(
-                localizationsDelegates: [
+                localizationsDelegates: const [
                   AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,
                   GlobalCupertinoLocalizations.delegate,
                   FormBuilderLocalizations.delegate,
                 ],
-                supportedLocales: [
+                supportedLocales: const [
                   Locale('en'),
                   Locale('de')
                 ],
                 debugShowCheckedModeBanner: false,
                 title: 'UnTaRe App',
-                theme: AppTheme.lightTheme,
-                darkTheme: AppTheme.darkTheme,
+                theme: AppTheme.lightTheme.copyWith(primaryColor: Color(settingsCubit.state.materialHexColor)),
+                darkTheme: AppTheme.darkTheme.copyWith(primaryColor: Color(settingsCubit.state.materialHexColor)),
                 themeMode: themeMode,
                 home: (state is AuthenticationAuthenticated)
-                    ? TarePage()
-                    : StartingPage()
+                    ? const TarePage()
+                    : const StartingPage()
             );
           },
         )
@@ -183,16 +187,18 @@ class Tare extends StatelessWidget {
 }
 
 class TarePage extends StatefulWidget {
+  const TarePage({Key? key}) : super(key: key);
+
   @override
-  _TarePageState createState() => _TarePageState();
+  TarePageState createState() => TarePageState();
 }
 
-class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin {
+class TarePageState extends State<TarePage> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   int _selectedScreenIndex = 0;
 
-  late List<Widget> _pages = <Widget>[
+  late final List<Widget> _pages = <Widget>[
     RecipesPage(
       isHideBottomNavBar: (isHideBottomNavBar) {
         isHideBottomNavBar
@@ -212,13 +218,13 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
             ? _animationController.forward()
             : _animationController.reverse();
     }),
-    SettingsPage()
+    const SettingsPage()
   ];
 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
     if (context.read<SettingsCubit>().state.defaultPage == 'plan') {
       _selectedScreenIndex = 1;
     } else if (context.read<SettingsCubit>().state.defaultPage == 'shopping') {
@@ -249,7 +255,7 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(state.error),
-                      duration: Duration(seconds: 5),
+                      duration: const Duration(seconds: 5),
                     ),
                   );
                 } else if (state is MealPlanUnauthorized) {
@@ -258,7 +264,7 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(AppLocalizations.of(context)!.addedToMealPlan),
-                      duration: Duration(seconds: 3),
+                      duration: const Duration(seconds: 3),
                     ),
                   );
                 }
@@ -270,7 +276,7 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(state.error),
-                      duration: Duration(seconds: 5),
+                      duration: const Duration(seconds: 5),
                     ),
                   );
                 } else if (state is RecipeUnauthorized) {
@@ -288,22 +294,22 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
 
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text((snackBarText ?? '') + ' ...'),
-                      duration: Duration(seconds: 1),
+                      content: Text('${snackBarText ?? ''} ...'),
+                      duration: const Duration(seconds: 1),
                     ),
                   );
                 } else if (state is RecipeDeleted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(AppLocalizations.of(context)!.removedRecipe),
-                      duration: Duration(seconds: 3),
+                      duration: const Duration(seconds: 3),
                     ),
                   );
                 } else if (state is RecipeAddedIngredientsToShoppingList) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(AppLocalizations.of(context)!.shoppingListItemsAdded),
-                      duration: Duration(seconds: 3),
+                      duration: const Duration(seconds: 3),
                     ),
                   );
                 }
@@ -315,7 +321,7 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(state.error),
-                      duration: Duration(seconds: 5),
+                      duration: const Duration(seconds: 5),
                     ),
                   );
                 } else if (state is ShoppingListUnauthorized) {
@@ -336,7 +342,7 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
                       color: Colors.black12.withOpacity(0.4), //color of shadow
                       spreadRadius: 0.5, //spread radius
                       blurRadius: 1, // blur radius
-                      offset: Offset(0, 0)
+                      offset: const Offset(0, 0)
                   ),
                 ],
               ),
@@ -346,16 +352,16 @@ class _TarePageState extends State<TarePage> with SingleTickerProviderStateMixin
                   child: BottomNavigationBar(
                     type: BottomNavigationBarType.fixed,
                     currentIndex: _selectedScreenIndex,
-                    selectedItemColor: primaryColor,
+                    selectedItemColor: Theme.of(context).primaryColor,
                     unselectedItemColor: Colors.grey,
                     showSelectedLabels: true,
                     showUnselectedLabels: false,
                     onTap: _selectScreen,
                     items: [
-                      BottomNavigationBarItem(icon: Icon(Icons.restaurant_menu_outlined), label: AppLocalizations.of(context)!.recipesTitle),
-                      BottomNavigationBarItem(icon: Icon(Icons.calendar_today_outlined), label: AppLocalizations.of(context)!.mealPlanTitle),
-                      BottomNavigationBarItem(icon: Icon(Icons.shopping_cart_outlined), label: AppLocalizations.of(context)!.shoppingListTitle),
-                      BottomNavigationBarItem(icon: Icon(Icons.settings), label: AppLocalizations.of(context)!.settingsTitle),
+                      BottomNavigationBarItem(icon: const Icon(Icons.restaurant_menu_outlined), label: AppLocalizations.of(context)!.recipesTitle),
+                      BottomNavigationBarItem(icon: const Icon(Icons.calendar_today_outlined), label: AppLocalizations.of(context)!.mealPlanTitle),
+                      BottomNavigationBarItem(icon: const Icon(Icons.shopping_cart_outlined), label: AppLocalizations.of(context)!.shoppingListTitle),
+                      BottomNavigationBarItem(icon: const Icon(Icons.settings), label: AppLocalizations.of(context)!.settingsTitle),
                     ],
                   )
               ),

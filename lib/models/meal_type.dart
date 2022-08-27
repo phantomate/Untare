@@ -63,11 +63,11 @@ class MealType {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': this.id,
-    'name': this.name,
-    'order': this.order,
-    'icon': this.icon,
-    'color': this.color,
-    'default': this.defaultType
+    'id': id,
+    'name': name,
+    'order': order,
+    'icon': icon,
+    'color': color,
+    'default': defaultType
   };
 }

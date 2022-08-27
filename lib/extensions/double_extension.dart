@@ -1,5 +1,5 @@
 extension DoubleExtension on double {
   String toFormattedString() {
-    return this.toStringAsFixed(this.truncateToDouble() == this ? 0 : 2);
+    return toStringAsFixed(truncateToDouble() == this ? 0 : 2);
   }
 }

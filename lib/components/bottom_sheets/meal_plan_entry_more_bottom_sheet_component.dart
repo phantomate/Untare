@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tare/blocs/meal_plan/meal_plan_bloc.dart';
-import 'package:tare/blocs/meal_plan/meal_plan_event.dart';
-import 'package:tare/components/dialogs/upsert_meal_plan_entry_dialog.dart';
-import 'package:tare/models/meal_plan_entry.dart';
+import 'package:untare/blocs/meal_plan/meal_plan_bloc.dart';
+import 'package:untare/blocs/meal_plan/meal_plan_event.dart';
+import 'package:untare/components/dialogs/upsert_meal_plan_entry_dialog.dart';
+import 'package:untare/models/meal_plan_entry.dart';
 
 import 'recipe_shopping_list_bottom_sheet_component.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 Future mealPlanEntryMoreBottomSheet(BuildContext context, MealPlanEntry mealPlan) {
-  MealPlanBloc _mealPlanBloc = BlocProvider.of<MealPlanBloc>(context);
+  MealPlanBloc mealPlanBloc = BlocProvider.of<MealPlanBloc>(context);
 
   return showModalBottomSheet(
       backgroundColor: Colors.transparent,
@@ -18,7 +18,7 @@ Future mealPlanEntryMoreBottomSheet(BuildContext context, MealPlanEntry mealPlan
       builder: (btsContext) => Container(
         decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(10))
+            borderRadius: const BorderRadius.all(Radius.circular(10))
         ),
         margin: const EdgeInsets.all(12),
         child: Wrap(
@@ -27,13 +27,13 @@ Future mealPlanEntryMoreBottomSheet(BuildContext context, MealPlanEntry mealPlan
               height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                   color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300] : Colors.grey[700]
               ),
               child: Text(
-                mealPlan.recipe!.name,
+                 (mealPlan.recipe != null) ? mealPlan.recipe!.name : mealPlan.title,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
                 ),
@@ -46,34 +46,34 @@ Future mealPlanEntryMoreBottomSheet(BuildContext context, MealPlanEntry mealPlan
                 padding: const EdgeInsets.only(left: 12, right: 12),
                 child: Column(
                     children: [
-                      TextButton.icon(
-                        onPressed: () {
+                      ListTile(
+                        onTap: () {
                           Navigator.pop(btsContext);
                           upsertMealPlanEntryDialog(context, mealPlan: mealPlan, referer: 'edit');
                         },
-                        icon: Icon(Icons.edit_outlined),
-                        label: Text(AppLocalizations.of(context)!.edit),
+                        leading: const Icon(Icons.edit_outlined),
+                        title: Text(AppLocalizations.of(context)!.edit)
                       ),
                       if (mealPlan.recipe != null)
-                        TextButton.icon(
-                          onPressed: () {
+                        ListTile(
+                          onTap: () {
                             Navigator.pop(btsContext);
                             recipeShoppingListBottomSheet(context, mealPlan.recipe!);
                           },
-                          icon: Icon(Icons.add_shopping_cart_outlined),
-                          label: Text(AppLocalizations.of(context)!.addToShoppingList),
+                          leading: const Icon(Icons.add_shopping_cart_outlined),
+                          title: Text(AppLocalizations.of(context)!.addToShoppingList)
                         ),
-                      TextButton.icon(
-                        onPressed: () {
+                      ListTile(
+                        onTap: () {
                           Navigator.pop(btsContext);
-                          _mealPlanBloc.add(DeleteMealPlan(mealPlan: mealPlan));
+                          mealPlanBloc.add(DeleteMealPlan(mealPlan: mealPlan));
                         },
-                        icon: Icon(Icons.delete_outline, color: Colors.redAccent),
-                        label: Text(
+                        leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                        title: Text(
                           AppLocalizations.of(context)!.mealPlanRemove,
-                          style: TextStyle(color: Colors.redAccent),
-                        ),
-                      ),
+                          style: const TextStyle(color: Colors.redAccent)
+                        )
+                      )
                     ]
                 )
             )

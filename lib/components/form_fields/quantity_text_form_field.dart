@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:tare/extensions/double_extension.dart';
+import 'package:untare/extensions/double_extension.dart';
 
-Widget quantityTextFormField(double? amount, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context) {
-  final fieldName = 'quantity';
+Widget quantityTextFormField(double? amount, GlobalKey<FormBuilderState> formBuilderKey, BuildContext context) {
+  const fieldName = 'quantity';
 
   return FormBuilderTextField(
     name: fieldName,
@@ -27,7 +27,7 @@ Widget quantityTextFormField(double? amount, GlobalKey<FormBuilderState> _formBu
         newAmount = newAmount;
       }
 
-      _formBuilderKey.currentState!.fields[fieldName]!.didChange(newAmount.toFormattedString());
+      formBuilderKey.currentState!.fields[fieldName]!.didChange(newAmount.toFormattedString());
     },
   );
 }

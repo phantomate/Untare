@@ -1,4 +1,4 @@
-import 'package:tare/models/unit.dart';
+import 'package:untare/models/unit.dart';
 import 'food.dart';
 import 'package:hive/hive.dart';
 
@@ -57,13 +57,13 @@ class Ingredient {
     Map<String, dynamic>? food = this.food != null ? this.food!.toJson() : null;
 
     return {
-      'id': this.id,
+      'id': id,
       'food': food,
       'unit': unit,
-      'amount': this.amount,
-      'note': this.note,
-      'order': this.order,
-      'original_text': this.originalText
+      'amount': amount,
+      'note': note,
+      'order': order,
+      'original_text': originalText
     };
   }
 

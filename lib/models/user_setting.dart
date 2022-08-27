@@ -1,4 +1,4 @@
-import 'package:tare/models/user.dart';
+import 'package:untare/models/user.dart';
 import 'package:hive/hive.dart';
 
 part 'user_setting.g.dart';
@@ -15,20 +15,18 @@ class UserSetting {
   @HiveField(3)
   final bool useKj;
   @HiveField(4)
-  final String searchStyle;
-  @HiveField(5)
   final List<User> planShare;
-  @HiveField(6)
+  @HiveField(5)
   final List<User> shoppingShare;
-  @HiveField(7)
+  @HiveField(6)
   final int? ingredientDecimal;
-  @HiveField(8)
+  @HiveField(7)
   final bool? comments;
-  @HiveField(9)
+  @HiveField(8)
   final bool mealPlanAutoAddShopping;
-  @HiveField(10)
+  @HiveField(9)
   final int shoppingRecentDays;
-  @HiveField(11)
+  @HiveField(10)
   final int shoppingAutoSync;
 
 
@@ -37,7 +35,6 @@ class UserSetting {
     required this.defaultUnit,
     required this.useFractions,
     required this.useKj,
-    required this.searchStyle,
     required this.planShare,
     required this.shoppingShare,
     required this.ingredientDecimal,
@@ -66,7 +63,6 @@ class UserSetting {
       defaultUnit: defaultUnit ?? this.defaultUnit,
       useFractions: useFractions ?? this.useFractions,
       useKj: useKj ?? this.useKj,
-      searchStyle: searchStyle ?? this.searchStyle,
       planShare: planShare ?? this.planShare,
       shoppingShare: shoppingShare ?? this.shoppingShare,
       ingredientDecimal: ingredientDecimal ?? this.ingredientDecimal,
@@ -83,7 +79,6 @@ class UserSetting {
       defaultUnit: json['default_unit'] as String,
       useFractions: json['use_fractions'] as bool,
       useKj: json['use_kj'] as bool,
-      searchStyle: json['search_style'] as String,
       planShare: json['plan_share'].map((item) => User.fromJson(item)).toList().cast<User>(),
       shoppingShare: json['shopping_share'].map((item) => User.fromJson(item)).toList().cast<User>(),
       ingredientDecimal: json['ingredient_decimals'] as int,
@@ -95,16 +90,16 @@ class UserSetting {
   }
 
   Map<String, dynamic> toJson() => {
-    'user': this.user,
-    'default_unit': this.defaultUnit,
-    'use_fractions': this.useFractions,
-    'use_kj': this.useKj,
-    'search_style': this.searchStyle,
-    'shopping_share': this.shoppingShare,
-    'ingredient_decimals': this.ingredientDecimal,
-    'comments': this.comments,
-    'mealplan_autoadd_shopping': this.mealPlanAutoAddShopping,
-    'shopping_recent_days': this.shoppingRecentDays,
-    'shopping_auto_sync': this.shoppingAutoSync
+    'user': user,
+    'default_unit': defaultUnit,
+    'use_fractions': useFractions,
+    'use_kj': useKj,
+    'plan_share': planShare,
+    'shopping_share': shoppingShare,
+    'ingredient_decimals': ingredientDecimal,
+    'comments': comments,
+    'mealplan_autoadd_shopping': mealPlanAutoAddShopping,
+    'shopping_recent_days': shoppingRecentDays,
+    'shopping_auto_sync': shoppingAutoSync
   };
 }

@@ -14,11 +14,13 @@ abstract class CacheService {
 
       if (query != '') {
         cacheEntities = cacheEntities.where((entity) {
-          if (entity.name.toLowerCase().contains(query.toLowerCase()))
+          if (entity.name.toLowerCase().contains(query.toLowerCase())) {
             return true;
+          }
 
-          if (entity.description != null && entity.description!.toLowerCase().contains(query.toLowerCase()))
+          if (entity.description != null && entity.description!.toLowerCase().contains(query.toLowerCase())) {
             return true;
+          }
 
           return false;
         }).toList();
@@ -41,8 +43,8 @@ abstract class CacheService {
     List<dynamic>? cacheEntities = box.get(cacheKey);
 
     if (cacheEntities != null && cacheEntities.isNotEmpty) {
-      entities.forEach((entity) {
-        int cacheEntityIndex = cacheEntities!.indexWhere((cacheEntity) => cacheEntity.id == entity.id);
+      for (var entity in entities) {
+        int cacheEntityIndex = cacheEntities.indexWhere((cacheEntity) => cacheEntity.id == entity.id);
 
         // If we found the entity in cache entities, overwrite data, if not add entity
         if (cacheEntityIndex >= 0) {
@@ -55,7 +57,7 @@ abstract class CacheService {
         } else {
           cacheEntities.add(entity);
         }
-      });
+      }
     } else {
       cacheEntities = [];
       cacheEntities.addAll(entities);

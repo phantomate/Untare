@@ -3,27 +3,28 @@ import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:sliver_tools/sliver_tools.dart';
-import 'package:tare/blocs/recipe/recipe_bloc.dart';
-import 'package:tare/blocs/recipe/recipe_event.dart';
-import 'package:tare/blocs/recipe/recipe_state.dart';
-import 'package:tare/components/bottom_sheets/recipe_more_bottom_sheet_component.dart';
-import 'package:tare/components/widgets/recipe_detail_tabbar_widget.dart';
-import 'package:tare/components/recipes/recipe_image_component.dart';
-import 'package:tare/components/loading_component.dart';
-import 'package:tare/models/keyword.dart';
-import 'package:tare/models/recipe.dart';
+import 'package:untare/blocs/recipe/recipe_bloc.dart';
+import 'package:untare/blocs/recipe/recipe_event.dart';
+import 'package:untare/blocs/recipe/recipe_state.dart';
+import 'package:untare/components/bottom_sheets/recipe_more_bottom_sheet_component.dart';
+import 'package:untare/components/widgets/recipe_detail_tabbar_widget.dart';
+import 'package:untare/components/recipes/recipe_image_component.dart';
+import 'package:untare/components/loading_component.dart';
+import 'package:untare/models/keyword.dart';
+import 'package:untare/models/recipe.dart';
+import 'package:wakelock/wakelock.dart';
 
 class RecipeDetailPage extends StatefulWidget {
   final Recipe recipe;
   final String? referer;
 
-  RecipeDetailPage({required this.recipe, this.referer});
+  const RecipeDetailPage({Key? key, required this.recipe, this.referer}) : super(key: key);
 
   @override
-  _RecipeDetailPageState createState() => _RecipeDetailPageState();
+  RecipeDetailPageState createState() => RecipeDetailPageState();
 }
 
-class _RecipeDetailPageState extends State<RecipeDetailPage> {
+class RecipeDetailPageState extends State<RecipeDetailPage> {
   late RecipeBloc recipeBloc;
   late Recipe recipe;
 
@@ -33,48 +34,55 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     recipe = widget.recipe;
     recipeBloc = BlocProvider.of<RecipeBloc>(context);
     recipeBloc.add(FetchRecipe(id: recipe.id!));
+    Wakelock.disable();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: DefaultTabController(
-        length: 2,
-        child: BlocConsumer<RecipeBloc, RecipeState>(
-          listener: (context, state) {
-            if (state is RecipeDeleted) {
-              Navigator.pop(context);
-            } else if (state is RecipeUpdated) {
-              recipe = state.recipe;
-            }
-          },
-          builder: (context, state) {
-            if (state is RecipeFetched) {
-              if (widget.recipe.id == state.recipe.id) {
-                recipe = state.recipe;
-              }
-            } else if (state is RecipeFetchedFromCache) {
-              if (widget.recipe.id == state.recipe.id && state.recipe.steps.isNotEmpty) {
-                recipe = state.recipe;
-              }
-            }
+    return WillPopScope(
+        onWillPop: () async {
+          Wakelock.disable();
+          return true;
+        },
+        child: Scaffold(
+            body: DefaultTabController(
+                length: 2,
+                child: BlocConsumer<RecipeBloc, RecipeState>(
+                    listener: (context, state) {
+                      if (state is RecipeDeleted) {
+                        Navigator.pop(context);
+                      } else if (state is RecipeUpdated) {
+                        recipe = state.recipe;
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is RecipeFetched) {
+                        if (widget.recipe.id == state.recipe.id) {
+                          recipe = state.recipe;
+                        }
+                      } else if (state is RecipeFetchedFromCache) {
+                        if (widget.recipe.id == state.recipe.id && state.recipe.steps.isNotEmpty) {
+                          recipe = state.recipe;
+                        }
+                      }
 
-            return NestedScrollView(
-              headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
-                return <Widget>[
-                  sliverWidget(context, hsbContext, recipe, referer: widget.referer)
-                ];
-              },
-              body: Container(
-                  color: Theme.of(context).scaffoldBackgroundColor,
-                  child: (state is RecipeLoading || (state is RecipeFetchedFromCache && state.recipe.steps.isEmpty))
-                    ? buildLoading()
-                    : RecipeDetailTabBarWidget(recipe: recipe)
-              ),
-            );
-          }
-        )
-      )
+                      return NestedScrollView(
+                        headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
+                          return <Widget>[
+                            sliverWidget(context, hsbContext, recipe, referer: widget.referer)
+                          ];
+                        },
+                        body: Container(
+                            color: Theme.of(context).scaffoldBackgroundColor,
+                            child: (state is RecipeLoading || (state is RecipeFetchedFromCache && state.recipe.steps.isEmpty))
+                                ? buildLoading()
+                                : RecipeDetailTabBarWidget(recipe: recipe)
+                        ),
+                      );
+                    }
+                )
+            )
+        ),
     );
   }
 }
@@ -82,6 +90,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
 Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe, {String? referer}) {
   String? lastCooked;
   List<Widget> keywordsWidget = [];
+  bool isScreenLocked = false;
 
   if (recipe.lastCooked != null) {
     DateTime tempDate = DateTime.parse(recipe.lastCooked!);
@@ -105,40 +114,64 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
           builder: (BuildContext hsbContext, constraints) {
             final scrolled = constraints.scrollOffset > 0 && constraints.scrollOffset < 290;
 
-            return SliverAppBar(
-              leadingWidth: 50,
-              titleSpacing: 0,
-              automaticallyImplyLeading: false,
-              leading: IconButton(
-                iconSize: 30,
-                padding: const EdgeInsets.all(0),
-                onPressed: () => Navigator.pop(hsbContext),
-                splashRadius: 20,
-                icon: Icon(
-                  Icons.chevron_left,
+            return StatefulBuilder(builder: (context, setState){
+              return SliverAppBar(
+                leadingWidth: 50,
+                titleSpacing: 0,
+                automaticallyImplyLeading: false,
+                leading: IconButton(
+                  iconSize: 30,
+                  padding: const EdgeInsets.all(0),
+                  onPressed: () {
+                    Wakelock.disable();
+                    Navigator.pop(hsbContext);
+                  },
+                  splashRadius: 20,
+                  icon: const Icon(
+                    Icons.chevron_left,
+                  ),
                 ),
-              ),
-              title: Text(
-                recipe.name,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18
+                title: Text(
+                  recipe.name,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18
+                  ),
                 ),
-              ),
-              actions: [
-                IconButton(
-                    tooltip: AppLocalizations.of(context)!.moreTooltip,
+                actions: [
+                  IconButton(
+                    tooltip: AppLocalizations.of(context)!.screenLock,
                     splashRadius: 20,
                     onPressed: () {
-                      recipeMoreBottomSheet(context, recipe);
+                      setState(() {
+                        isScreenLocked = !isScreenLocked;
+                      });
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: (isScreenLocked) ? Text(AppLocalizations.of(context)!.enabledScreenLock) : Text(AppLocalizations.of(context)!.disabledScreenLock),
+                          duration: const Duration(seconds: 3),
+                        ),
+                      );
+
+                      Wakelock.toggle(enable: isScreenLocked);
                     },
-                    icon: Icon(Icons.more_vert_outlined)
-                )
-              ],
-              elevation: (scrolled) ? 1.5 : 0,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              pinned: true,
-            );
+                    icon: isScreenLocked ? const Icon(Icons.lock_outline) : const Icon(Icons.lock_open_outlined),
+                  ),
+                  IconButton(
+                      tooltip: AppLocalizations.of(context)!.moreTooltip,
+                      splashRadius: 20,
+                      onPressed: () {
+                        recipeMoreBottomSheet(context, recipe);
+                      },
+                      icon: const Icon(Icons.more_vert_outlined)
+                  )
+                ],
+                elevation: (scrolled) ? 1.5 : 0,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                pinned: true,
+              );
+            });
           },
         ),
         SliverList(
@@ -146,7 +179,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                 [
                   Stack(
                     children: [
-                      Container(
+                      SizedBox(
                         height: 250,
                         child: buildRecipeImage(recipe, BorderRadius.zero, 250, referer: referer),
                       ),
@@ -161,7 +194,7 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                       ),
                     ],
                   ),
-                  Container(
+                  SizedBox(
                     height: 45,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -171,23 +204,23 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                           children: [
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.restaurant_outlined,
                                   size: 13
                                 ),
-                                SizedBox(width: 2),
+                                const SizedBox(width: 2),
                                 Text(
                                   lastCooked,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 13,
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 3),
+                            const SizedBox(height: 3),
                             Text(
                               AppLocalizations.of(context)!.lastCooked,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 10,
                                   color: Colors.grey
                               ),
@@ -201,20 +234,20 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                               children: [
                                 Text(
                                   recipe.rating.toString(),
-                                  style: TextStyle(fontSize: 13),
+                                  style: const TextStyle(fontSize: 13),
                                 ),
-                                SizedBox(width: 2),
-                                Icon(
+                                const SizedBox(width: 2),
+                                const Icon(
                                   Icons.star,
                                   size: 13,
                                   color: Colors.amberAccent,
                                 ),
                               ],
                             ),
-                            SizedBox(height: 3),
+                            const SizedBox(height: 3),
                             Text(
                               AppLocalizations.of(context)!.rating,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 10,
                                   color: Colors.grey
                               ),
@@ -226,21 +259,21 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                           children: [
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.timer_outlined,
                                   size: 13,
                                 ),
-                                SizedBox(width: 2),
+                                const SizedBox(width: 2),
                                 Text(
-                                  recipe.workingTime.toString() + ' min',
-                                  style: TextStyle(fontSize: 13),
+                                  '${recipe.workingTime} min',
+                                  style: const TextStyle(fontSize: 13),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 3),
+                            const SizedBox(height: 3),
                             Text(
                               AppLocalizations.of(context)!.prepTime,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 10,
                                 color: Colors.grey
                               ),
@@ -252,23 +285,23 @@ Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe
                           children: [
                             Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.hourglass_bottom_outlined,
                                   size: 13
                                 ),
-                                SizedBox(width: 2),
+                                const SizedBox(width: 2),
                                 Text(
-                                  recipe.waitingTime.toString() + ' min',
-                                  style: TextStyle(
+                                  '${recipe.waitingTime} min',
+                                  style: const TextStyle(
                                     fontSize: 13,
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 3),
+                            const SizedBox(height: 3),
                             Text(
                               AppLocalizations.of(context)!.waitingTime,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 10,
                                   color: Colors.grey
                               ),
@@ -313,7 +346,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
 
-    return new Container(
+    return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         boxShadow:[
@@ -321,7 +354,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
               color: Colors.black12.withOpacity(0.45), //color of shadow
               spreadRadius: 0.2, //spread radius
               blurRadius: 0.7, // blur radius
-              offset: Offset(0, 0.5)
+              offset: const Offset(0, 0.5)
           ),
         ],
       ),
@@ -345,7 +378,7 @@ Widget? getKeywordWidget(BuildContext context, Keyword keyword) {
             color: (Theme.of(context).brightness.name == 'light') ? Colors.white.withOpacity(0.8) : Colors.grey[800]!.withOpacity(0.8),
             borderRadius: BorderRadius.circular(30)
         ),
-        child: Text(text, style: TextStyle(fontSize: 11))
+        child: Text(text, style: const TextStyle(fontSize: 11))
     );
   }
 

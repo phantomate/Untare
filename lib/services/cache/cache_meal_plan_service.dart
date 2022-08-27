@@ -1,7 +1,9 @@
+// ignore_for_file: annotate_overrides, overridden_fields
+
 import 'package:hive/hive.dart';
-import 'package:tare/models/meal_plan_entry.dart';
-import 'package:tare/models/meal_type.dart';
-import 'package:tare/services/cache/cache_service.dart';
+import 'package:untare/models/meal_plan_entry.dart';
+import 'package:untare/models/meal_type.dart';
+import 'package:untare/services/cache/cache_service.dart';
 
 class CacheMealPlanService extends CacheService{
   var box = Hive.box('unTaReBox');
@@ -17,13 +19,13 @@ class CacheMealPlanService extends CacheService{
       DateTime fromDate = DateTime.parse(from);
       DateTime toDate = DateTime.parse(to);
 
-      cacheMealPlanEntries.forEach((entry) {
+      for (var entry in cacheMealPlanEntries) {
         DateTime entryDate = DateTime.parse(entry.date);
 
         if ((fromDate.isBefore(entryDate) || fromDate.isAtSameMomentAs(entryDate)) && (toDate.isAfter(entryDate) || toDate.isAtSameMomentAs(entryDate))) {
-          mealPLanEntries!.add(entry);
+          mealPLanEntries.add(entry);
         }
-      });
+      }
     }
 
     return mealPLanEntries;

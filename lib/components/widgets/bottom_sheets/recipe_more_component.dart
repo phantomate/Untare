@@ -1,59 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tare/blocs/recipe/recipe_bloc.dart';
-import 'package:tare/blocs/recipe/recipe_event.dart';
-import 'package:tare/components/bottom_sheets/recipe_shopping_list_bottom_sheet_component.dart';
-import 'package:tare/components/dialogs/upsert_meal_plan_entry_dialog.dart';
-import 'package:tare/models/recipe.dart';
-import 'package:tare/pages/recipe_upsert_page.dart';
+import 'package:untare/blocs/recipe/recipe_bloc.dart';
+import 'package:untare/blocs/recipe/recipe_event.dart';
+import 'package:untare/components/bottom_sheets/recipe_shopping_list_bottom_sheet_component.dart';
+import 'package:untare/components/dialogs/upsert_meal_plan_entry_dialog.dart';
+import 'package:untare/models/recipe.dart';
+import 'package:untare/pages/recipe_upsert_page.dart';
 
 Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe recipe) {
-  RecipeBloc _recipeBloc = BlocProvider.of<RecipeBloc>(context);
+  RecipeBloc recipeBloc = BlocProvider.of<RecipeBloc>(context);
 
   return Container(
     alignment: Alignment.center,
     padding: const EdgeInsets.only(left: 12, right: 12),
     child: Column(
       children: [
-        TextButton.icon(
-          onPressed: () {
+        ListTile(
+          minLeadingWidth: 35,
+          onTap: () {
             Navigator.pop(btsContext);
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => RecipeUpsertPage(recipe: recipe)),
             );
           },
-          icon: Icon(Icons.edit_outlined),
-          label: Text(AppLocalizations.of(context)!.edit),
+          leading: const Icon(Icons.edit_outlined),
+          title: Text(AppLocalizations.of(context)!.edit),
         ),
-        TextButton.icon(
-          onPressed: () {
+        ListTile(
+          minLeadingWidth: 35,
+          onTap: () {
             Navigator.pop(btsContext);
             upsertMealPlanEntryDialog(context, recipe: recipe, referer: 'recipe');
           },
-          icon: Icon(Icons.calendar_today_outlined),
-          label: Text(AppLocalizations.of(context)!.addToMealPlan),
+          leading: const Icon(Icons.calendar_today_outlined),
+          title: Text(AppLocalizations.of(context)!.addToMealPlan),
         ),
-        TextButton.icon(
-          onPressed: () {
+        ListTile(
+          minLeadingWidth: 35,
+          onTap: () {
             Navigator.pop(btsContext);
             recipeShoppingListBottomSheet(context, recipe);
           },
-          icon: Icon(Icons.add_shopping_cart_outlined),
-          label: Text(AppLocalizations.of(context)!.addToShoppingList),
+          leading: const Icon(Icons.add_shopping_cart_outlined),
+          title: Text(AppLocalizations.of(context)!.addToShoppingList),
         ),
-        TextButton.icon(
-          onPressed: () {
+        ListTile(
+          minLeadingWidth: 35,
+          onTap: () {
             Navigator.pop(btsContext);
-            _recipeBloc.add(DeleteRecipe(recipe: recipe));
+            recipeBloc.add(DeleteRecipe(recipe: recipe));
           },
-          icon: Icon(Icons.delete_outline, color: Colors.redAccent),
-          label: Text(
+          leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
+          title: Text(
             AppLocalizations.of(context)!.remove,
-            style: TextStyle(color: Colors.redAccent),
+            style: const TextStyle(color: Colors.redAccent),
           ),
-        ),
+        )
       ],
     ),
   );

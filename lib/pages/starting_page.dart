@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tare/blocs/authentication/authentication_bloc.dart';
-import 'package:tare/blocs/authentication/authentication_event.dart';
-import 'package:tare/blocs/authentication/authentication_state.dart';
-import 'package:tare/blocs/login/login_bloc.dart';
-import 'package:tare/blocs/login/login_event.dart';
-import 'package:tare/blocs/login/login_state.dart';
+import 'package:untare/blocs/authentication/authentication_bloc.dart';
+import 'package:untare/blocs/authentication/authentication_event.dart';
+import 'package:untare/blocs/authentication/authentication_state.dart';
+import 'package:untare/blocs/login/login_bloc.dart';
+import 'package:untare/blocs/login/login_event.dart';
+import 'package:untare/blocs/login/login_state.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 class StartingPage extends StatelessWidget {
@@ -89,12 +89,12 @@ class __SignInFormState extends State<_SignInForm> {
 
   @override
   Widget build(BuildContext context) {
-    final _loginBloc = BlocProvider.of<LoginBloc>(context);
+    final loginBloc = BlocProvider.of<LoginBloc>(context);
 
     _onLoginButtonPressed () {
       if (_key.currentState!.validate()) {
 
-        _loginBloc.add(LoginWithUsernameAndPassword(
+        loginBloc.add(LoginWithUsernameAndPassword(
             url: _urlController.text,
             username: _usernameController.text,
             password: _passwordController.text
@@ -211,8 +211,8 @@ class __SignInFormState extends State<_SignInForm> {
                             color: Theme.of(context).primaryColor,
                             minWidth: double.maxFinite,
                             padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
-                            child: const Text('LOGIN'),
                             onPressed: _onLoginButtonPressed,
+                            child: const Text('LOGIN'),
                           ),
                         ],
                       ),

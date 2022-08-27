@@ -1,21 +1,23 @@
-import 'package:tare/exceptions/api_connection_exception.dart';
-import 'package:tare/models/meal_type.dart';
-import 'package:tare/services/api/api_meal_type.dart';
-import 'package:tare/services/cache/cache_meal_plan_service.dart';
+// ignore_for_file: unused_catch_clause
+
+import 'package:untare/exceptions/api_connection_exception.dart';
+import 'package:untare/models/meal_type.dart';
+import 'package:untare/services/api/api_meal_type.dart';
+import 'package:untare/services/cache/cache_meal_plan_service.dart';
 
 Future getMealTypesFromApiCache() async {
-  final CacheMealPlanService _cacheMealPlanService = CacheMealPlanService();
-  final ApiMealType _apiMealType = ApiMealType();
+  final CacheMealPlanService cacheMealPlanService = CacheMealPlanService();
+  final ApiMealType apiMealType = ApiMealType();
 
-  List<MealType>? cacheMealTypes = _cacheMealPlanService.getMealTypes();
+  List<MealType>? cacheMealTypes = cacheMealPlanService.getMealTypes();
 
   if (cacheMealTypes != null) {
     return cacheMealTypes;
   }
 
   try {
-    Future<List<MealType>> mealTypes = _apiMealType.getMealTypeList();
-    mealTypes.then((value) => _cacheMealPlanService.upsertMealTypes(value));
+    Future<List<MealType>> mealTypes = apiMealType.getMealTypeList();
+    mealTypes.then((value) => cacheMealPlanService.upsertMealTypes(value));
     return mealTypes;
   } on ApiConnectionException catch (e) {
     // Do nothing

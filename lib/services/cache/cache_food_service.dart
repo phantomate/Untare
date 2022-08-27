@@ -1,6 +1,8 @@
+// ignore_for_file: overridden_fields, annotate_overrides
+
 import 'package:hive/hive.dart';
-import 'package:tare/models/food.dart';
-import 'package:tare/services/cache/cache_service.dart';
+import 'package:untare/models/food.dart';
+import 'package:untare/services/cache/cache_service.dart';
 
 class CacheFoodService extends CacheService {
   var box = Hive.box('unTaReBox');
@@ -17,5 +19,13 @@ class CacheFoodService extends CacheService {
 
   upsertFoods(List<Food> foods) {
     upsertEntityList(foods, 'foods');
+  }
+
+  upsertFood(Food food) {
+    upsertEntity(food, 'foods');
+  }
+
+  deleteFood(Food food) {
+    deleteEntity(food, 'foods');
   }
 }

@@ -1,6 +1,6 @@
-import 'package:tare/models/user.dart';
-import 'package:tare/models/user_setting.dart';
-import 'package:tare/services/cache/cache_service.dart';
+import 'package:untare/models/user.dart';
+import 'package:untare/models/user_setting.dart';
+import 'package:untare/services/cache/cache_service.dart';
 
 class CacheUserService extends CacheService {
 

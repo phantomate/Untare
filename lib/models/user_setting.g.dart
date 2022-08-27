@@ -21,21 +21,20 @@ class UserSettingAdapter extends TypeAdapter<UserSetting> {
       defaultUnit: fields[1] as String,
       useFractions: fields[2] as bool,
       useKj: fields[3] as bool,
-      searchStyle: fields[4] as String,
-      planShare: (fields[5] as List).cast<User>(),
-      shoppingShare: (fields[6] as List).cast<User>(),
-      ingredientDecimal: fields[7] as int?,
-      comments: fields[8] as bool?,
-      mealPlanAutoAddShopping: fields[9] as bool,
-      shoppingRecentDays: fields[10] as int,
-      shoppingAutoSync: fields[11] as int,
+      planShare: (fields[4] as List).cast<User>(),
+      shoppingShare: (fields[5] as List).cast<User>(),
+      ingredientDecimal: fields[6] as int?,
+      comments: fields[7] as bool?,
+      mealPlanAutoAddShopping: fields[8] as bool,
+      shoppingRecentDays: fields[9] as int,
+      shoppingAutoSync: fields[10] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, UserSetting obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.user)
       ..writeByte(1)
@@ -45,20 +44,18 @@ class UserSettingAdapter extends TypeAdapter<UserSetting> {
       ..writeByte(3)
       ..write(obj.useKj)
       ..writeByte(4)
-      ..write(obj.searchStyle)
-      ..writeByte(5)
       ..write(obj.planShare)
-      ..writeByte(6)
+      ..writeByte(5)
       ..write(obj.shoppingShare)
-      ..writeByte(7)
+      ..writeByte(6)
       ..write(obj.ingredientDecimal)
-      ..writeByte(8)
+      ..writeByte(7)
       ..write(obj.comments)
-      ..writeByte(9)
+      ..writeByte(8)
       ..write(obj.mealPlanAutoAddShopping)
-      ..writeByte(10)
+      ..writeByte(9)
       ..write(obj.shoppingRecentDays)
-      ..writeByte(11)
+      ..writeByte(10)
       ..write(obj.shoppingAutoSync);
   }
 

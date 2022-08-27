@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.tare">
+    package="com.example.untare">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <queries>
@@ -10,8 +10,8 @@
         </intent>
     </queries>
     <application
-        android:label="tare"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Untare"
+        android:icon="@mipmap/app_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,6 +1,6 @@
-import 'package:tare/models/food.dart';
-import 'package:tare/models/recipe_meal_plan.dart';
-import 'package:tare/models/unit.dart';
+import 'package:untare/models/food.dart';
+import 'package:untare/models/recipe_meal_plan.dart';
+import 'package:untare/models/unit.dart';
 import 'package:hive/hive.dart';
 
 part 'shopping_list_entry.g.dart';
@@ -117,16 +117,16 @@ class ShoppingListEntry {
     Map<String, dynamic>? food = this.food != null ? this.food!.toJson() : null;
 
     return {
-      'id': this.id,
-      'list_recipe': this.listRecipe,
+      'id': id,
+      'list_recipe': listRecipe,
       'food': food,
       'unit': unit,
-      'ingredient': this.ingredient,
-      'amount': this.amount,
-      'order': this.order ?? 0,
-      'checked': this.checked,
-      'completed_at': this.completedAt,
-      'delay_until': this.delayUntil
+      'ingredient': ingredient,
+      'amount': amount,
+      'order': order ?? 0,
+      'checked': checked,
+      'completed_at': completedAt,
+      'delay_until': delayUntil
     };
   }
 }

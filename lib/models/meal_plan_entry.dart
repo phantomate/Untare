@@ -1,5 +1,5 @@
-import 'package:tare/models/meal_type.dart';
-import 'package:tare/models/recipe.dart';
+import 'package:untare/models/meal_type.dart';
+import 'package:untare/models/recipe.dart';
 import 'package:hive/hive.dart';
 
 part 'meal_plan_entry.g.dart';
@@ -104,14 +104,14 @@ class MealPlanEntry {
     Map<String, dynamic>? recipe = this.recipe != null ? this.recipe!.toJson() : null;
 
     return {
-      'id': this.id,
-      'title': this.title,
+      'id': id,
+      'title': title,
       'recipe': recipe,
-      'servings': this.servings,
-      'note': this.note,
-      'date': this.date,
-      'meal_type': this.mealType.toJson(),
-      'shared': this.shared
+      'servings': servings,
+      'note': note,
+      'date': date,
+      'meal_type': mealType.toJson(),
+      'shared': shared
     };
   }
 }

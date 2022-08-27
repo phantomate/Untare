@@ -1,15 +1,15 @@
-import 'dart:io';
+// ignore_for_file: unused_catch_clause
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tare/blocs/shopping_list/shopping_list_event.dart';
-import 'package:tare/blocs/shopping_list/shopping_list_state.dart';
-import 'package:tare/exceptions/api_connection_exception.dart';
-import 'package:tare/exceptions/api_exception.dart';
-import 'package:tare/models/shopping_list_entry.dart';
-import 'package:tare/models/supermarket_category.dart';
-import 'package:tare/services/api/api_shopping_list.dart';
-import 'package:tare/services/api/api_supermarket_category.dart';
-import 'package:tare/services/cache/cache_shopping_list_service.dart';
+import 'package:untare/blocs/shopping_list/shopping_list_event.dart';
+import 'package:untare/blocs/shopping_list/shopping_list_state.dart';
+import 'package:untare/exceptions/api_connection_exception.dart';
+import 'package:untare/exceptions/api_exception.dart';
+import 'package:untare/models/shopping_list_entry.dart';
+import 'package:untare/models/supermarket_category.dart';
+import 'package:untare/services/api/api_shopping_list.dart';
+import 'package:untare/services/api/api_supermarket_category.dart';
+import 'package:untare/services/cache/cache_shopping_list_service.dart';
 
 class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
   final ApiShoppingList apiShoppingList;

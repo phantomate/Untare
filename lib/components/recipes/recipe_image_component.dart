@@ -1,8 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:tare/models/recipe.dart';
+import 'package:untare/models/recipe.dart';
 
 Widget buildRecipeImage(Recipe recipe, BorderRadius borderRadius, double height, {BoxShadow? boxShadow, String? referer}) {
 
@@ -10,8 +9,8 @@ Widget buildRecipeImage(Recipe recipe, BorderRadius borderRadius, double height,
     return Hero(
         tag: recipe.id.toString() + referer.toString(),
         child: CachedNetworkImage(
-          fadeInDuration: Duration(milliseconds: 0),
-          fadeOutDuration: Duration(milliseconds: 0),
+          fadeInDuration: const Duration(milliseconds: 0),
+          fadeOutDuration: const Duration(milliseconds: 0),
           imageUrl: recipe.image ?? '',
           imageBuilder: (context, imageProvider) => Container(
             height: height,

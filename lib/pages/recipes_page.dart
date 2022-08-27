@@ -3,37 +3,47 @@ import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
-import 'package:tare/blocs/recipe/recipe_bloc.dart';
-import 'package:tare/blocs/recipe/recipe_event.dart';
-import 'package:tare/blocs/recipe/recipe_state.dart';
-import 'package:tare/components/dialogs/import_recipe_website_dialog.dart';
-import 'package:tare/components/bottom_sheets/sort_bottom_sheet_component.dart';
-import 'package:tare/components/recipes/recipes_view_component.dart';
-import 'package:tare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
-import 'package:tare/components/loading_component.dart';
-import 'package:tare/models/recipe.dart';
-import 'package:tare/pages/recipe_upsert_page.dart';
+import 'package:untare/blocs/recipe/recipe_bloc.dart';
+import 'package:untare/blocs/recipe/recipe_event.dart';
+import 'package:untare/blocs/recipe/recipe_state.dart';
+import 'package:untare/components/bottom_sheets/recipes_more_bottom_sheet_component.dart';
+import 'package:untare/components/dialogs/import_recipe_website_dialog.dart';
+import 'package:untare/components/bottom_sheets/sort_bottom_sheet_component.dart';
+import 'package:untare/components/recipes/recipes_view_component.dart';
+import 'package:untare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
+import 'package:untare/components/loading_component.dart';
+import 'package:untare/models/recipe.dart';
+import 'package:untare/pages/recipe_upsert_page.dart';
 
 
 class RecipesPage extends HideBottomNavBarStatefulWidget {
-  RecipesPage({required isHideBottomNavBar}) : super(isHideBottomNavBar: isHideBottomNavBar);
+  const RecipesPage({Key? key, required isHideBottomNavBar}) : super(key: key, isHideBottomNavBar: isHideBottomNavBar);
 
   @override
-  _RecipesPageState createState() => _RecipesPageState();
+  RecipesPageState createState() => RecipesPageState();
 }
 
-class _RecipesPageState extends State<RecipesPage> {
+class RecipesPageState extends State<RecipesPage> {
   int pageSize = 20;
   final searchTextController = TextEditingController();
   late RecipeBloc recipeBloc;
   bool showSearchClear = false;
   List<Recipe> recipes = [];
   List<Recipe> fetchedRecipes = [];
+  List<Recipe> cachedRecipes = [];
   bool isLastPage = false;
   int page = 1;
   String query = '';
   bool random = false;
   String? sortOrder;
+  Map<String, bool> sortMap = {
+    'score': true,
+    'name': true,
+    'lastcooked': true,
+    'rating': true,
+    'favorite': true,
+    'created_at': true
+  };
 
   @override
   void initState() {
@@ -68,15 +78,20 @@ class _RecipesPageState extends State<RecipesPage> {
       random = false;
       recipes = [];
       fetchedRecipes = [];
+      cachedRecipes = [];
       recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize));
     }
   }
 
-  void onSortSelected(selected) {
-    sortOrder = selected;
+  void onSortSelected(String selected, bool isAsc) {
+    sortOrder = (!isAsc) ? '-$selected' : selected;
+
+    sortMap[selected] = !isAsc;
+
     page = 1;
     recipes = [];
     fetchedRecipes = [];
+    cachedRecipes = [];
     recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize, sortOrder: sortOrder));
   }
 
@@ -88,73 +103,79 @@ class _RecipesPageState extends State<RecipesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return NestedScrollView(
-      headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
-        return <Widget>[
-          sliverAppBarWidget(context, innerBoxIsScrolled, searchTextController, onSortSelected, showSearchClear),
-        ];
-      },
-      body: Container(
-          child: BlocConsumer<RecipeBloc, RecipeState>(
-              listener: (context, state) {
-                if (state is RecipeListFetched) {
-                  if (state.recipes.isEmpty) {
-                    isLastPage = true;
-                  }
-                  fetchedRecipes.addAll(state.recipes);
-                  recipes = fetchedRecipes;
-                } else if (state is RecipeListFetchedFromCache) {
-                  if (state.recipes.isEmpty) {
-                    isLastPage = true;
-                  }
-                  if (page != state.page) {
-                    page = state.page;
-                    recipes.addAll(state.recipes);
-                  } else {
-                    recipes = state.recipes;
-                  }
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: NestedScrollView(
+        headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
+          return <Widget>[
+            sliverAppBarWidget(context, innerBoxIsScrolled, searchTextController, onSortSelected, showSearchClear, sortMap),
+          ];
+        },
+        body: BlocConsumer<RecipeBloc, RecipeState>(
+            listener: (context, state) {
+              if (state is RecipeListFetched) {
+                isLastPage = false;
+                if (state.recipes.isEmpty || state.recipes.length < pageSize) {
+                  isLastPage = true;
                 }
+                fetchedRecipes.addAll(state.recipes);
+                recipes = fetchedRecipes;
+              } else if (state is RecipeListFetchedFromCache) {
+                if (state.recipes.isEmpty || state.recipes.length < pageSize) {
+                  isLastPage = true;
+                }
+                cachedRecipes.addAll(state.recipes);
+                recipes = cachedRecipes;
+              }
 
-                if (state is RecipeError) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(state.error),
-                      duration: Duration(seconds: 8),
-                    ),
-                  );
-                } else if (state is RecipeUnauthorized) {
-                  Phoenix.rebirth(context);
-                } else if (state is RecipeCreated) {
-                  recipes.add(state.recipe);
-                } else if (state is RecipeUpdated) {
-                  recipes[recipes.indexWhere((element) => element.id == state.recipe.id)] = state.recipe;
-                } else if (state is RecipeDeleted) {
-                  recipes.removeWhere((element) => element.id == state.recipe.id);
-                } else if (state is RecipeImported) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RecipeUpsertPage(recipe: state.recipe)),
-                  );
-                }
-              },
-              builder: (context, state) {
-                if (state is RecipeInitial) {
-                  return buildLoading();
-                }
-
-                return LazyLoadScrollView(
-                  onEndOfPage: () => _fetchMoreRecipes(),
-                  scrollOffset: 80,
-                  child: buildRecipesView(recipes, state, widget, context),
+              if (state is RecipeError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(state.error),
+                    duration: const Duration(seconds: 8),
+                  ),
+                );
+              } else if (state is RecipeUnauthorized) {
+                Phoenix.rebirth(context);
+              } else if (state is RecipeCreated) {
+                recipes.add(state.recipe);
+              } else if (state is RecipeUpdated) {
+                recipes[recipes.indexWhere((element) => element.id == state.recipe.id)] = state.recipe;
+              } else if (state is RecipeDeleted) {
+                recipes.removeWhere((element) => element.id == state.recipe.id);
+              } else if (state is RecipeImported) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RecipeUpsertPage(recipe: state.recipe, splitDirections: state.spiltDirections)),
                 );
               }
-          )
+            },
+            builder: (context, state) {
+              if (state is RecipeInitial) {
+                return buildLoading();
+              }
+
+              return LazyLoadScrollView(
+                onEndOfPage: () => _fetchMoreRecipes(),
+                scrollOffset: 80,
+                child: Column(
+                  children: [
+                    Flexible(
+                      child: buildRecipesView(recipes, state, widget, context),
+                    ),
+                    if (state is RecipeLoading)
+                      buildLoading()
+                  ],
+                ),
+              );
+            }
+        ),
       ),
     );
   }
 }
 
-Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEditingController searchTextController, Function(String) onSortSelected, bool showSearchClear) {
+Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEditingController searchTextController, Function(String, bool) onSortSelected, bool showSearchClear, Map<String, bool> sortMap) {
   return SliverAppBar(
     expandedHeight: 120,
     flexibleSpace: FlexibleSpaceBar(
@@ -174,7 +195,7 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
     forceElevated: innerBoxIsScrolled,
     elevation: 1.5,
     bottom: PreferredSize(
-      preferredSize: Size(double.maxFinite, 42),
+      preferredSize: const Size(double.maxFinite, 42),
       child: Container(
         height: 42,
         padding: const EdgeInsets.fromLTRB(40, 0, 30, 10),
@@ -187,24 +208,24 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
                 decoration: InputDecoration(
                   hintText: AppLocalizations.of(context)!.search,
                   contentPadding: const EdgeInsets.only(top: 10),
-                  prefixIcon: Icon(Icons.search_outlined),
+                  prefixIcon: const Icon(Icons.search_outlined),
                   suffixIcon: showSearchClear ? IconButton(
                     splashRadius: 1,
                     padding: const EdgeInsets.fromLTRB(8, 7, 8, 8),
-                    icon: Icon(Icons.clear_outlined),
+                    icon: const Icon(Icons.clear_outlined),
                     onPressed: () {
                       searchTextController.clear();
                     },
                   ) : null,
                   fillColor: (Theme.of(context).brightness.name == 'light') ? Colors.grey[200] : Colors.grey[700],
-                  focusedBorder:  OutlineInputBorder(
+                  focusedBorder:  const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.transparent, width: 0.0),
-                    borderRadius: const BorderRadius.all(const Radius.circular(30.0)),
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
                   ),
                   filled: true,
-                  enabledBorder: OutlineInputBorder(
+                  enabledBorder: const OutlineInputBorder(
                     borderSide: BorderSide(color: Colors.transparent, width: 0.0),
-                    borderRadius: const BorderRadius.all(const Radius.circular(30.0)),
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
                   ),
                 ),
               ),
@@ -213,8 +234,11 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
                 padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
                 tooltip: AppLocalizations.of(context)!.sort,
                 splashRadius: 20,
-                onPressed: () => sortBottomSheet(context, onSortSelected),
-                icon: Icon(
+                onPressed: () {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  sortBottomSheet(context, onSortSelected, sortMap);
+                },
+                icon: const Icon(
                   Icons.sort_outlined,
                 )
             )
@@ -225,7 +249,7 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
     actions: [
       PopupMenuButton(
         tooltip: AppLocalizations.of(context)!.recipesTooltipAddRecipe,
-        icon: Icon(
+        icon: const Icon(
           Icons.add,
         ),
         elevation: 3,
@@ -235,25 +259,36 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
         ),
         itemBuilder: (context) => [
           PopupMenuItem(
-            child: Text(AppLocalizations.of(context)!.create),
             value: 1,
+            child: Text(AppLocalizations.of(context)!.create),
           ),
           PopupMenuItem(
-            child: Text(AppLocalizations.of(context)!.import),
             value: 2,
+            child: Text(AppLocalizations.of(context)!.import),
           )
         ],
         onSelected: (value) {
           if (value == 1) {
+            FocusManager.instance.primaryFocus?.unfocus();
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RecipeUpsertPage()),
+              MaterialPageRoute(builder: (context) => const RecipeUpsertPage()),
             );
           } else if (value == 2) {
+            FocusManager.instance.primaryFocus?.unfocus();
             importRecipeWebsiteDialog(context);
           }
         },
       ),
+      IconButton(
+          tooltip: AppLocalizations.of(context)!.moreTooltip,
+          splashRadius: 20,
+          onPressed: () {
+            FocusManager.instance.primaryFocus?.unfocus();
+            recipesBottomSheet(context);
+          },
+          icon: const Icon(Icons.more_vert_outlined)
+      )
     ],
   );
 }

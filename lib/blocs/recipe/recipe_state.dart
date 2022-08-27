@@ -1,5 +1,5 @@
-import 'package:tare/blocs/abstract_state.dart';
-import 'package:tare/models/recipe.dart';
+import 'package:untare/blocs/abstract_state.dart';
+import 'package:untare/models/recipe.dart';
 
 abstract class RecipeState extends AbstractState{}
 
@@ -39,7 +39,8 @@ class RecipeDeleted extends RecipeState {
 
 class RecipeImported extends RecipeState {
   final Recipe recipe;
-  RecipeImported({required this.recipe});
+  final bool spiltDirections;
+  RecipeImported({required this.recipe, required this.spiltDirections});
 }
 
 class RecipeAddedIngredientsToShoppingList extends RecipeState {}
@@ -54,8 +55,7 @@ class RecipeListFetched extends RecipeState {
 
 class RecipeListFetchedFromCache extends RecipeState {
   final List<Recipe> recipes;
-  final int page;
-  RecipeListFetchedFromCache({required this.recipes, required this.page});
+  RecipeListFetchedFromCache({required this.recipes});
 }
 
 class RecipeError extends RecipeState {

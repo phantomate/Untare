@@ -1,8 +1,10 @@
+// ignore_for_file: annotate_overrides, overridden_fields
+
 import 'package:hive/hive.dart';
-import 'package:tare/models/app_setting.dart';
-import 'package:tare/models/shopping_list_entry.dart';
-import 'package:tare/models/supermarket_category.dart';
-import 'package:tare/services/cache/cache_service.dart';
+import 'package:untare/models/app_setting.dart';
+import 'package:untare/models/shopping_list_entry.dart';
+import 'package:untare/models/supermarket_category.dart';
+import 'package:untare/services/cache/cache_service.dart';
 
 class CacheShoppingListService extends CacheService {
   var box = Hive.box('unTaReBox');
@@ -16,20 +18,20 @@ class CacheShoppingListService extends CacheService {
     if (cacheShoppingListEntries != null && cacheShoppingListEntries.isNotEmpty) {
       shoppingListEntries = [];
 
-      cacheShoppingListEntries.forEach((entry) {
+      for (var entry in cacheShoppingListEntries) {
         if (checked == 'true') {
           if (entry.checked) {
-            shoppingListEntries!.add(entry);
+            shoppingListEntries.add(entry);
           }
         } else if (checked == 'false') {
           if (!entry.checked) {
-            shoppingListEntries!.add(entry);
+            shoppingListEntries.add(entry);
           }
         } else if (checked == 'both') {
-          shoppingListEntries!.add(entry);
+          shoppingListEntries.add(entry);
         } else if (checked == 'recent') {
           if (!entry.checked) {
-            shoppingListEntries!.add(entry);
+            shoppingListEntries.add(entry);
           } else {
             AppSetting? appSetting = box.get('settings');
 
@@ -45,16 +47,16 @@ class CacheShoppingListService extends CacheService {
               if (completedAtDate.year >= todayMinusRecentDays.year
                   && completedAtDate.month >= todayMinusRecentDays.month
                   && completedAtDate.day >= todayMinusRecentDays.day) {
-                shoppingListEntries!.add(entry);
+                shoppingListEntries.add(entry);
               }
             } else {
-              shoppingListEntries!.add(entry);
+              shoppingListEntries.add(entry);
             }
           }
         }
 
         // @todo Implement id filter
-      });
+      }
     }
 
     return shoppingListEntries;

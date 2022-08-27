@@ -1,11 +1,13 @@
+// ignore_for_file: unused_catch_clause
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tare/blocs/recipe/recipe_event.dart';
-import 'package:tare/blocs/recipe/recipe_state.dart';
-import 'package:tare/exceptions/api_connection_exception.dart';
-import 'package:tare/exceptions/api_exception.dart';
-import 'package:tare/models/recipe.dart';
-import 'package:tare/services/api/api_recipe.dart';
-import 'package:tare/services/cache/cache_recipe_service.dart';
+import 'package:untare/blocs/recipe/recipe_event.dart';
+import 'package:untare/blocs/recipe/recipe_state.dart';
+import 'package:untare/exceptions/api_connection_exception.dart';
+import 'package:untare/exceptions/api_exception.dart';
+import 'package:untare/models/recipe.dart';
+import 'package:untare/services/api/api_recipe.dart';
+import 'package:untare/services/cache/cache_recipe_service.dart';
 
 class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   final ApiRecipe apiRecipe;
@@ -24,10 +26,13 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   Future<void> _onFetchRecipeList(FetchRecipeList event, Emitter<RecipeState> emit) async {
     emit(RecipeListLoading());
     try {
-      List<Recipe>? cacheRecipes = cacheRecipeService.getRecipeList(event.query, event.random, event.page, event.pageSize, event.sortOrder);
+      // Ignore sort for now because its not implemented
+      if (event.sortOrder == null) {
+        List<Recipe>? cacheRecipes = cacheRecipeService.getRecipeList(event.query, event.random, event.page, event.pageSize, event.sortOrder);
 
-      if (cacheRecipes != null && cacheRecipes.isNotEmpty) {
-        emit(RecipeListFetchedFromCache(recipes: cacheRecipes, page: event.page));
+        if (cacheRecipes != null && cacheRecipes.isNotEmpty) {
+          emit(RecipeListFetchedFromCache(recipes: cacheRecipes));
+        }
       }
 
       List<Recipe> recipes = await apiRecipe.getRecipeList(event.query, event.random, event.page, event.pageSize, event.sortOrder);
@@ -61,7 +66,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
         emit(RecipeFetched(recipe: recipe));
         cacheRecipeService.upsertRecipe(recipe);
       } else {
-        emit(RecipeError(error: 'No recipe found with id ' + event.id.toString()));
+        emit(RecipeError(error: 'No recipe found with id ${event.id}'));
       }
 
     } on ApiException catch (e) {
@@ -167,7 +172,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     try {
       Recipe? recipe = await apiRecipe.importRecipe(event.url);
 
-      emit(RecipeImported(recipe: recipe));
+      emit(RecipeImported(recipe: recipe, spiltDirections: event.splitDirections));
 
     } on ApiException catch (e) {
       if (e.statusCode == 401) {

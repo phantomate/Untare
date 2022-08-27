@@ -18,6 +18,7 @@
   "remove": "Entfernen",
   "moreTooltip": "Mehr",
   "saved": "Gespeichert",
+  "cancel": "Abbrechen",
 
   "addToMealPlan": "Zum Essensplan hinzufügen",
   "addMealPlanEntry": "Eintrag zum Essensplan hinzufügen",
@@ -41,6 +42,10 @@
   "rating": "Bewertung",
   "prepTime": "Zubereitung",
   "waitingTime": "Wartezeit",
+
+  "screenLock": "Displaysperre",
+  "disabledScreenLock": "Displaysperre deaktiviert",
+  "enabledScreenLock": "Displaysperre aktiviert",
 
   "name": "Name",
   "keywords": "Schlagwörter",
@@ -75,8 +80,10 @@
   "editShoppingListSharing": "Gemeinsame Nutzung der Einkaufsliste bearbeiten",
   "editMealPlanSharing": "Gemeinsame Nutzung des Speiseplans bearbeiten",
 
-  "food": "Zutat",
+  "food": "Lebensmittel",
+  "foods": "Lebensmittel",
   "unit": "Einheit",
+  "units": "Einheiten",
   "note": "Notiz",
   "recipe": "Rezept",
   "quantity": "Menge",
@@ -86,6 +93,14 @@
   "date": "Datum",
   "days": "Tage",
   "refreshIntervalInSeconds": "Aktualisierungsintervall in Sekunden",
+  "manageFoods": "Lebensmittel verwalten",
+  "manageUnits": "Einheiten verwalten",
+  "editFood": "Lebensmittel bearbeiten",
+  "editUnit": "Einheit bearbeiten",
+  "removeFood": "Lebensmittel löschen",
+  "removeUnit": "Einheit löschen",
+  "confirmRemoveFood": "%s wirklich löschen?",
+  "confirmRemoveUnit": "%s wirklich löschen?",
 
   "settingsTitle": "Einstellungen",
   "settingsCustomization": "Anpassung",
@@ -101,6 +116,8 @@
   "settingsRecentDays": "Anzuzeigende Tage",
   "settingsRecentDaysDescription": "Zeigt die letzten %s Tage der Einkaufsliste an",
   "settingsLogout": "Logout",
+  "accentColor": "Akzentfarbe",
+  "pickColor": "Wähle eine Farbe",
 
   "editRecentDays": "Anzuzeigende Tage bearbeiten",
   "editRefreshInterval": "Aktualisierungsintervall bearbeiten",
@@ -110,6 +127,7 @@
 
   "addingIngredientsToShoppingList": "Füge Zutaten zur Einkaufsliste hinzu",
   "importingRecipe": "Importiere Rezept",
+  "splitDirections": "Zubereitung aufteilen",
   "removedRecipe": "Rezept wurde entfernt",
   "shoppingListItemsAdded": "Zutaten wurden zur Einkaufsliste hinzugefügt",
   "updatingRecipe": "Aktualisiere Rezept",
@@ -117,5 +135,7 @@
 
   "officialServer": "Offizieller Server",
   "username": "Benutzername",
-  "password": "Passwort"
+  "password": "Passwort",
+
+  "spaces": "Spaces"
 }

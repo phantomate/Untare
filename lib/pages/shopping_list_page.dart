@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_function_literals_in_foreach_calls
+
 import 'dart:async';
 
 import 'package:configurable_expansion_tile_null_safety/configurable_expansion_tile_null_safety.dart';
@@ -5,32 +7,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:tare/blocs/recipe/recipe_bloc.dart';
-import 'package:tare/blocs/recipe/recipe_state.dart';
-import 'package:tare/blocs/shopping_list/shopping_list_bloc.dart';
-import 'package:tare/blocs/shopping_list/shopping_list_event.dart';
-import 'package:tare/blocs/shopping_list/shopping_list_state.dart';
-import 'package:tare/components/bottom_sheets/shopping_list_more_bottom_sheet_component.dart';
-import 'package:tare/components/custom_scroll_notification.dart';
-import 'package:tare/components/dialogs/add_shopping_list_entry_dialog.dart';
-import 'package:tare/components/dialogs/edit_shopping_list_entry_dialog.dart';
-import 'package:tare/components/loading_component.dart';
-import 'package:tare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
-import 'package:tare/cubits/settings_cubit.dart';
-import 'package:tare/cubits/shopping_list_entry_cubit.dart';
-import 'package:tare/models/food.dart';
-import 'package:tare/models/shopping_list_entry.dart';
+import 'package:untare/blocs/recipe/recipe_bloc.dart';
+import 'package:untare/blocs/recipe/recipe_state.dart';
+import 'package:untare/blocs/shopping_list/shopping_list_bloc.dart';
+import 'package:untare/blocs/shopping_list/shopping_list_event.dart';
+import 'package:untare/blocs/shopping_list/shopping_list_state.dart';
+import 'package:untare/components/bottom_sheets/shopping_list_more_bottom_sheet_component.dart';
+import 'package:untare/components/custom_scroll_notification.dart';
+import 'package:untare/components/dialogs/add_shopping_list_entry_dialog.dart';
+import 'package:untare/components/dialogs/edit_shopping_list_entry_dialog.dart';
+import 'package:untare/components/loading_component.dart';
+import 'package:untare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
+import 'package:untare/cubits/settings_cubit.dart';
+import 'package:untare/cubits/shopping_list_entry_cubit.dart';
+import 'package:untare/models/food.dart';
+import 'package:untare/models/shopping_list_entry.dart';
 import 'package:grouped_list/grouped_list.dart';
-import 'package:tare/extensions/double_extension.dart';
+import 'package:untare/extensions/double_extension.dart';
 
 class ShoppingListPage extends HideBottomNavBarStatefulWidget {
-  ShoppingListPage({required isHideBottomNavBar}) : super(isHideBottomNavBar: isHideBottomNavBar);
+  const ShoppingListPage({Key? key, required isHideBottomNavBar}) : super(key: key, isHideBottomNavBar: isHideBottomNavBar);
 
   @override
-  _ShoppingListPageState createState() => _ShoppingListPageState();
+  ShoppingListPageState createState() => ShoppingListPageState();
 }
 
-class _ShoppingListPageState extends State<ShoppingListPage> with TickerProviderStateMixin {
+class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderStateMixin {
   late ShoppingListBloc _shoppingListBloc;
   String shoppingListFilter = 'recent';
   List<ShoppingListEntry> shoppingListEntries = [];
@@ -88,7 +90,6 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                     child: IconButton(
                         tooltip: AppLocalizations.of(context)!.autoSync,
                         splashRadius: 20,
-                        visualDensity: VisualDensity(horizontal: -2.0, vertical: -2.0),
                         padding: EdgeInsets.zero,
                         onPressed: () {
                           if (_controller.isAnimating) {
@@ -97,7 +98,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(AppLocalizations.of(context)!.disabledAutoSync),
-                                duration: Duration(seconds: 3),
+                                duration: const Duration(seconds: 3),
                               ),
                             );
                           } else {
@@ -111,24 +112,23 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(AppLocalizations.of(context)!.enabledAutoSync.replaceFirst('%s', settingsCubit.state.userServerSetting!.shoppingAutoSync.toString())),
-                                  duration: Duration(seconds: 3),
+                                  duration: const Duration(seconds: 3),
                                 ),
                               );
                             }
                           }
                         },
-                        icon: Icon(Icons.sync_outlined)
+                        icon: const Icon(Icons.sync_outlined)
                     )
                 ),
                 IconButton(
                     tooltip: AppLocalizations.of(context)!.add,
                     splashRadius: 20,
-                    visualDensity: VisualDensity(horizontal: -2.0, vertical: -2.0),
                     padding: EdgeInsets.zero,
                     onPressed: () {
                       addShoppingListEntryDialog(context);
                     },
-                    icon: Icon(Icons.add)
+                    icon: const Icon(Icons.add)
                 ),
                 IconButton(
                     tooltip: AppLocalizations.of(context)!.moreTooltip,
@@ -136,7 +136,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                     onPressed: () {
                       shoppingListMoreBottomSheet(context);
                     },
-                    icon: Icon(Icons.more_vert_outlined)
+                    icon: const Icon(Icons.more_vert_outlined)
                 )
               ],
               elevation: 1.5,
@@ -162,28 +162,28 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                   } else if (state is ShoppingListEntryCheckedChanged) {
                     shoppingListEntries[shoppingListEntries.indexWhere((element) => element.id == state.shoppingListEntry.id)] = state.shoppingListEntry;
                   } else if (state is ShoppingListMarkedAsCompleted) {
-                    shoppingListEntries.forEach((element) {
+                    for (var element in shoppingListEntries) {
                       if (!element.checked) {
                         ShoppingListEntry entry = element.copyWith(checked: true);
                         _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
                       }
-                    });
+                    }
                   } else if (state is ShoppingListUpdatedSupermarketCategory) {
-                    shoppingListEntries.forEach((element) {
+                    for (var element in shoppingListEntries) {
                       if (element.food != null && element.food!.supermarketCategory != null && element.food!.supermarketCategory!.id == state.supermarketCategory.id) {
                         Food newFood = element.food!.copyWith(supermarketCategory: state.supermarketCategory);
                         ShoppingListEntry entry = element.copyWith(food: newFood);
                         shoppingListEntries[shoppingListEntries.indexWhere((element) => element.id == entry.id)] = entry;
                       }
-                    });
+                    }
                   } else if (state is ShoppingListDeletedSupermarketCategory) {
-                    shoppingListEntries.forEach((element) {
+                    for (var element in shoppingListEntries) {
                       if (element.food != null && element.food!.supermarketCategory != null && element.food!.supermarketCategory!.id == state.supermarketCategory.id) {
                         Food newFood = Food(id: element.food!.id, name: element.food!.name, description: element.food!.description, onHand: element.food!.onHand, supermarketCategory: null, ignoreShopping: element.food!.ignoreShopping);
                         ShoppingListEntry entry = element.copyWith(food: newFood);
                         shoppingListEntries[shoppingListEntries.indexWhere((element) => element.id == entry.id)] = entry;
                       }
-                    });
+                    }
                   }
                 },
                 builder: (context, state) {
@@ -216,75 +216,116 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
 
                         if (shoppingListCheckedFilter == 'hide') {
                           // Sort out checked entries based on setting
-                          deDuplicatedList.forEach((element) {
+                          for (var element in deDuplicatedList) {
                             if (!element.checked) {
                               shoppingListEntryList.add(element);
                             }
-                          });
+                          }
                         } else {
                           shoppingListEntryList = deDuplicatedList;
                         }
 
                         if (shoppingListEntryList.isNotEmpty) {
-                          return Container(
-                              child: NotificationListener<ScrollNotification>(
-                                  onNotification: customScrollNotification.handleScrollNotification,
-                                  child: CustomScrollView(
-                                    physics: BouncingScrollPhysics(),
-                                    slivers: [
-                                      SliverToBoxAdapter(
-                                        child: GroupedListView<dynamic, String>(
-                                          shrinkWrap: true,
-                                          padding: const EdgeInsets.only(bottom: 20),
-                                          elements: shoppingListEntryList,
-                                          groupBy: (element) {
-                                            if (element.food != null && element.food!.supermarketCategory != null) {
-                                              return element.food!.supermarketCategory.name;
-                                            } else {
-                                              return AppLocalizations.of(context)!.uncategorized;
+                          return NotificationListener<ScrollNotification>(
+                              onNotification: customScrollNotification.handleScrollNotification,
+                              child: CustomScrollView(
+                                physics: const BouncingScrollPhysics(),
+                                slivers: [
+                                  SliverToBoxAdapter(
+                                    child: GroupedListView<dynamic, String>(
+                                      shrinkWrap: true,
+                                      padding: const EdgeInsets.only(bottom: 20),
+                                      elements: shoppingListEntryList,
+                                      groupBy: (element) {
+                                        if (element.food != null && element.food!.supermarketCategory != null) {
+                                          return element.food!.supermarketCategory.name;
+                                        } else {
+                                          return AppLocalizations.of(context)!.uncategorized;
+                                        }
+                                      },
+                                      groupSeparatorBuilder: (String groupByValue) {
+                                        return Padding(
+                                          padding: const EdgeInsets.fromLTRB(15, 25, 15, 5),
+                                          child: Text(groupByValue.toUpperCase(), style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+                                        );
+                                      },
+                                      itemComparator: (item1, item2) {
+                                        if (item1.food != null && item2.food != null) {
+                                          return item1.food.name.compareTo(item2.food.name);
+                                        }
+                                        return -1;
+                                      } ,
+                                      itemBuilder: (context, dynamic element) {
+
+                                        Iterable<ShoppingListEntry> groupedList = shoppingListEntries.where((el) {
+                                          bool checkedAllowed = (shoppingListCheckedFilter != 'hide') ? true : (!el.checked);
+                                          if (el.food != null && element.food != null && checkedAllowed) {
+                                            return el.food!.id == element.food!.id;
+                                          }
+                                          return false;
+                                        });
+
+                                        if (groupedList.length > 1) {
+                                          List<Widget> groupedWidgetList = [];
+                                          bool checkBoxValue = true;
+
+                                          for (var element in groupedList) {
+                                            if (!element.checked) {
+                                              checkBoxValue = false;
                                             }
-                                          },
-                                          groupSeparatorBuilder: (String groupByValue) {
-                                            return Padding(
-                                              padding: const EdgeInsets.fromLTRB(15, 25, 15, 5),
-                                              child: Text(groupByValue.toUpperCase(), style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
-                                            );
-                                          },
-                                          itemComparator: (item1, item2) {
-                                            if (item1.food != null && item2.food != null) {
-                                              return item1.food.name.compareTo(item2.food.name);
-                                            }
-                                            return -1;
-                                          } ,
-                                          itemBuilder: (context, dynamic element) {
+                                            groupedWidgetList.add(buildShoppingListEntryWidget(element, grouped: true));
+                                          }
 
-                                            Iterable<ShoppingListEntry> groupedList = shoppingListEntries.where((el) {
-                                              bool checkedAllowed = (shoppingListCheckedFilter != 'hide') ? true : (!el.checked);
-                                              if (el.food != null && element.food != null && checkedAllowed) {
-                                                return el.food!.id == element.food!.id;
-                                              }
-                                              return false;
-                                            });
+                                          return StatefulBuilder(
+                                              builder: (context, setState) {
+                                                return ConfigurableExpansionTile(
+                                                  headerExpanded: Flexible(
+                                                      child: ListTile(
+                                                        visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                                                        contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                                        trailing: Checkbox(
+                                                            value: checkBoxValue,
+                                                            activeColor: Theme.of(context).primaryColor,
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius.circular(3)
+                                                            ),
+                                                            onChanged: (bool? value) {
+                                                              setState(() {
+                                                                checkBoxValue = value ?? false;
+                                                              });
 
-                                            if (groupedList.length > 1) {
-                                              List<Widget> groupedWidgetList = [];
-                                              bool checkBoxValue = true;
-
-                                              groupedList.forEach((element) {
-                                                if (!element.checked) {
-                                                  checkBoxValue = false;
-                                                }
-                                                groupedWidgetList.add(buildShoppingListEntryWidget(element, grouped: true));
-                                              });
-
-                                              return StatefulBuilder(
-                                                  builder: (context, setState) {
-                                                    return ConfigurableExpansionTile(
-                                                      headerExpanded: Flexible(
+                                                              // Delay for animation purpose
+                                                              Future.delayed(const Duration(milliseconds: 100), () {
+                                                                for (var element in groupedList) {
+                                                                  ShoppingListEntry entry = element.copyWith(checked: value);
+                                                                  _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
+                                                                }
+                                                              });
+                                                            }
+                                                        ),
+                                                        title: Text(
+                                                            groupedList.first.food!.name,
+                                                            style: (checkBoxValue)
+                                                                ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
+                                                                : const TextStyle(fontWeight: FontWeight.bold)
+                                                        ),
+                                                        leading: const Icon(Icons.keyboard_arrow_up),
+                                                      )
+                                                  ),
+                                                  header: Flexible(
+                                                      child: Container(
+                                                          decoration: BoxDecoration(
+                                                              border: Border(
+                                                                  bottom: BorderSide(
+                                                                      color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                                                                      width: 0.8
+                                                                  )
+                                                              )
+                                                          ),
                                                           child: ListTile(
-                                                            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                                                            contentPadding: const EdgeInsets.fromLTRB(10, 0, 20, 0),
-                                                            leading: Checkbox(
+                                                            visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                                                            contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                                            trailing: Checkbox(
                                                                 value: checkBoxValue,
                                                                 activeColor: Theme.of(context).primaryColor,
                                                                 shape: RoundedRectangleBorder(
@@ -297,10 +338,10 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
 
                                                                   // Delay for animation purpose
                                                                   Future.delayed(const Duration(milliseconds: 100), () {
-                                                                    groupedList.forEach((element) {
+                                                                    for (var element in groupedList) {
                                                                       ShoppingListEntry entry = element.copyWith(checked: value);
                                                                       _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
-                                                                    });
+                                                                    }
                                                                   });
                                                                 }
                                                             ),
@@ -308,67 +349,24 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
                                                                 groupedList.first.food!.name,
                                                                 style: (checkBoxValue)
                                                                     ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
-                                                                    : TextStyle(fontWeight: FontWeight.bold)
+                                                                    : const TextStyle(fontWeight: FontWeight.bold)
                                                             ),
-                                                            trailing: Icon(Icons.keyboard_arrow_up),
+                                                            leading: const Icon(Icons.keyboard_arrow_down),
                                                           )
-                                                      ),
-                                                      header: Flexible(
-                                                          child: Container(
-                                                              decoration: BoxDecoration(
-                                                                  border: Border(
-                                                                      bottom: BorderSide(
-                                                                          color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
-                                                                          width: 0.8
-                                                                      )
-                                                                  )
-                                                              ),
-                                                              child: ListTile(
-                                                                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                                                                contentPadding: const EdgeInsets.fromLTRB(10, 0, 20, 0),
-                                                                leading: Checkbox(
-                                                                    value: checkBoxValue,
-                                                                    activeColor: Theme.of(context).primaryColor,
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius: BorderRadius.circular(3)
-                                                                    ),
-                                                                    onChanged: (bool? value) {
-                                                                      setState(() {
-                                                                        checkBoxValue = value ?? false;
-                                                                      });
-
-                                                                      // Delay for animation purpose
-                                                                      Future.delayed(const Duration(milliseconds: 100), () {
-                                                                        groupedList.forEach((element) {
-                                                                          ShoppingListEntry entry = element.copyWith(checked: value);
-                                                                          _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
-                                                                        });
-                                                                      });
-                                                                    }
-                                                                ),
-                                                                title: Text(
-                                                                    groupedList.first.food!.name,
-                                                                    style: (checkBoxValue)
-                                                                        ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
-                                                                        : TextStyle(fontWeight: FontWeight.bold)
-                                                                ),
-                                                                trailing: Icon(Icons.keyboard_arrow_down),
-                                                              )
-                                                          )
-                                                      ),
-                                                      children: groupedWidgetList,
-                                                    );
-                                                  });
-                                            } else {
-                                              return buildShoppingListEntryWidget(element);
-                                            }
-                                          },
-                                          floatingHeader: true, // optional
-                                          order: GroupedListOrder.ASC, // optional
-                                        ),
-                                      )
-                                    ],
+                                                      )
+                                                  ),
+                                                  children: groupedWidgetList,
+                                                );
+                                              });
+                                        } else {
+                                          return buildShoppingListEntryWidget(element);
+                                        }
+                                      },
+                                      floatingHeader: true, // optional
+                                      order: GroupedListOrder.ASC, // optional
+                                    ),
                                   )
+                                ],
                               )
                           );
                         } else {
@@ -385,16 +383,20 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
   }
 
   Widget buildShoppingListEntryWidget(ShoppingListEntry shoppingListEntry, {bool? grouped}) {
-    String amount = (shoppingListEntry.amount > 0) ? (shoppingListEntry.amount.toFormattedString() + ' ') : '';
-    String unit = (shoppingListEntry.unit != null) ? (shoppingListEntry.unit!.name + ' ') : '';
+    String amount = (shoppingListEntry.amount > 0) ? ('${shoppingListEntry.amount.toFormattedString()} ') : '';
+    String unit = (shoppingListEntry.unit != null) ? ('${shoppingListEntry.unit!.name} ') : '';
     String food = (shoppingListEntry.food != null) ? (shoppingListEntry.food!.name) : '';
     bool checkBoxValue = shoppingListEntry.checked;
-    double paddingLeft = (grouped != null && grouped == true) ? 25 : 10;
 
     return Slidable(
         key: UniqueKey(),
         endActionPane: ActionPane(
-          motion: ScrollMotion(),
+          motion: const ScrollMotion(),
+          dismissible: DismissiblePane(
+              onDismissed: () {
+                _shoppingListBloc.add(DeleteShoppingListEntry(shoppingListEntry: shoppingListEntry));
+              }
+          ),
           children: [
             SlidableAction(
               autoClose: true,
@@ -414,11 +416,6 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
               icon: Icons.delete_outline,
             ),
           ],
-          dismissible: DismissiblePane(
-              onDismissed: () {
-                _shoppingListBloc.add(DeleteShoppingListEntry(shoppingListEntry: shoppingListEntry));
-              }
-          ),
         ),
         child: InkWell(
           onTap: () {
@@ -435,46 +432,41 @@ class _ShoppingListPageState extends State<ShoppingListPage> with TickerProvider
             ),
             child: StatefulBuilder(
               builder: (context, setState) {
-                return ListTile(
-                  visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                  contentPadding: EdgeInsets.fromLTRB(paddingLeft, 0, 10, 0),
-                  title: Wrap(
-                      children: [
-                        RichText(
-                            text: TextSpan(
-                                children: [
-                                  TextSpan(text: amount, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color, fontWeight: FontWeight.bold)),
-                                  TextSpan(text: unit, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color, fontWeight: FontWeight.bold)),
-                                  TextSpan(text: food, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color)),
-                                ],
-                                style: (checkBoxValue)
-                                    ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, decoration: TextDecoration.lineThrough)
-                                    : null
-                            )
-                        )
-                      ]
-                  ),
-                  subtitle: (shoppingListEntry.recipeMealPlan != null)
-                      ? Text(shoppingListEntry.recipeMealPlan!.name, style: TextStyle(color: Colors.grey[600]!))
-                      : null,
-                  leading: Checkbox(
-                      value: checkBoxValue,
-                      activeColor: Theme.of(context).primaryColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(3)
-                      ),
-                      onChanged: (bool? value) {
-                        setState(() {
-                          checkBoxValue = value ?? false;
-                        });
+                return CheckboxListTile(
+                    activeColor: Theme.of(context).primaryColor,
+                    visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                    contentPadding: const EdgeInsets.fromLTRB(20, 0, 18.5, 0),
+                    value: checkBoxValue,
+                    onChanged: (bool? value) {
+                      setState(() {
+                        checkBoxValue = value ?? false;
+                      });
 
-                        // Delay for animation purpose
-                        Future.delayed(const Duration(milliseconds: 100), () {
-                          ShoppingListEntry entry = shoppingListEntry.copyWith(checked: value);
-                          _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
-                        });
-                      }
-                  ),
+                      // Delay for animation purpose
+                      Future.delayed(const Duration(milliseconds: 100), () {
+                        ShoppingListEntry entry = shoppingListEntry.copyWith(checked: value);
+                        _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
+                      });
+                    },
+                    title: Wrap(
+                        children: [
+                          RichText(
+                              text: TextSpan(
+                                  children: [
+                                    TextSpan(text: amount, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color, fontWeight: FontWeight.bold)),
+                                    TextSpan(text: unit, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color, fontWeight: FontWeight.bold)),
+                                    TextSpan(text: food, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color)),
+                                  ],
+                                  style: (checkBoxValue)
+                                      ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, decoration: TextDecoration.lineThrough)
+                                      : null
+                              )
+                          )
+                        ]
+                    ),
+                    subtitle: (shoppingListEntry.recipeMealPlan != null)
+                        ? Text(shoppingListEntry.recipeMealPlan!.name, style: TextStyle(color: Colors.grey[600]!))
+                        : null,
                 );
               }
             ),

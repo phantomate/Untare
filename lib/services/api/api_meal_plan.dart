@@ -1,25 +1,25 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:tare/exceptions/api_exception.dart';
-import 'package:tare/exceptions/mapping_exception.dart';
-import 'package:tare/models/meal_plan_entry.dart';
-import 'package:tare/services/api/api_service.dart';
+import 'package:untare/exceptions/api_exception.dart';
+import 'package:untare/exceptions/mapping_exception.dart';
+import 'package:untare/models/meal_plan_entry.dart';
+import 'package:untare/services/api/api_service.dart';
 
 class ApiMealPlan extends ApiService {
   Future<List<MealPlanEntry>> getMealPlanList(String from, String to) async {
     var url = '/api/meal-plan/';
-    url += '?from_date=' + from;
-    url += '&to_date=' + to;
+    url += '?from_date=$from';
+    url += '&to_date=$to';
 
     Response res = await httpGet(url);
     if ([200, 201].contains(res.statusCode)) {
       List<dynamic> jsonMealPlanList = jsonDecode(utf8.decode(res.bodyBytes));
       List<MealPlanEntry> mealPlanList = [];
 
-      jsonMealPlanList.forEach((element) {
+      for (var element in jsonMealPlanList) {
         mealPlanList.add(MealPlanEntry.fromJson(element));
-      });
+      }
 
       return mealPlanList;
     } else if (res.statusCode == 404) {
@@ -52,7 +52,7 @@ class ApiMealPlan extends ApiService {
     if (mealPlan.id == null) {
       throw MappingException(message: 'Id missing for updating meal plan');
     }
-    var url = '/api/meal-plan/' + mealPlan.id.toString() + '/';
+    var url = '/api/meal-plan/${mealPlan.id}/';
 
     Response res = await httpPut(url, mealPlan.toJson());
 
@@ -72,7 +72,7 @@ class ApiMealPlan extends ApiService {
     if (mealPlan.id == null) {
       throw MappingException(message: 'Id missing for deleting meal plan');
     }
-    var url = '/api/meal-plan/' + mealPlan.id.toString() + '/';
+    var url = '/api/meal-plan/${mealPlan.id}/';
 
     Response res = await httpDelete(url);
 

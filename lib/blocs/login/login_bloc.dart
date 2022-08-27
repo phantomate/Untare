@@ -1,13 +1,14 @@
-import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:tare/blocs/authentication/authentication_bloc.dart';
-import 'package:tare/blocs/authentication/authentication_event.dart';
-import 'package:tare/exceptions/api_exception.dart';
-import 'package:tare/models/user.dart';
-import 'package:tare/models/userToken.dart';
+// ignore_for_file: depend_on_referenced_packages
 
-import 'package:tare/services/api/api_user.dart';
+import 'package:bloc/bloc.dart';
+import 'package:hive/hive.dart';
+import 'package:untare/blocs/authentication/authentication_bloc.dart';
+import 'package:untare/blocs/authentication/authentication_event.dart';
+import 'package:untare/exceptions/api_exception.dart';
+import 'package:untare/models/user.dart';
+import 'package:untare/models/userToken.dart';
+
+import 'package:untare/services/api/api_user.dart';
 
 import 'login_event.dart';
 import 'login_state.dart';

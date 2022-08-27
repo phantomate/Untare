@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:tare/models/ingredient.dart';
-import 'package:tare/models/recipe.dart';
-import 'package:tare/extensions/double_extension.dart';
+import 'package:untare/models/ingredient.dart';
+import 'package:untare/models/recipe.dart';
+import 'package:untare/extensions/double_extension.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 class RecipeDetailTabBarWidget extends StatefulWidget {
   final Recipe recipe;
 
-  RecipeDetailTabBarWidget({required this.recipe});
+  const RecipeDetailTabBarWidget({Key? key, required this.recipe}) : super(key: key);
 
   @override
-  _RecipeDetailTabBarWidgetState createState() => _RecipeDetailTabBarWidgetState();
+  RecipeDetailTabBarWidgetState createState() => RecipeDetailTabBarWidgetState();
 }
 
-class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
+class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
   late int servings;
   late int newServings;
 
@@ -54,13 +54,13 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
     List<Ingredient> recipeIngredients = [];
 
     if (widget.recipe.steps.isNotEmpty) {
-      widget.recipe.steps.forEach((step) {
+      for (var step in widget.recipe.steps) {
         if (step.ingredients.isNotEmpty) {
-          step.ingredients.forEach((ingredient) {
+          for (var ingredient in step.ingredients) {
             recipeIngredients.add(ingredient);
-          });
+          }
         }
-      });
+      }
     }
 
     ingredientsList.addAll(recipeIngredients.map((item) => ingredientComponent(item, servings, newServings, false, context)).toList());
@@ -73,7 +73,7 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
             padding: const EdgeInsets.only(left: 20),
             child: Row(
               children: [
-                Text(AppLocalizations.of(context)!.servings + ':', style: TextStyle(fontSize: 15)),
+                Text('${AppLocalizations.of(context)!.servings}:', style: const TextStyle(fontSize: 15)),
                 IconButton(
                   onPressed: () => {
                     decrement()
@@ -119,7 +119,7 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
 
           stepList.addAll(widget.recipe.steps[i].ingredients.map((item) => ingredientComponent(item, servings, newServings, true, context)).toList());
 
-          stepList.add(Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(widget.recipe.steps[i].instruction ?? '', style: TextStyle(fontSize: 15))));
+          stepList.add(Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(widget.recipe.steps[i].instruction ?? '', style: const TextStyle(fontSize: 15))));
 
           directionsSteps.add(directionStepLayout(context, Column(crossAxisAlignment: CrossAxisAlignment.start, children: stepList), i+1));
         }
@@ -144,7 +144,7 @@ class _RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
             directionsSteps.add(
               directionStepLayout(
                 context,
-                Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(splitInstruction, style: TextStyle(fontSize: 15))),
+                Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(splitInstruction, style: const TextStyle(fontSize: 15))),
                 i+1
               )
             );
@@ -203,10 +203,10 @@ Widget directionStepLayout(BuildContext context, Widget widget, int stepNumber) 
 }
 
 Widget ingredientComponent(Ingredient ingredient, int initServing, int newServing, bool isDense, BuildContext context) {
-  String amount = (ingredient.amount > 0) ? ((ingredient.amount * (((newServing/initServing))*100).ceil()/100).toFormattedString() + ' ') : '';
-  String unit = (ingredient.unit != null) ? (ingredient.unit!.name + ' ') : '';
-  String food = (ingredient.food != null) ? (ingredient.food!.name + ' ') : '';
-  String note = (ingredient.note != null && ingredient.note != '') ? ('(' + ingredient.note! + ')') : '';
+  String amount = (ingredient.amount > 0) ? ('${(ingredient.amount * (((newServing/initServing))*100).ceil()/100).toFormattedString()} ') : '';
+  String unit = (ingredient.unit != null) ? ('${ingredient.unit!.name} ') : '';
+  String food = (ingredient.food != null) ? ('${ingredient.food!.name} ') : '';
+  String note = (ingredient.note != null && ingredient.note != '') ? ('(${ingredient.note!})') : '';
 
   return Container(
       margin: const EdgeInsets.only(left: 20, right: 20),
@@ -220,13 +220,13 @@ Widget ingredientComponent(Ingredient ingredient, int initServing, int newServin
       ),
       child: ListTile(
         dense: isDense,
-        visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+        visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
         contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
         title: Wrap(
           children: [
-            Text(amount, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            Text(unit, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-            Text(food, style: TextStyle(fontSize: 15)),
+            Text(amount, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+            Text(unit, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+            Text(food, style: const TextStyle(fontSize: 15)),
             Text(
                 note,
                 style: TextStyle(

@@ -1,4 +1,4 @@
-import 'package:tare/blocs/abstract_event.dart';
+import 'package:untare/blocs/abstract_event.dart';
 
 abstract class LoginEvent extends AbstractEvent {}
 

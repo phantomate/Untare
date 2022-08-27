@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 class UserToken {
   final String token;
   final int userId;

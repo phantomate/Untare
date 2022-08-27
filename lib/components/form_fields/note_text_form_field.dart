@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
-Widget noteTextFormField(String? note, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context) {
-  final fieldName = 'note';
+Widget noteTextFormField(String? note, GlobalKey<FormBuilderState> formBuilderKey, BuildContext context) {
+  const fieldName = 'note';
 
   return FormBuilderTextField(
     name: fieldName,
@@ -19,7 +19,7 @@ Widget noteTextFormField(String? note, GlobalKey<FormBuilderState> _formBuilderK
         newNote = formNote ?? '';
       }
 
-      _formBuilderKey.currentState!.fields[fieldName]!.didChange(newNote);
+      formBuilderKey.currentState!.fields[fieldName]!.didChange(newNote);
     },
   );
 }

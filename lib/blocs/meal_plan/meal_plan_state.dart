@@ -1,5 +1,5 @@
-import 'package:tare/models/meal_plan_entry.dart';
-import 'package:tare/models/meal_type.dart';
+import 'package:untare/models/meal_plan_entry.dart';
+import 'package:untare/models/meal_type.dart';
 
 abstract class MealPlanState {}
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tare/cubits/settings_cubit.dart';
+import 'package:untare/cubits/settings_cubit.dart';
 
 Future settingsLayoutBottomSheet(BuildContext context) {
   return showModalBottomSheet(
@@ -11,7 +11,7 @@ Future settingsLayoutBottomSheet(BuildContext context) {
       builder: (btsContext) => Container(
         decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(10))
+            borderRadius: const BorderRadius.all(Radius.circular(10))
         ),
         margin: const EdgeInsets.all(12),
         child: Wrap(
@@ -20,12 +20,12 @@ Future settingsLayoutBottomSheet(BuildContext context) {
               height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                   color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300] : Colors.grey[700]
               ),
               child: Text(
                 AppLocalizations.of(context)!.settingsRecipeLayout,
-                style: TextStyle(
+                style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18
                 ),
@@ -36,20 +36,20 @@ Future settingsLayoutBottomSheet(BuildContext context) {
               padding: const EdgeInsets.only(left: 12, right: 12),
               child: Column(
                 children: [
-                  TextButton(
-                    onPressed: () {
+                  ListTile(
+                    onTap: () {
                       context.read<SettingsCubit>().changeLayoutTo('card');
                       Navigator.pop(btsContext);
                     },
-                    child: Text(AppLocalizations.of(context)!.settingRecipeLayoutCard),
+                    title: Text(AppLocalizations.of(context)!.settingRecipeLayoutCard),
                   ),
-                  TextButton(
-                    onPressed: () {
+                  ListTile(
+                    onTap: () {
                       context.read<SettingsCubit>().changeLayoutTo('list');
                       Navigator.pop(btsContext);
                     },
-                    child: Text(AppLocalizations.of(context)!.settingRecipeLayoutList),
-                  ),
+                    title: Text(AppLocalizations.of(context)!.settingRecipeLayoutList),
+                  )
                 ],
               ),
             )

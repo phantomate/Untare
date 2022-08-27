@@ -1,18 +1,20 @@
+// ignore_for_file: unused_catch_clause
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:tare/exceptions/api_connection_exception.dart';
-import 'package:tare/models/app_setting.dart';
-import 'package:tare/models/user.dart';
-import 'package:tare/models/user_setting.dart';
-import 'package:tare/services/api/api_user.dart';
-import 'package:tare/services/cache/cache_user_service.dart';
+import 'package:untare/exceptions/api_connection_exception.dart';
+import 'package:untare/models/app_setting.dart';
+import 'package:untare/models/user.dart';
+import 'package:untare/models/user_setting.dart';
+import 'package:untare/services/api/api_user.dart';
+import 'package:untare/services/cache/cache_user_service.dart';
 
 class SettingsCubit extends Cubit<AppSetting> {
   var box = Hive.box('unTaReBox');
   final ApiUser apiUser;
   final CacheUserService cacheUserService;
 
-  SettingsCubit({required this.apiUser, required this.cacheUserService}) : super(AppSetting(layout: 'card', defaultPage: 'recipes'));
+  SettingsCubit({required this.apiUser, required this.cacheUserService}) : super(AppSetting(layout: 'card', defaultPage: 'recipes', materialHexColor: 0xffceb27c));
 
   void changeLayoutTo(String? layout) {
     if (['list', 'card'].contains(layout)) {
@@ -36,6 +38,12 @@ class SettingsCubit extends Cubit<AppSetting> {
       emit(newState);
       box.put('settings', newState);
     }
+  }
+
+  void changeColorTo(int materialHexColor) {
+    AppSetting newState = state.copyWith(materialHexColor: materialHexColor);
+    emit(newState);
+    box.put('settings', newState);
   }
 
   void initServerSetting() async {

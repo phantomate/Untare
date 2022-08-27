@@ -20,14 +20,15 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       layout: fields[0] as String,
       theme: fields[1] as String?,
       defaultPage: fields[2] as String,
-      userServerSetting: fields[3] as UserSetting?,
+      materialHexColor: fields[3] as int,
+      userServerSetting: fields[4] as UserSetting?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AppSetting obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.layout)
       ..writeByte(1)
@@ -35,6 +36,8 @@ class AppSettingAdapter extends TypeAdapter<AppSetting> {
       ..writeByte(2)
       ..write(obj.defaultPage)
       ..writeByte(3)
+      ..write(obj.materialHexColor)
+      ..writeByte(4)
       ..write(obj.userServerSetting);
   }
 

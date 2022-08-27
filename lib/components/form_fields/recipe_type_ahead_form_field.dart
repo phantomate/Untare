@@ -3,22 +3,22 @@ import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:tare/components/recipes/recipe_image_component.dart';
-import 'package:tare/components/recipes/recipe_list_component.dart';
-import 'package:tare/components/recipes/recipe_time_component.dart';
-import 'package:tare/futures/future_api_cache_recipes.dart';
-import 'package:tare/models/recipe.dart';
+import 'package:untare/components/recipes/recipe_image_component.dart';
+import 'package:untare/components/recipes/recipe_list_component.dart';
+import 'package:untare/components/recipes/recipe_time_component.dart';
+import 'package:untare/futures/future_api_cache_recipes.dart';
+import 'package:untare/models/recipe.dart';
 
-Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context, {String? referer}) {
-  final _recipeTextController = TextEditingController();
+Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> formBuilderKey, BuildContext context, {String? referer}) {
+  final recipeTextController = TextEditingController();
 
   if (recipe != null) {
-    _recipeTextController.text = recipe.name;
+    recipeTextController.text = recipe.name;
   }
 
   return FormBuilderTypeAhead<Recipe>(
     name: 'recipe',
-    controller: _recipeTextController,
+    controller: recipeTextController,
     initialValue: recipe,
     enabled: (referer == 'meal-plan' || referer == 'edit'),
     selectionToTextTransformer: (recipe) => recipe.name,
@@ -26,16 +26,17 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> _for
       labelText: AppLocalizations.of(context)!.recipe
     ),
     validator: FormBuilderValidators.compose([
-      FormBuilderValidators.required()
+      if (referer != 'meal-plan' && referer != 'edit')
+        FormBuilderValidators.required()
     ]),
     itemBuilder: (context, recipe) {
       return ListTile(
           contentPadding: const EdgeInsets.all(5),
-          leading: Container(
+          leading: SizedBox(
             width: 100,
             child: buildRecipeImage(
-                recipe, BorderRadius.all(Radius.circular(10)), 100,
-                boxShadow: BoxShadow(
+                recipe, const BorderRadius.all(Radius.circular(10)), 100,
+                boxShadow: const BoxShadow(
                   color: Colors.black12,
                   blurRadius: 3.0,
                 ),
@@ -65,21 +66,21 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> _for
       return await getRecipesFromApiCache(query);
     },
     onSuggestionSelected: (suggestion) {
-      _recipeTextController.text = suggestion.name;
+      recipeTextController.text = suggestion.name;
     },
     onChanged: (Recipe? recipe) {
-      if (_formBuilderKey.currentState!.fields['servings'] != null && recipe != null) {
-        _formBuilderKey.currentState!.fields['servings']!.didChange(recipe.servings.toString());
+      if (formBuilderKey.currentState!.fields['servings'] != null && recipe != null) {
+        formBuilderKey.currentState!.fields['servings']!.didChange(recipe.servings.toString());
       }
     },
     onSaved: (Recipe? formRecipe) {
       // Invalidate empty string because type ahead field isn't aware
-      if (_recipeTextController.text.isEmpty) {
-        _formBuilderKey.currentState!.fields['recipe']!.didChange(null);
+      if (recipeTextController.text.isEmpty) {
+        formBuilderKey.currentState!.fields['recipe']!.didChange(null);
       }
 
       if (formRecipe == null) {
-        _recipeTextController.text = '';
+        recipeTextController.text = '';
       }
     },
     hideOnEmpty: true,

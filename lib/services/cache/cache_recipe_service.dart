@@ -1,6 +1,8 @@
+// ignore_for_file: annotate_overrides, overridden_fields
+
 import 'package:hive/hive.dart';
-import 'package:tare/models/recipe.dart';
-import 'package:tare/services/cache/cache_service.dart';
+import 'package:untare/models/recipe.dart';
+import 'package:untare/services/cache/cache_service.dart';
 
 class CacheRecipeService extends CacheService {
   var box = Hive.box('unTaReBox');

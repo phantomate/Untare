@@ -1,4 +1,6 @@
-import 'package:tare/models/recipe.dart';
+// ignore_for_file: prefer_typing_uninitialized_variables
+
+import 'package:untare/models/recipe.dart';
 
 import '../abstract_event.dart';
 
@@ -32,7 +34,8 @@ class DeleteRecipe extends RecipeEvent {
 
 class ImportRecipe extends RecipeEvent {
   final String url;
-  ImportRecipe({required this.url});
+  final bool splitDirections;
+  ImportRecipe({required this.url, required this.splitDirections});
 }
 
 class AddIngredientsToShoppingList extends RecipeEvent {

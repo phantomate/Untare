@@ -1,5 +1,5 @@
-import 'package:tare/models/shopping_list_entry.dart';
-import 'package:tare/models/supermarket_category.dart';
+import 'package:untare/models/shopping_list_entry.dart';
+import 'package:untare/models/supermarket_category.dart';
 
 abstract class ShoppingListState {}
 
