@@ -52,7 +52,7 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilde
       } else {
         // Overwrite food, if changed in form
         if (food != null && formFood != null) {
-          if (food.id != formFood.id) {
+          if (food.id != formFood.id || (food.id == null && formFood.id == null)) {
             newFood = Food(id: formFood.id, name: formFood.name, description: formFood.description, onHand: formFood.onHand);
           }
         } else if (formFood == null) {

@@ -60,7 +60,7 @@ Widget mealTypeTypeAheadFieldForm(MealType? mealType, GlobalKey<FormBuilderState
       } else {
         // Overwrite meal type, if changed in form
         if (mealType != null && formMealType != null) {
-          if (mealType.id != formMealType.id) {
+          if (mealType.id != formMealType.id || (mealType.id == null && formMealType.id == null)) {
             newMealType = MealType(id: formMealType.id, name: formMealType.name, defaultType: formMealType.defaultType, order: formMealType.order, createdBy: formMealType.createdBy);
           }
         } else if (formMealType== null) {

@@ -11,7 +11,7 @@ Future getRecipesFromApiCache(String query) async {
 
   List<Recipe>? cacheRecipes = cacheRecipeService.getRecipeList(query, false, 1, 25, null);
 
-  if (cacheRecipes != null) {
+  if (cacheRecipes != null && cacheRecipes.isNotEmpty) {
     return cacheRecipes;
   }
 

@@ -46,6 +46,7 @@ class ApiService {
 
     File file = File(image.path);
 
+    baseUrl ??= box.get('url');
     var request = MultipartRequest('put', Uri.parse(baseUrl! + url));
     request.files.add(MultipartFile('image', file.readAsBytes().asStream(), file.lengthSync(), filename: image.path.split('/').last));
     request.headers.addAll(headers);
@@ -71,6 +72,7 @@ class ApiService {
   Request prepareRequest(String method, String url, {Map<String, dynamic>? jsonBody, bool? withoutToken}) {
     Map<String, String> headers = getHeaders(withoutToken: withoutToken);
 
+    baseUrl ??= box.get('url');
     Request request = Request(method, Uri.parse(baseUrl! + url));
 
     request.headers.addAll(headers);

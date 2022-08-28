@@ -11,7 +11,7 @@ Future getKeywordsFromApiCache(String query) async {
 
   List<Keyword>? cacheKeywords = cacheKeywordService.getKeywords(query, 1, 25);
 
-  if (cacheKeywords != null) {
+  if (cacheKeywords != null && cacheKeywords.isNotEmpty) {
     return cacheKeywords;
   }
 

@@ -11,7 +11,7 @@ Future getSupermarketCategoriesFromApiCache() async {
 
   List<SupermarketCategory>? cacheCategories = cacheShoppingListService.getSupermarketCategories();
 
-  if (cacheCategories != null) {
+  if (cacheCategories != null && cacheCategories.isNotEmpty) {
     return cacheCategories;
   }
 

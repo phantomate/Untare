@@ -56,7 +56,7 @@ Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCat
       } else {
         // Overwrite category, if changed in form
         if (supermarketCategory != null && formCategory != null) {
-          if (supermarketCategory.id != formCategory.id) {
+          if (supermarketCategory.id != formCategory.id || (supermarketCategory.id == null && formCategory.id == null)) {
             newCategory = SupermarketCategory(id: formCategory.id, name: formCategory.name, description: formCategory.description);
           }
         } else if (formCategory== null) {

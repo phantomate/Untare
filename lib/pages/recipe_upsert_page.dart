@@ -180,7 +180,14 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
     List<StepModel> newStepList = (recipe != null && recipe!.steps.isNotEmpty) ? recipe!.steps : [];
     List<Ingredient> ingredientList = (recipe != null && recipe!.steps.isNotEmpty) ? recipe!.steps[stepIndex].ingredients : [];
 
-    ingredientList.removeWhere((element) => element.id == ingredientList[dismissIndex].id);
+    if (ingredientList[dismissIndex].id != null) {
+      ingredientList.removeWhere((element) => element.id == ingredientList[dismissIndex].id);
+    } else {
+      ingredientList.removeWhere((el){
+        Ingredient ing = ingredientList[dismissIndex];
+        return (el.amount == ing.amount && el.unit == ing.unit && el.food == ing.food && el.note == ing.note);
+      });
+    }
 
     newStepList[stepIndex] = recipe!.steps[stepIndex].copyWith(ingredients: ingredientList);
 
@@ -212,9 +219,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
 
     newStepList[stepIndex] = recipe!.steps[stepIndex].copyWith(instruction: text);
 
-    setState(() {
-      recipe = rebuildRecipe(steps: newStepList);
-    });
+    recipe = rebuildRecipe(steps: newStepList);
   }
 
   _onItemReorder(int oldIngredientIndex, int oldStepIndex, int newIngredientIndex, int newStepIndex) {
@@ -795,7 +800,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
     return Container(
       padding: const EdgeInsets.only(top: 25, right: 20, bottom: 10, left: 15),
       child: TextFormField(
-        key: ObjectKey(step.id),
+        key: ObjectKey(step.id ?? UniqueKey()),
         initialValue: step.instruction,
         decoration: InputDecoration(
           labelText: AppLocalizations.of(context)!.directions,

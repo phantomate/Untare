@@ -48,7 +48,7 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> formBuilde
       } else {
         // Overwrite unit, if changed in form
         if (unit != null && formUnit != null) {
-          if (unit.id != formUnit.id) {
+          if (unit.id != formUnit.id || (unit.id == null && formUnit.id == null)) {
             newUnit = Unit(id: formUnit.id, name: formUnit.name, description: formUnit.description);
           }
         } else if (formUnit== null) {

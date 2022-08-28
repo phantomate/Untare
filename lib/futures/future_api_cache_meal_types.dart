@@ -11,7 +11,7 @@ Future getMealTypesFromApiCache() async {
 
   List<MealType>? cacheMealTypes = cacheMealPlanService.getMealTypes();
 
-  if (cacheMealTypes != null) {
+  if (cacheMealTypes != null && cacheMealTypes.isNotEmpty) {
     return cacheMealTypes;
   }
 
