@@ -230,7 +230,6 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
       child: StatefulBuilder(
         builder: (context, setState) {
           return ListTile(
-            dense: true,
             visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
             contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             leading: Checkbox(

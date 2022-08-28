@@ -118,80 +118,88 @@ class MealPlanPageState extends State<MealPlanPage> {
     return NestedScrollView(
         headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
       return <Widget>[
-        SliverAppBar(
-          expandedHeight: 120,
-          leadingWidth: 0,
-          titleSpacing: 0,
-          automaticallyImplyLeading: false,
-          iconTheme: const IconThemeData(color: Colors.black87),
-          flexibleSpace: FlexibleSpaceBar(
-            titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 55),
-            expandedTitleScale: 1.3,
-            title: Text(
-              AppLocalizations.of(context)!.mealPlanTitle,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: (Theme.of(context).appBarTheme.titleTextStyle != null) ? Theme.of(context).appBarTheme.titleTextStyle!.color : null
-              ),
-            ),
-          ),
-          actions: [
-            IconButton(
-                tooltip: AppLocalizations.of(context)!.moreTooltip,
-                splashRadius: 20,
-                onPressed: () {
-                  mealPlanMoreBottomSheet(context);
-                },
-                icon: Icon(
-                  Icons.more_vert_outlined,
-                  color: Theme.of(context).primaryTextTheme.bodyText1!.color,
-                )
-            )
-          ],
-          elevation: 1.5,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          pinned: true,
-          bottom: PreferredSize(
-            preferredSize: const Size(double.maxFinite, 35),
-            child:  Container(
-              height: 35,
-              padding: const EdgeInsets.fromLTRB(15, 0, 15, 12),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                      padding: const EdgeInsets.fromLTRB(8, 1, 8, 12),
-                      splashRadius: 20,
-                      onPressed: () {
-                        decreaseDate();
-                      },
-                      icon: const Icon(Icons.chevron_left_outlined)
-                  ),
-                  SizedBox(
-                    width: 155,
-                    child: Text(
-                      rangeTitleText,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Theme.of(context).primaryTextTheme.bodyText1!.color,
-                      ),
+        SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(hsbContext),
+            sliver: SliverLayoutBuilder(builder: (BuildContext hsbContext, constraints) {
+              final scrolled = constraints.scrollOffset > 27;
+
+              return SliverAppBar(
+                expandedHeight: 120,
+                leadingWidth: 0,
+                titleSpacing: 0,
+                automaticallyImplyLeading: false,
+                iconTheme: const IconThemeData(color: Colors.black87),
+                flexibleSpace: FlexibleSpaceBar(
+                  titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 55),
+                  expandedTitleScale: 1.3,
+                  title: Text(
+                    AppLocalizations.of(context)!.mealPlanTitle,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: (Theme.of(context).appBarTheme.titleTextStyle != null) ? Theme.of(context).appBarTheme.titleTextStyle!.color : null
                     ),
                   ),
+                ),
+                actions: [
                   IconButton(
-                      padding: const EdgeInsets.fromLTRB(8, 1, 8, 12),
+                      tooltip: AppLocalizations.of(context)!.moreTooltip,
                       splashRadius: 20,
                       onPressed: () {
-                        increaseDate();
+                        mealPlanMoreBottomSheet(context);
                       },
-                      icon: const Icon(Icons.chevron_right_outlined)
-                  ),
+                      icon: Icon(
+                        Icons.more_vert_outlined,
+                        color: Theme.of(context).primaryTextTheme.bodyText1!.color,
+                      )
+                  )
                 ],
-              ),
-            ),
-          ),
-        ),
+                elevation: (scrolled) ? 1.5 : 0,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                pinned: true,
+                forceElevated: true,
+                bottom: PreferredSize(
+                  preferredSize: const Size(double.maxFinite, 35),
+                  child:  Container(
+                    height: 35,
+                    padding: const EdgeInsets.fromLTRB(15, 0, 15, 12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                            padding: const EdgeInsets.fromLTRB(8, 1, 8, 12),
+                            splashRadius: 20,
+                            onPressed: () {
+                              decreaseDate();
+                            },
+                            icon: const Icon(Icons.chevron_left_outlined)
+                        ),
+                        SizedBox(
+                          width: 155,
+                          child: Text(
+                            rangeTitleText,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Theme.of(context).primaryTextTheme.bodyText1!.color,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                            padding: const EdgeInsets.fromLTRB(8, 1, 8, 12),
+                            splashRadius: 20,
+                            onPressed: () {
+                              increaseDate();
+                            },
+                            icon: const Icon(Icons.chevron_right_outlined)
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            })
+        )
       ];
     },
     body: BlocConsumer<MealPlanBloc, MealPlanState>(
@@ -236,7 +244,7 @@ class MealPlanPageState extends State<MealPlanPage> {
             onNotification: customScrollNotification.handleScrollNotification,
             child: ListView(
               physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-              padding: const EdgeInsets.only(bottom: 20, top: 10),
+              padding: const EdgeInsets.only(bottom: 20, top: 145),
               children: buildMealPlanLayout(context, mealPlanList, dateTime),
             ),
           );

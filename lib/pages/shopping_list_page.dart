@@ -69,79 +69,87 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
       body: NestedScrollView(
         headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
           return <Widget>[
-            SliverAppBar(
-              expandedHeight: 90,
-              titleSpacing: 0,
-              automaticallyImplyLeading: false,
-              flexibleSpace: FlexibleSpaceBar(
-                titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 16),
-                expandedTitleScale: 1.3,
-                title: Text(
-                  AppLocalizations.of(context)!.shoppingListTitle,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: (Theme.of(context).appBarTheme.titleTextStyle != null) ? Theme.of(context).appBarTheme.titleTextStyle!.color : null
+            SliverOverlapAbsorber(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(hsbContext),
+              sliver: SliverLayoutBuilder( builder: (BuildContext hsbContext, constraints) {
+                final scrolled = constraints.scrollOffset > 32;
+
+                return SliverAppBar(
+                  expandedHeight: 90,
+                  titleSpacing: 0,
+                  automaticallyImplyLeading: false,
+                  flexibleSpace: FlexibleSpaceBar(
+                    titlePadding: const EdgeInsets.fromLTRB(15, 0, 0, 16),
+                    expandedTitleScale: 1.3,
+                    title: Text(
+                      AppLocalizations.of(context)!.shoppingListTitle,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: (Theme.of(context).appBarTheme.titleTextStyle != null) ? Theme.of(context).appBarTheme.titleTextStyle!.color : null
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              actions: [
-                RotationTransition(
-                    turns: _animation,
-                    child: IconButton(
-                        tooltip: AppLocalizations.of(context)!.autoSync,
+                  actions: [
+                    RotationTransition(
+                        turns: _animation,
+                        child: IconButton(
+                            tooltip: AppLocalizations.of(context)!.autoSync,
+                            splashRadius: 20,
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              if (_controller.isAnimating) {
+                                _controller.stop();
+                                _timer.cancel();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(AppLocalizations.of(context)!.disabledAutoSync),
+                                    duration: const Duration(seconds: 3),
+                                  ),
+                                );
+                              } else {
+                                SettingsCubit settingsCubit = context.read<SettingsCubit>();
+                                if (settingsCubit.state.userServerSetting != null && settingsCubit.state.userServerSetting!.shoppingAutoSync > 0) {
+                                  _timer = Timer.periodic(Duration(seconds: settingsCubit.state.userServerSetting!.shoppingAutoSync), (timer) {
+                                    _shoppingListBloc.add(SyncShoppingListEntries(checked: shoppingListFilter));
+                                  });
+                                  _controller.repeat();
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(AppLocalizations.of(context)!.enabledAutoSync.replaceFirst('%s', settingsCubit.state.userServerSetting!.shoppingAutoSync.toString())),
+                                      duration: const Duration(seconds: 3),
+                                    ),
+                                  );
+                                }
+                              }
+                            },
+                            icon: const Icon(Icons.sync_outlined)
+                        )
+                    ),
+                    IconButton(
+                        tooltip: AppLocalizations.of(context)!.add,
                         splashRadius: 20,
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          if (_controller.isAnimating) {
-                            _controller.stop();
-                            _timer.cancel();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(AppLocalizations.of(context)!.disabledAutoSync),
-                                duration: const Duration(seconds: 3),
-                              ),
-                            );
-                          } else {
-                            SettingsCubit settingsCubit = context.read<SettingsCubit>();
-                            if (settingsCubit.state.userServerSetting != null && settingsCubit.state.userServerSetting!.shoppingAutoSync > 0) {
-                              _timer = Timer.periodic(Duration(seconds: settingsCubit.state.userServerSetting!.shoppingAutoSync), (timer) {
-                                _shoppingListBloc.add(SyncShoppingListEntries(checked: shoppingListFilter));
-                              });
-                              _controller.repeat();
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(AppLocalizations.of(context)!.enabledAutoSync.replaceFirst('%s', settingsCubit.state.userServerSetting!.shoppingAutoSync.toString())),
-                                  duration: const Duration(seconds: 3),
-                                ),
-                              );
-                            }
-                          }
+                          addShoppingListEntryDialog(context);
                         },
-                        icon: const Icon(Icons.sync_outlined)
+                        icon: const Icon(Icons.add)
+                    ),
+                    IconButton(
+                        tooltip: AppLocalizations.of(context)!.moreTooltip,
+                        splashRadius: 20,
+                        onPressed: () {
+                          shoppingListMoreBottomSheet(context);
+                        },
+                        icon: const Icon(Icons.more_vert_outlined)
                     )
-                ),
-                IconButton(
-                    tooltip: AppLocalizations.of(context)!.add,
-                    splashRadius: 20,
-                    padding: EdgeInsets.zero,
-                    onPressed: () {
-                      addShoppingListEntryDialog(context);
-                    },
-                    icon: const Icon(Icons.add)
-                ),
-                IconButton(
-                    tooltip: AppLocalizations.of(context)!.moreTooltip,
-                    splashRadius: 20,
-                    onPressed: () {
-                      shoppingListMoreBottomSheet(context);
-                    },
-                    icon: const Icon(Icons.more_vert_outlined)
-                )
-              ],
-              elevation: 1.5,
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              pinned: true,
+                  ],
+                  elevation: (scrolled) ? 1.5 : 0,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  pinned: true,
+                  forceElevated: true,
+                );
+              }),
             )
           ];
         },
@@ -184,6 +192,8 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                         shoppingListEntries[shoppingListEntries.indexWhere((element) => element.id == entry.id)] = entry;
                       }
                     }
+                  } else if (state is ShoppingListEntriesSynced) {
+                    shoppingListEntries = state.shoppingListEntries;
                   }
                 },
                 builder: (context, state) {
@@ -199,6 +209,9 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                       builder: (context, shoppingListCheckedFilter) {
                         List<ShoppingListEntry> shoppingListEntryList = [];
                         List<ShoppingListEntry> deDuplicatedList = [];
+
+                        // Sort by checked to prevent bug
+                        shoppingListEntries.sort((a, b) => (a.checked) ? 1 : -1);
 
                         // Sort out duplicates
                         shoppingListEntries.forEach((element) {
@@ -234,7 +247,7 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                   SliverToBoxAdapter(
                                     child: GroupedListView<dynamic, String>(
                                       shrinkWrap: true,
-                                      padding: const EdgeInsets.only(bottom: 20),
+                                      padding: const EdgeInsets.fromLTRB(0, 100, 0, 20),
                                       elements: shoppingListEntryList,
                                       groupBy: (element) {
                                         if (element.food != null && element.food!.supermarketCategory != null) {
