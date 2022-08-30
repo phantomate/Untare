@@ -24,7 +24,7 @@ class RecipeDetailPage extends StatefulWidget {
   RecipeDetailPageState createState() => RecipeDetailPageState();
 }
 
-class RecipeDetailPageState extends State<RecipeDetailPage> {
+class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingObserver {
   late RecipeBloc recipeBloc;
   late Recipe recipe;
 
@@ -35,6 +35,20 @@ class RecipeDetailPageState extends State<RecipeDetailPage> {
     recipeBloc = BlocProvider.of<RecipeBloc>(context);
     recipeBloc.add(FetchRecipe(id: recipe.id!));
     Wakelock.disable();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state.name == 'resumed') {
+      recipeBloc.add(FetchRecipe(id: recipe.id!));
+    }
   }
 
   @override

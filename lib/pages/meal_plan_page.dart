@@ -26,7 +26,7 @@ class MealPlanPage extends HideBottomNavBarStatefulWidget {
   MealPlanPageState createState() => MealPlanPageState();
 }
 
-class MealPlanPageState extends State<MealPlanPage> {
+class MealPlanPageState extends State<MealPlanPage> with WidgetsBindingObserver {
   DateTime dateTime = DateTime.now();
   late String rangeTitleText;
   late MealPlanBloc _mealPlanBloc;
@@ -48,6 +48,21 @@ class MealPlanPageState extends State<MealPlanPage> {
 
     _mealPlanBloc = BlocProvider.of<MealPlanBloc>(context);
     _mealPlanBloc.add(FetchMealPlan(from: fromDate, to: toDate));
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state.name == 'resumed') {
+      _mealPlanBloc.add(FetchMealPlan(from: fromDate, to: toDate));
+    }
   }
 
   DateTime findFirstDateOfTheWeek(DateTime dateTime) {
