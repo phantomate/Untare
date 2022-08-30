@@ -32,7 +32,7 @@ class ShoppingListPage extends HideBottomNavBarStatefulWidget {
   ShoppingListPageState createState() => ShoppingListPageState();
 }
 
-class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderStateMixin {
+class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderStateMixin, WidgetsBindingObserver {
   late ShoppingListBloc _shoppingListBloc;
   String shoppingListFilter = 'recent';
   List<ShoppingListEntry> shoppingListEntries = [];
@@ -54,12 +54,22 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
       parent: _controller,
       curve: Curves.linearToEaseOut,
     );
+
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state.name == 'resumed') {
+      _shoppingListBloc.add(FetchShoppingListEntries(checked: shoppingListFilter));
+    }
   }
 
   @override
@@ -412,7 +422,8 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
           ),
           children: [
             SlidableAction(
-              autoClose: true,
+              autoClose: false,
+              flex: 1,
               onPressed: (slideContext) {
                 Slidable.of(slideContext)!.dismiss(
                     ResizeRequest(
