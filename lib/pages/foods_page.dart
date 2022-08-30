@@ -99,7 +99,7 @@ class FoodsPageState extends State<FoodsPage> {
                           itemBuilder: (context, index) => ListTile(
                             visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
                             title: Text(foods[index].name),
-                            subtitle: ((foods[index].recipeCount != null && foods[index].recipeCount! > 0) ? Text((foods[index].recipeCount.toString() + ((foods[index].recipeCount! > 1) ? AppLocalizations.of(context)!.recipesTitle : AppLocalizations.of(context)!.recipe))) : null),
+                            subtitle: ((foods[index].recipeCount != null && foods[index].recipeCount! == 0) ? Text((foods[index].recipeCount.toString() + ((foods[index].recipeCount! > 1) ? AppLocalizations.of(context)!.recipesTitle : AppLocalizations.of(context)!.recipe))) : null),
                             trailing: Wrap(
                               spacing: 0,
                               children: [
@@ -113,7 +113,7 @@ class FoodsPageState extends State<FoodsPage> {
                                 IconButton(
                                     splashRadius: (foods[index].recipeCount != null && foods[index].recipeCount! > 0) ? 20 : 1,
                                     onPressed: () {
-                                      if (foods[index].recipeCount != null && foods[index].recipeCount! > 0) {
+                                      if (foods[index].recipeCount != null && foods[index].recipeCount! == 0) {
                                         showDialog(context: context, builder: (context) {
                                           return AlertDialog(
                                             title: Text(AppLocalizations.of(context)!.removeFood),
@@ -140,7 +140,7 @@ class FoodsPageState extends State<FoodsPage> {
                                     icon: Icon(
                                         Icons.delete_outline,
                                         size: 20,
-                                        color: (foods[index].recipeCount != null && foods[index].recipeCount! > 0) ? Colors.redAccent : Theme.of(context).inputDecorationTheme.disabledBorder!.borderSide.color
+                                        color: (foods[index].recipeCount != null && foods[index].recipeCount! == 0) ? Colors.redAccent : Theme.of(context).inputDecorationTheme.disabledBorder!.borderSide.color
                                     )
                                 ),
                               ],
