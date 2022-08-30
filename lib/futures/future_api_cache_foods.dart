@@ -16,7 +16,7 @@ Future getFoodsFromApiCache(String query) async {
     foods.then((value) => cacheFoodService.upsertFoods(value));
     return foods;
   } on ApiConnectionException catch (e) {
-    if (cacheFoods != null) {
+    if (cacheFoods != null && cacheFoods.isNotEmpty) {
       return cacheFoods;
     }
   }

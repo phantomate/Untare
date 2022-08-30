@@ -11,15 +11,13 @@ Future getSupermarketCategoriesFromApiCache() async {
 
   List<SupermarketCategory>? cacheCategories = cacheShoppingListService.getSupermarketCategories();
 
-  if (cacheCategories != null && cacheCategories.isNotEmpty) {
-    return cacheCategories;
-  }
-
   try {
     Future<List<SupermarketCategory>> categories = apiSupermarketCategory.getSupermarketCategories();
     categories.then((value) => cacheShoppingListService.upsertSupermarketCategories(value));
     return categories;
   } on ApiConnectionException catch (e) {
-    // Do nothing
+    if (cacheCategories != null && cacheCategories.isNotEmpty) {
+      return cacheCategories;
+    }
   }
 }

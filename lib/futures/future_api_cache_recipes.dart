@@ -11,15 +11,13 @@ Future getRecipesFromApiCache(String query) async {
 
   List<Recipe>? cacheRecipes = cacheRecipeService.getRecipeList(query, false, 1, 25, null);
 
-  if (cacheRecipes != null && cacheRecipes.isNotEmpty) {
-    return cacheRecipes;
-  }
-
   try {
     Future<List<Recipe>> recipes = apiRecipe.getRecipeList(query, false, 1, 25, null);
     recipes.then((value) => cacheRecipeService.upsertRecipeList(value));
     return recipes;
   } on ApiConnectionException catch (e) {
-    // Do nothing
+    if (cacheRecipes != null && cacheRecipes.isNotEmpty) {
+      return cacheRecipes;
+    }
   }
 }

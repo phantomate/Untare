@@ -11,15 +11,13 @@ Future getUsersFromApiCache() async {
 
   List<User>? cacheUsers = cacheUsersService.getUsers();
 
-  if (cacheUsers != null) {
-    return cacheUsers;
-  }
-
   try {
     Future<List<User>> users = apiUser.getUsers();
     users.then((value) => cacheUsersService.upsertUsers(value));
     return users;
   } on ApiConnectionException catch (e) {
-    // Do nothing
+    if (cacheUsers != null && cacheUsers.isNotEmpty) {
+      return cacheUsers;
+    }
   }
 }

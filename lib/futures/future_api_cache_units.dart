@@ -13,7 +13,7 @@ Future getUnitsFromApiCache(String query) async {
     units.then((value) => cacheUnitService.upsertUnits(value));
     return units;
   } catch (e) {
-    if (cacheUnits != null) {
+    if (cacheUnits != null && cacheUnits.isNotEmpty) {
       return cacheUnits;
     }
   }

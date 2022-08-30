@@ -11,15 +11,13 @@ Future getMealTypesFromApiCache() async {
 
   List<MealType>? cacheMealTypes = cacheMealPlanService.getMealTypes();
 
-  if (cacheMealTypes != null && cacheMealTypes.isNotEmpty) {
-    return cacheMealTypes;
-  }
-
   try {
     Future<List<MealType>> mealTypes = apiMealType.getMealTypeList();
     mealTypes.then((value) => cacheMealPlanService.upsertMealTypes(value));
     return mealTypes;
   } on ApiConnectionException catch (e) {
-    // Do nothing
+    if (cacheMealTypes != null && cacheMealTypes.isNotEmpty) {
+      return cacheMealTypes;
+    }
   }
 }
