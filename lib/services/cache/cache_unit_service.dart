@@ -17,8 +17,21 @@ class CacheUnitService extends CacheService {
     return null;
   }
 
-  upsertUnits(List<Unit> units) {
+  upsertUnits(List<Unit> units, String query, int page, int pageSize) {
     upsertEntityList(units, 'units');
+
+    // After upsert, check if we have to delete entries
+    List<Unit>? cacheEntitiesForDeletion = getUnits(query, page, pageSize);
+
+    if (cacheEntitiesForDeletion != null) {
+      cacheEntitiesForDeletion.removeWhere((element) {
+        return units.indexWhere((e) => e.id == element.id) >= 0;
+      });
+
+      for (var entity in cacheEntitiesForDeletion) {
+        deleteUnit(entity);
+      }
+    }
   }
 
 

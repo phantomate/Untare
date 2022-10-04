@@ -67,6 +67,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
 
     if (ingredientsList.isNotEmpty) {
       return ListView(
+        padding: const EdgeInsets.only(top: 160),
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         children: [
           Container(
@@ -153,7 +154,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
       }
 
       return ListView(
-        padding: const EdgeInsets.only(top: 60, right: 5, bottom: 0),
+        padding: const EdgeInsets.only(top: 175, right: 5, bottom: 0),
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         children: directionsSteps,
       );
@@ -204,7 +205,7 @@ Widget directionStepLayout(BuildContext context, Widget widget, int stepNumber) 
 
 Widget ingredientComponent(Ingredient ingredient, int initServing, int newServing, bool isDense, BuildContext context) {
   String amount = (ingredient.amount > 0) ? ('${(ingredient.amount * (((newServing/initServing))*100).ceil()/100).toFormattedString()} ') : '';
-  String unit = (ingredient.unit != null) ? ('${ingredient.unit!.name} ') : '';
+  String unit = (ingredient.amount > 0 && ingredient.unit != null) ? ('${ingredient.unit!.name} ') : '';
   String food = (ingredient.food != null) ? ('${ingredient.food!.name} ') : '';
   String note = (ingredient.note != null && ingredient.note != '') ? ('(${ingredient.note!})') : '';
 

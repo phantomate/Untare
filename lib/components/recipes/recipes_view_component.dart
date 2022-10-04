@@ -15,13 +15,9 @@ import 'package:untare/models/app_setting.dart';
 import 'package:untare/models/recipe.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
-Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNavBarStatefulWidget widget, BuildContext context) {
+Widget buildRecipesView(List<Recipe> recipes, RecipeState state, HideBottomNavBarStatefulWidget widget, BuildContext context, bool isLoading) {
   final CustomScrollNotification customScrollNotification = CustomScrollNotification(widget: widget);
   final List<Widget> recipesWidgetList = [];
-
-  if (state is RecipeListLoading) {
-    recipesWidgetList.add(buildLoading());
-  }
 
   if (recipes.isEmpty) {
     if (state is RecipeListFetched) {
@@ -32,7 +28,7 @@ Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNav
         )
       );
     } else {
-      return const Center();
+      return buildLoading();
     }
   } else {
     return BlocBuilder<SettingsCubit, AppSetting>(
@@ -62,6 +58,8 @@ Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNav
                         cacheExtent: recipesWidgetList.length * 100,
                         slivers: <Widget>[
                           recipesWidget,
+                          if (state is RecipeListLoading || isLoading)
+                            SliverToBoxAdapter(child: buildLoading()),
                           const SliverPadding(padding: EdgeInsets.only(bottom: 15))
                         ],
                       )

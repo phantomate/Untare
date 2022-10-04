@@ -63,6 +63,30 @@ class CacheShoppingListService extends CacheService {
   }
 
   upsertShoppingListEntries(List<ShoppingListEntry> shoppingListEntries) {
+    List<dynamic>? cacheEntities = box.get('shoppingListEntries');
+
+    if (cacheEntities != null && cacheEntities.isNotEmpty) {
+      // Delete entries from cache
+      cacheEntities.removeWhere((element) {
+        return shoppingListEntries.indexWhere((e) => e.id == element.id) < 0;
+      });
+
+      for (var entity in shoppingListEntries) {
+        int cacheEntityIndex = cacheEntities.indexWhere((cacheEntity) => cacheEntity.id == entity.id);
+
+        // If we found the entity in cache entities, overwrite data, if not add entity
+        if (cacheEntityIndex >= 0) {
+          cacheEntities[cacheEntityIndex] = entity;
+        } else {
+          cacheEntities.add(entity);
+        }
+      }
+    } else {
+      cacheEntities = [];
+      cacheEntities.addAll(shoppingListEntries);
+    }
+
+    box.put('shoppingListEntries', cacheEntities);
     upsertEntityList(shoppingListEntries, 'shoppingListEntries');
   }
 

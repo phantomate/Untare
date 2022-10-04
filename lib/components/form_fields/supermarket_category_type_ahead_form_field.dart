@@ -60,8 +60,12 @@ Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCat
             newCategory = SupermarketCategory(id: formCategory.id, name: formCategory.name, description: formCategory.description);
           }
         } else if (formCategory== null) {
-          newCategory = null;
-          categoryTextController.text = '';
+          if (categoryTextController.text != '') {
+            newCategory = SupermarketCategory(name: categoryTextController.text);
+          } else {
+            newCategory = null;
+            categoryTextController.text = '';
+          }
         } else if (supermarketCategory == null) {
           newCategory = SupermarketCategory(id: formCategory.id, name: formCategory.name, description: formCategory.description);
         }

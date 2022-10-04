@@ -304,27 +304,31 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                                 return ConfigurableExpansionTile(
                                                   headerExpanded: Flexible(
                                                       child: ListTile(
-                                                        visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                                                        minLeadingWidth: 20,
+                                                        visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
                                                         contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                                        trailing: Checkbox(
-                                                            value: checkBoxValue,
-                                                            activeColor: Theme.of(context).primaryColor,
-                                                            shape: RoundedRectangleBorder(
-                                                                borderRadius: BorderRadius.circular(3)
-                                                            ),
-                                                            onChanged: (bool? value) {
-                                                              setState(() {
-                                                                checkBoxValue = value ?? false;
-                                                              });
+                                                        trailing: Transform.scale(
+                                                            scale: 1.1,
+                                                            child: Checkbox(
+                                                                value: checkBoxValue,
+                                                                activeColor: Theme.of(context).primaryColor,
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.circular(3)
+                                                                ),
+                                                                onChanged: (bool? value) {
+                                                                  setState(() {
+                                                                    checkBoxValue = value ?? false;
+                                                                  });
 
-                                                              // Delay for animation purpose
-                                                              Future.delayed(const Duration(milliseconds: 100), () {
-                                                                for (var element in groupedList) {
-                                                                  ShoppingListEntry entry = element.copyWith(checked: value);
-                                                                  _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
+                                                                  // Delay for animation purpose
+                                                                  Future.delayed(const Duration(milliseconds: 100), () {
+                                                                    for (var element in groupedList) {
+                                                                      ShoppingListEntry entry = element.copyWith(checked: value);
+                                                                      _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
+                                                                    }
+                                                                  });
                                                                 }
-                                                              });
-                                                            }
+                                                            )
                                                         ),
                                                         title: Text(
                                                             groupedList.first.food!.name,
@@ -346,27 +350,31 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                                               )
                                                           ),
                                                           child: ListTile(
-                                                            visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                                                            minLeadingWidth: 20,
+                                                            visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
                                                             contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                                            trailing: Checkbox(
-                                                                value: checkBoxValue,
-                                                                activeColor: Theme.of(context).primaryColor,
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.circular(3)
-                                                                ),
-                                                                onChanged: (bool? value) {
-                                                                  setState(() {
-                                                                    checkBoxValue = value ?? false;
-                                                                  });
+                                                            trailing: Transform.scale(
+                                                                scale: 1.1,
+                                                                child: Checkbox(
+                                                                    value: checkBoxValue,
+                                                                    activeColor: Theme.of(context).primaryColor,
+                                                                    shape: RoundedRectangleBorder(
+                                                                        borderRadius: BorderRadius.circular(3)
+                                                                    ),
+                                                                    onChanged: (bool? value) {
+                                                                      setState(() {
+                                                                        checkBoxValue = value ?? false;
+                                                                      });
 
-                                                                  // Delay for animation purpose
-                                                                  Future.delayed(const Duration(milliseconds: 100), () {
-                                                                    for (var element in groupedList) {
-                                                                      ShoppingListEntry entry = element.copyWith(checked: value);
-                                                                      _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
+                                                                      // Delay for animation purpose
+                                                                      Future.delayed(const Duration(milliseconds: 100), () {
+                                                                        for (var element in groupedList) {
+                                                                          ShoppingListEntry entry = element.copyWith(checked: value);
+                                                                          _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
+                                                                        }
+                                                                      });
                                                                     }
-                                                                  });
-                                                                }
+                                                                )
                                                             ),
                                                             title: Text(
                                                                 groupedList.first.food!.name,
@@ -378,7 +386,7 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                                           )
                                                       )
                                                   ),
-                                                  children: groupedWidgetList,
+                                                  childrenBody: Column(children: groupedWidgetList),
                                                 );
                                               });
                                         } else {
@@ -407,9 +415,10 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
 
   Widget buildShoppingListEntryWidget(ShoppingListEntry shoppingListEntry, {bool? grouped}) {
     String amount = (shoppingListEntry.amount > 0) ? ('${shoppingListEntry.amount.toFormattedString()} ') : '';
-    String unit = (shoppingListEntry.unit != null) ? ('${shoppingListEntry.unit!.name} ') : '';
+    String unit = (shoppingListEntry.amount > 0 && shoppingListEntry.unit != null) ? ('${shoppingListEntry.unit!.name} ') : '';
     String food = (shoppingListEntry.food != null) ? (shoppingListEntry.food!.name) : '';
     bool checkBoxValue = shoppingListEntry.checked;
+    double paddingLeft = (grouped != null && grouped == true) ? 35 : 20;
 
     return Slidable(
         key: UniqueKey(),
@@ -456,22 +465,9 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
             ),
             child: StatefulBuilder(
               builder: (context, setState) {
-                return CheckboxListTile(
-                    activeColor: Theme.of(context).primaryColor,
-                    visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
-                    contentPadding: const EdgeInsets.fromLTRB(20, 0, 18.5, 0),
-                    value: checkBoxValue,
-                    onChanged: (bool? value) {
-                      setState(() {
-                        checkBoxValue = value ?? false;
-                      });
-
-                      // Delay for animation purpose
-                      Future.delayed(const Duration(milliseconds: 100), () {
-                        ShoppingListEntry entry = shoppingListEntry.copyWith(checked: value);
-                        _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
-                      });
-                    },
+                return ListTile(
+                    visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
+                    contentPadding: EdgeInsets.fromLTRB(paddingLeft, 0, 15, 0),
                     title: Wrap(
                         children: [
                           RichText(
@@ -489,8 +485,26 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                         ]
                     ),
                     subtitle: (shoppingListEntry.recipeMealPlan != null)
-                        ? Text(shoppingListEntry.recipeMealPlan!.name, style: TextStyle(color: Colors.grey[600]!))
+                        ? Padding(padding: const EdgeInsets.only(top: 4), child: Text(shoppingListEntry.recipeMealPlan!.name, style: TextStyle(color: Colors.grey[600]!)))
                         : null,
+                    trailing: Transform.scale(
+                      scale: 1.1,
+                      child: Checkbox(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: checkBoxValue,
+                        onChanged: (bool? value) {
+                          setState(() {
+                            checkBoxValue = value ?? false;
+                          });
+
+                          // Delay for animation purpose
+                          Future.delayed(const Duration(milliseconds: 100), () {
+                            ShoppingListEntry entry = shoppingListEntry.copyWith(checked: value);
+                            _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
+                          });
+                        },
+                      ),
+                    ),
                 );
               }
             ),

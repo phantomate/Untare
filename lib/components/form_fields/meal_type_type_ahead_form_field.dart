@@ -64,8 +64,12 @@ Widget mealTypeTypeAheadFieldForm(MealType? mealType, GlobalKey<FormBuilderState
             newMealType = MealType(id: formMealType.id, name: formMealType.name, defaultType: formMealType.defaultType, order: formMealType.order, createdBy: formMealType.createdBy);
           }
         } else if (formMealType== null) {
-          newMealType = null;
-          mealTypeTextController.text = '';
+          if (mealTypeTextController.text != '') {
+            newMealType = MealType(name: mealTypeTextController.text, order: 0, defaultType: false, createdBy: 1);
+          } else {
+            newMealType = null;
+            mealTypeTextController.text = '';
+          }
         } else if (mealType == null) {
           newMealType = MealType(id: formMealType.id, name: formMealType.name, defaultType: formMealType.defaultType, order: formMealType.order, createdBy: formMealType.createdBy);
         }

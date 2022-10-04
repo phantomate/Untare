@@ -52,8 +52,12 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> formBuilde
             newUnit = Unit(id: formUnit.id, name: formUnit.name, description: formUnit.description);
           }
         } else if (formUnit== null) {
-          newUnit = null;
-          unitTextController.text = '';
+          if (unitTextController.text != '') {
+            newUnit = Unit(name: unitTextController.text);
+          } else {
+            newUnit = null;
+            unitTextController.text = '';
+          }
         } else if (unit == null) {
           newUnit = Unit(id: formUnit.id, name: formUnit.name, description: formUnit.description);
         }

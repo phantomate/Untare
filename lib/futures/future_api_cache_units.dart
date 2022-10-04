@@ -10,7 +10,7 @@ Future getUnitsFromApiCache(String query) async {
 
   try {
     Future<List<Unit>> units = apiUnit.getUnits(query, 1, 25);
-    units.then((value) => cacheUnitService.upsertUnits(value));
+    units.then((value) => cacheUnitService.upsertUnits(value, query, 1, 25));
     return units;
   } catch (e) {
     if (cacheUnits != null && cacheUnits.isNotEmpty) {

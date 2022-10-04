@@ -26,18 +26,9 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   Future<void> _onFetchRecipeList(FetchRecipeList event, Emitter<RecipeState> emit) async {
     emit(RecipeListLoading());
     try {
-      // Ignore sort for now because its not implemented
-      if (event.sortOrder == null) {
-        List<Recipe>? cacheRecipes = cacheRecipeService.getRecipeList(event.query, event.random, event.page, event.pageSize, event.sortOrder);
-
-        if (cacheRecipes != null && cacheRecipes.isNotEmpty) {
-          emit(RecipeListFetchedFromCache(recipes: cacheRecipes));
-        }
-      }
-
       List<Recipe> recipes = await apiRecipe.getRecipeList(event.query, event.random, event.page, event.pageSize, event.sortOrder);
       emit(RecipeListFetched(recipes: recipes, page: event.page));
-      cacheRecipeService.upsertRecipeList(recipes);
+      cacheRecipeService.upsertRecipeList(recipes, event.query, event.random, event.page, event.pageSize, event.sortOrder);
     } on ApiException catch (e) {
       if (e.statusCode == 401) {
         emit(RecipeUnauthorized());
@@ -45,7 +36,14 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
         emit(RecipeError(error: e.message ?? e.toString()));
       }
     } on ApiConnectionException catch (e) {
-      // Do nothing
+      // Ignore sort for now because its not implemented
+      if (event.sortOrder == null) {
+        List<Recipe>? cacheRecipes = cacheRecipeService.getRecipeList(event.query, event.random, event.page, event.pageSize, event.sortOrder);
+
+        if (cacheRecipes != null) {
+          emit(RecipeListFetchedFromCache(recipes: cacheRecipes));
+        }
+      }
     } catch (e) {
       emit(RecipeError(error: e.toString()));
     }

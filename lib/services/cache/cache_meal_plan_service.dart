@@ -31,8 +31,39 @@ class CacheMealPlanService extends CacheService{
     return mealPLanEntries;
   }
 
-  upsertMealPlanEntries(List<MealPlanEntry> mealPlanEntries) {
-    upsertEntityList(mealPlanEntries, 'mealPlanEntries');
+  upsertMealPlanEntries(List<MealPlanEntry> mealPlanEntries, String from, String to) {
+    List<dynamic>? cacheEntities = box.get('mealPlanEntries');
+
+    if (cacheEntities != null && cacheEntities.isNotEmpty) {
+      for (var entity in mealPlanEntries) {
+        int cacheEntityIndex = cacheEntities.indexWhere((cacheEntity) => cacheEntity.id == entity.id);
+
+        // If we found the entity in cache entities, overwrite data, if not add entity
+        if (cacheEntityIndex >= 0) {
+          cacheEntities[cacheEntityIndex] = entity;
+        } else {
+          cacheEntities.add(entity);
+        }
+      }
+    } else {
+      cacheEntities = [];
+      cacheEntities.addAll(mealPlanEntries);
+    }
+
+    box.put('mealPlanEntries', cacheEntities);
+
+    // After upsert, check if we have to delete entries
+    List<MealPlanEntry>? cacheEntitiesForDeletion = getMealPlanList(from, to);
+
+    if (cacheEntitiesForDeletion != null) {
+      cacheEntitiesForDeletion.removeWhere((element) {
+        return mealPlanEntries.indexWhere((e) => e.id == element.id) >= 0;
+      });
+
+      for (var entity in cacheEntitiesForDeletion) {
+        deleteMealPlanEntry(entity);
+      }
+    }
   }
 
   upsertMealPlanEntry(MealPlanEntry mealPlanEntry) {

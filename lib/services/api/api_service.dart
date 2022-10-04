@@ -63,7 +63,7 @@ class ApiService {
     if (withoutToken == null || !withoutToken) {
       token ??= box.get('token');
 
-      headers['authorization'] = 'token ${token ?? ''}';
+      headers['authorization'] = 'Bearer ${token ?? ''}';
     }
 
     return headers;
@@ -96,9 +96,8 @@ class ApiService {
     } catch (e) {
       // On connection issue, save request to queue and retry later. Exclude get requests
       // @todo handle image
-      if (e is HandshakeException || e is SocketException || e is HttpException) {
-        if (request.method != 'get' && request is Request) {
-          Workmanager().registerOneOffTask(
+      if (request.method != 'get' && request is Request) {
+        Workmanager().registerOneOffTask(
             'retryFailedRequestTask',
             'retryFailedRequestTask',
             inputData: {
@@ -109,13 +108,10 @@ class ApiService {
             constraints: Constraints(networkType: NetworkType.connected),
             existingWorkPolicy: ExistingWorkPolicy.append,
             initialDelay: const Duration(minutes: 1)
-          );
-        }
-
-        throw ApiConnectionException();
-      } else {
-        rethrow;
+        );
       }
+
+      throw ApiConnectionException();
     }
   }
 

@@ -27,6 +27,7 @@ class RecipeDetailPage extends StatefulWidget {
 class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingObserver {
   late RecipeBloc recipeBloc;
   late Recipe recipe;
+  bool isScreenLocked = false;
 
   @override
   void initState() {
@@ -49,6 +50,12 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
     if (state.name == 'resumed') {
       recipeBloc.add(FetchRecipe(id: recipe.id!));
     }
+  }
+
+  void changeLockState() {
+    setState(() {
+      isScreenLocked = !isScreenLocked;
+    });
   }
 
   @override
@@ -83,7 +90,7 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                       return NestedScrollView(
                         headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
                           return <Widget>[
-                            sliverWidget(context, hsbContext, recipe, referer: widget.referer)
+                            sliverWidget(context, hsbContext, referer: widget.referer)
                           ];
                         },
                         body: Container(
@@ -99,251 +106,248 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
         ),
     );
   }
-}
 
-Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe, {String? referer}) {
-  String? lastCooked;
-  List<Widget> keywordsWidget = [];
-  bool isScreenLocked = false;
+  Widget sliverWidget(BuildContext context, BuildContext hsbContext, {String? referer}) {
+    String? lastCooked;
+    List<Widget> keywordsWidget = [];
 
-  if (recipe.lastCooked != null) {
-    DateTime tempDate = DateTime.parse(recipe.lastCooked!);
-    lastCooked = DateFormat("dd.MM.yy").format(tempDate);
-  }
-
-  int keywordsLength = (recipe.keywords.length > 5) ? 5 : recipe.keywords.length;
-  recipe.keywords.sublist(0, keywordsLength).forEach((keyword) {
-    Widget? keywordWidget = getKeywordWidget(context, keyword);
-
-    if (keywordWidget != null) {
-      keywordsWidget.add(keywordWidget);
+    if (recipe.lastCooked != null) {
+      DateTime tempDate = DateTime.parse(recipe.lastCooked!);
+      lastCooked = DateFormat("dd.MM.yy").format(tempDate);
     }
-  });
 
-  return SliverOverlapAbsorber(
-    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(hsbContext),
-    sliver: MultiSliver(
-      children: [
-        SliverLayoutBuilder(
-          builder: (BuildContext hsbContext, constraints) {
-            final scrolled = constraints.scrollOffset > 0 && constraints.scrollOffset < 290;
+    int keywordsLength = (recipe.keywords.length > 5) ? 5 : recipe.keywords.length;
+    recipe.keywords.sublist(0, keywordsLength).forEach((keyword) {
+      Widget? keywordWidget = getKeywordWidget(context, keyword);
 
-            return StatefulBuilder(builder: (context, setState){
-              return SliverAppBar(
-                leadingWidth: 50,
-                titleSpacing: 0,
-                automaticallyImplyLeading: false,
-                leading: IconButton(
-                  iconSize: 30,
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () {
-                    Wakelock.disable();
-                    Navigator.pop(hsbContext);
-                  },
-                  splashRadius: 20,
-                  icon: const Icon(
-                    Icons.chevron_left,
-                  ),
-                ),
-                title: Text(
-                  recipe.name,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18
-                  ),
-                ),
-                actions: [
-                  IconButton(
-                    tooltip: AppLocalizations.of(context)!.screenLock,
-                    splashRadius: 20,
+      if (keywordWidget != null) {
+        keywordsWidget.add(keywordWidget);
+      }
+    });
+
+    return SliverOverlapAbsorber(
+      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(hsbContext),
+      sliver: MultiSliver(
+        children: [
+          SliverLayoutBuilder(
+            builder: (BuildContext hsbContext, constraints) {
+              final scrolled = constraints.scrollOffset > 0 && constraints.scrollOffset < 290;
+
+              return StatefulBuilder(builder: (context, setState){
+                return SliverAppBar(
+                  leadingWidth: 50,
+                  titleSpacing: 0,
+                  automaticallyImplyLeading: false,
+                  leading: IconButton(
+                    iconSize: 30,
+                    padding: const EdgeInsets.all(0),
                     onPressed: () {
-                      setState(() {
-                        isScreenLocked = !isScreenLocked;
-                      });
-
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: (isScreenLocked) ? Text(AppLocalizations.of(context)!.enabledScreenLock) : Text(AppLocalizations.of(context)!.disabledScreenLock),
-                          duration: const Duration(seconds: 3),
-                        ),
-                      );
-
-                      Wakelock.toggle(enable: isScreenLocked);
+                      Wakelock.disable();
+                      Navigator.pop(hsbContext);
                     },
-                    icon: isScreenLocked ? const Icon(Icons.lock_outline) : const Icon(Icons.lock_open_outlined),
+                    splashRadius: 20,
+                    icon: const Icon(
+                      Icons.chevron_left,
+                    ),
                   ),
-                  IconButton(
-                      tooltip: AppLocalizations.of(context)!.moreTooltip,
+                  title: Text(
+                    recipe.name,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18
+                    ),
+                  ),
+                  actions: [
+                    IconButton(
+                      tooltip: AppLocalizations.of(context)!.screenLock,
                       splashRadius: 20,
                       onPressed: () {
-                        recipeMoreBottomSheet(context, recipe);
+                        changeLockState();
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: (isScreenLocked) ? Text(AppLocalizations.of(context)!.enabledScreenLock) : Text(AppLocalizations.of(context)!.disabledScreenLock),
+                            duration: const Duration(seconds: 3),
+                          ),
+                        );
+
+                        Wakelock.toggle(enable: isScreenLocked);
                       },
-                      icon: const Icon(Icons.more_vert_outlined)
-                  )
-                ],
-                elevation: (scrolled) ? 1.5 : 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                pinned: true,
-              );
-            });
-          },
-        ),
-        SliverList(
-            delegate: SliverChildListDelegate(
-                [
-                  Stack(
-                    children: [
-                      SizedBox(
-                        height: 250,
-                        child: buildRecipeImage(recipe, BorderRadius.zero, 250, referer: referer),
-                      ),
-                      Container(
-                        height: 250,
-                        width: double.maxFinite,
-                        alignment: Alignment.bottomLeft,
-                        child: Wrap(
-                          direction: Axis.horizontal,
-                          children: keywordsWidget
-                        )
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 45,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      icon: isScreenLocked ? const Icon(Icons.lock_outline) : const Icon(Icons.lock_open_outlined),
+                    ),
+                    IconButton(
+                        tooltip: AppLocalizations.of(context)!.moreTooltip,
+                        splashRadius: 20,
+                        onPressed: () {
+                          recipeMoreBottomSheet(context, recipe);
+                        },
+                        icon: const Icon(Icons.more_vert_outlined)
+                    )
+                  ],
+                  elevation: (scrolled) ? 1.5 : 0,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  pinned: true,
+                );
+              });
+            },
+          ),
+          SliverList(
+              delegate: SliverChildListDelegate(
+                  [
+                    Stack(
                       children: [
-                        if (lastCooked != null) Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.restaurant_outlined,
-                                  size: 13
-                                ),
-                                const SizedBox(width: 2),
-                                Text(
-                                  lastCooked,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              AppLocalizations.of(context)!.lastCooked,
-                              style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey
-                              ),
-                            )
-                          ],
+                        SizedBox(
+                          height: 250,
+                          child: buildRecipeImage(recipe, BorderRadius.zero, 250, referer: referer),
                         ),
-                        if (recipe.rating != null && recipe.rating! > 0) Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  recipe.rating.toString(),
-                                  style: const TextStyle(fontSize: 13),
-                                ),
-                                const SizedBox(width: 2),
-                                const Icon(
-                                  Icons.star,
-                                  size: 13,
-                                  color: Colors.amberAccent,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              AppLocalizations.of(context)!.rating,
-                              style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey
-                              ),
+                        Container(
+                            height: 250,
+                            width: double.maxFinite,
+                            alignment: Alignment.bottomLeft,
+                            child: Wrap(
+                                direction: Axis.horizontal,
+                                children: keywordsWidget
                             )
-                          ],
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.timer_outlined,
-                                  size: 13,
-                                ),
-                                const SizedBox(width: 2),
-                                Text(
-                                  '${recipe.workingTime} min',
-                                  style: const TextStyle(fontSize: 13),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              AppLocalizations.of(context)!.prepTime,
-                              style: const TextStyle(
-                                fontSize: 10,
-                                color: Colors.grey
-                              ),
-                            )
-                          ],
-                        ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              children: [
-                                const Icon(
-                                  Icons.hourglass_bottom_outlined,
-                                  size: 13
-                                ),
-                                const SizedBox(width: 2),
-                                Text(
-                                  '${recipe.waitingTime} min',
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              AppLocalizations.of(context)!.waitingTime,
-                              style: const TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.grey
-                              ),
-                            )
-                          ],
                         ),
                       ],
                     ),
-                  )
-                ]
-            )
-        ),
-        SliverPersistentHeader(
-          delegate: _SliverAppBarDelegate(
-            TabBar(
-              indicatorColor: Theme.of(context).primaryColor,
-              unselectedLabelColor: Colors.grey,
-              tabs: [
-                Tab(text: AppLocalizations.of(context)!.ingredients),
-                Tab(text: AppLocalizations.of(context)!.directions),
-              ],
-            ),
+                    SizedBox(
+                      height: 45,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          if (lastCooked != null) Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                      Icons.restaurant_outlined,
+                                      size: 13
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    lastCooked,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                AppLocalizations.of(context)!.lastCooked,
+                                style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey
+                                ),
+                              )
+                            ],
+                          ),
+                          if (recipe.rating != null && recipe.rating! > 0) Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    recipe.rating.toString(),
+                                    style: const TextStyle(fontSize: 13),
+                                  ),
+                                  const SizedBox(width: 2),
+                                  const Icon(
+                                    Icons.star,
+                                    size: 13,
+                                    color: Colors.amberAccent,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                AppLocalizations.of(context)!.rating,
+                                style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey
+                                ),
+                              )
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.timer_outlined,
+                                    size: 13,
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    '${recipe.workingTime} min',
+                                    style: const TextStyle(fontSize: 13),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                AppLocalizations.of(context)!.prepTime,
+                                style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey
+                                ),
+                              )
+                            ],
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(
+                                children: [
+                                  const Icon(
+                                      Icons.hourglass_bottom_outlined,
+                                      size: 13
+                                  ),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    '${recipe.waitingTime} min',
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 3),
+                              Text(
+                                AppLocalizations.of(context)!.waitingTime,
+                                style: const TextStyle(
+                                    fontSize: 10,
+                                    color: Colors.grey
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    )
+                  ]
+              )
           ),
-          pinned: true,
-        ),
-      ],
-    ),
-  );
+          SliverPersistentHeader(
+            delegate: _SliverAppBarDelegate(
+              TabBar(
+                indicatorColor: Theme.of(context).primaryColor,
+                unselectedLabelColor: Colors.grey,
+                tabs: [
+                  Tab(text: AppLocalizations.of(context)!.ingredients),
+                  Tab(text: AppLocalizations.of(context)!.directions),
+                ],
+              ),
+            ),
+            pinned: true,
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {

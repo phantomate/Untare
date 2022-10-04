@@ -15,6 +15,7 @@ class ApiFood extends ApiService {
     url += '?query=$query';
     url += '&page=$page';
     url += '&page_size=$pageSize';
+    url += '&extended=1';
 
     Response res = await httpGet(url);
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));

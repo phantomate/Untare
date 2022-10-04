@@ -37,7 +37,7 @@ class MealPlanBloc extends Bloc<MealPlanEvent, MealPlanState> {
       List<MealPlanEntry> mealPlanList = await apiMealPlan.getMealPlanList(event.from, event.to);
       emit(MealPlanFetched(mealPlanList: mealPlanList));
 
-      cacheMealPlanService.upsertMealPlanEntries(mealPlanList);
+      cacheMealPlanService.upsertMealPlanEntries(mealPlanList, event.from, event.to);
     } on ApiException catch (e) {
       if (e.statusCode == 401) {
         emit(MealPlanUnauthorized());

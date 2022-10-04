@@ -32,7 +32,7 @@ class UnitBloc extends Bloc<UnitEvent, UnitState> {
       List<Unit> units = await apiUnit.getUnits(event.query, event.page, event.pageSize);
       emit(UnitsFetched(units: units));
 
-      cacheUnitService.upsertUnits(units);
+      cacheUnitService.upsertUnits(units, event.query, event.page, event.pageSize);
     } on ApiException catch (e) {
       if (e.statusCode == 401) {
         emit(UnitsUnauthorized());

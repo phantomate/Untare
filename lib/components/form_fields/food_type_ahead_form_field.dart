@@ -56,8 +56,12 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilde
             newFood = Food(id: formFood.id, name: formFood.name, description: formFood.description, onHand: formFood.onHand);
           }
         } else if (formFood == null) {
-          newFood = null;
-          foodTextController.text = '';
+          if (foodTextController.text != '') {
+            newFood = Food(name: foodTextController.text);
+          } else {
+            newFood = null;
+            foodTextController.text = '';
+          }
         } else if (food == null) {
           newFood = Food(id: formFood.id, name: formFood.name, description: formFood.description, onHand: formFood.onHand);
         }

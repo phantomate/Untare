@@ -10,6 +10,7 @@ import 'package:untare/models/food.dart';
 import 'package:untare/models/ingredient.dart';
 import 'package:untare/models/recipe.dart';
 import 'package:untare/models/shopping_list_entry.dart';
+import 'package:untare/models/step.dart';
 import 'package:untare/services/api/api_food.dart';
 import 'package:untare/services/api/api_shopping_list.dart';
 
@@ -76,7 +77,16 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
   }
 
   void prepareIngredientList() {
-    recipeIngredients = (recipe.steps.isNotEmpty) ? recipe.steps.first.ingredients : [];
+    List<StepModel> recipeSteps = (recipe.steps.isNotEmpty) ? recipe.steps : [];
+    List<Ingredient> ingredientList = [];
+
+    for (var step in recipeSteps) {
+      for (var ingredient in step.ingredients) {
+        ingredientList.add(ingredient);
+      }
+    }
+
+    recipeIngredients = ingredientList;
 
     // Get all food ids from this recipe to check if we have this already on our shopping list
     for (var element in recipeIngredients) {
@@ -208,7 +218,7 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
 
   Widget ingredientComponent(Ingredient ingredient, int initServing, int newServing) {
     String amount = (ingredient.amount > 0) ? ('${ingredient.amount * (((newServing/initServing))*100).ceil()/100} ') : '';
-    String unit = (ingredient.unit != null) ? ('${ingredient.unit!.name} ') : '';
+    String unit = (ingredient.unit != null && ingredient.amount > 0) ? ('${ingredient.unit!.name} ') : '';
     String food = (ingredient.food != null) ? ('${ingredient.food!.name} ') : '';
     bool? checkBoxValue = !(ingredient.food != null && ingredient.food!.onHand!);
     bool isAlreadyOnShoppingList = false;

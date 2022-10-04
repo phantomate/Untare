@@ -99,7 +99,7 @@ class UnitsPageState extends State<UnitsPage> {
                               itemBuilder: (context, index) => ListTile(
                                 visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
                                 title: Text(units[index].name),
-                                subtitle: ((units[index].recipeCount != null && units[index].recipeCount! > 0) ? Text((units[index].recipeCount.toString() + ((units[index].recipeCount! > 1) ? AppLocalizations.of(context)!.recipesTitle : AppLocalizations.of(context)!.recipe))) : null),
+                                subtitle: ((units[index].recipeCount != null && units[index].recipeCount! > 0) ? Text(('${units[index].recipeCount} ${(units[index].recipeCount! > 1) ? AppLocalizations.of(context)!.recipesTitle : AppLocalizations.of(context)!.recipe}')) : null),
                                 trailing: Wrap(
                                   spacing: 0,
                                   children: [

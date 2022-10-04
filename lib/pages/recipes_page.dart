@@ -24,7 +24,7 @@ class RecipesPage extends HideBottomNavBarStatefulWidget {
 }
 
 class RecipesPageState extends State<RecipesPage> {
-  int pageSize = 20;
+  int pageSize = 30;
   final searchTextController = TextEditingController();
   late RecipeBloc recipeBloc;
   bool showSearchClear = false;
@@ -44,23 +44,29 @@ class RecipesPageState extends State<RecipesPage> {
     'favorite': true,
     'created_at': true
   };
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
     widget.isHideBottomNavBar(true);
-    searchTextController.addListener(_onSearchValueChange);
+    searchTextController.addListener(onSearchValueChange);
     recipeBloc = BlocProvider.of<RecipeBloc>(context);
-    recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize));
+    isLoading = true;
+    recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize, sortOrder: sortOrder));
   }
 
-  void _fetchMoreRecipes() {
-    if(recipeBloc.state is RecipeListFetched && !isLastPage) {
-      recipeBloc.add(FetchRecipeList(query: query, random: random, page: page+1, pageSize: pageSize));
+  void fetchMoreRecipes() {
+    if((recipeBloc.state is RecipeListFetched || recipeBloc.state is RecipeListFetchedFromCache
+        || recipeBloc.state is RecipeFetched || recipeBloc.state is RecipeFetchedFromCache)
+        && !isLastPage) {
+      isLoading = true;
+      page++;
+      recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize, sortOrder: sortOrder));
     }
   }
 
-  _onSearchValueChange() {
+  onSearchValueChange() {
     String searchQuery = searchTextController.text;
     if (searchQuery != '' && !showSearchClear) {
       setState(() {
@@ -79,7 +85,7 @@ class RecipesPageState extends State<RecipesPage> {
       recipes = [];
       fetchedRecipes = [];
       cachedRecipes = [];
-      recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize));
+      recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize, sortOrder: sortOrder));
     }
   }
 
@@ -118,14 +124,14 @@ class RecipesPageState extends State<RecipesPage> {
                 if (state.recipes.isEmpty || state.recipes.length < pageSize) {
                   isLastPage = true;
                 }
-                fetchedRecipes.addAll(state.recipes);
-                recipes = fetchedRecipes;
+                isLoading = false;
+                recipes.addAll(state.recipes);
               } else if (state is RecipeListFetchedFromCache) {
                 if (state.recipes.isEmpty || state.recipes.length < pageSize) {
                   isLastPage = true;
                 }
-                cachedRecipes.addAll(state.recipes);
-                recipes = cachedRecipes;
+                isLoading = false;
+                recipes.addAll(state.recipes);
               }
 
               if (state is RecipeError) {
@@ -156,17 +162,8 @@ class RecipesPageState extends State<RecipesPage> {
               }
 
               return LazyLoadScrollView(
-                onEndOfPage: () => _fetchMoreRecipes(),
-                scrollOffset: 80,
-                child: Column(
-                  children: [
-                    Flexible(
-                      child: buildRecipesView(recipes, state, widget, context),
-                    ),
-                    if (state is RecipeLoading)
-                      buildLoading()
-                  ],
-                ),
+                  onEndOfPage: fetchMoreRecipes,
+                  child: buildRecipesView(recipes, state, widget, context, isLoading)
               );
             }
         ),

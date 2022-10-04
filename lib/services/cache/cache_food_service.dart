@@ -17,8 +17,21 @@ class CacheFoodService extends CacheService {
     return null;
   }
 
-  upsertFoods(List<Food> foods) {
+  upsertFoods(List<Food> foods, String query, int page, int pageSize) {
     upsertEntityList(foods, 'foods');
+
+    // After upsert, check if we have to delete entries
+    List<Food>? cacheEntitiesForDeletion = getFoods(query, page, pageSize);
+
+    if (cacheEntitiesForDeletion != null) {
+      cacheEntitiesForDeletion.removeWhere((element) {
+        return foods.indexWhere((e) => e.id == element.id) >= 0;
+      });
+
+      for (var entity in cacheEntitiesForDeletion) {
+        deleteFood(entity);
+      }
+    }
   }
 
   upsertFood(Food food) {

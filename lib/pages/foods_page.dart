@@ -22,12 +22,13 @@ class FoodsPage extends StatefulWidget {
 class FoodsPageState extends State<FoodsPage> {
   late FoodBloc foodBloc;
   int page = 1;
-  int pageSize = 25;
+  int pageSize = 100;
   String query = '';
   bool isLastPage = false;
   List<Food> foods = [];
   List<Food> fetchedFoods = [];
   List<Food> cachedFoods = [];
+  bool isLoading = false;
 
   @override
   void initState(){
@@ -37,6 +38,7 @@ class FoodsPageState extends State<FoodsPage> {
   void _fetchMoreFoods() {
     if((foodBloc.state is FoodsFetched || foodBloc.state is FoodsFetchedFromCache) && !isLastPage) {
       page++;
+      isLoading = true;
       foodBloc.add(FetchFoods(query: query, page: page, pageSize: pageSize));
     }
   }
@@ -53,6 +55,7 @@ class FoodsPageState extends State<FoodsPage> {
           create: (context) {
             foodBloc = FoodBloc(apiFood: ApiFood(), cacheFoodService: CacheFoodService());
             foodBloc.add(FetchFoods(query: query, page: page, pageSize: pageSize));
+            isLoading = true;
             return foodBloc;
           },
           child: BlocConsumer<FoodBloc, FoodState>(
@@ -78,6 +81,7 @@ class FoodsPageState extends State<FoodsPage> {
                 if (state.foods.isEmpty || state.foods.length < pageSize) {
                   isLastPage = true;
                 }
+                isLoading = false;
 
                 cachedFoods.addAll(state.foods);
                 foods = cachedFoods;
@@ -99,7 +103,7 @@ class FoodsPageState extends State<FoodsPage> {
                           itemBuilder: (context, index) => ListTile(
                             visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
                             title: Text(foods[index].name),
-                            subtitle: ((foods[index].recipeCount != null && foods[index].recipeCount! == 0) ? Text((foods[index].recipeCount.toString() + ((foods[index].recipeCount! > 1) ? AppLocalizations.of(context)!.recipesTitle : AppLocalizations.of(context)!.recipe))) : null),
+                            subtitle: ((foods[index].recipeCount != null && foods[index].recipeCount! > 0) ? Text(('${foods[index].recipeCount} ${(foods[index].recipeCount! > 1) ? AppLocalizations.of(context)!.recipesTitle : AppLocalizations.of(context)!.recipe}')) : null),
                             trailing: Wrap(
                               spacing: 0,
                               children: [
@@ -111,7 +115,7 @@ class FoodsPageState extends State<FoodsPage> {
                                     icon: const Icon(Icons.edit_outlined, size: 20)
                                 ),
                                 IconButton(
-                                    splashRadius: (foods[index].recipeCount != null && foods[index].recipeCount! > 0) ? 20 : 1,
+                                    splashRadius: (foods[index].recipeCount != null && foods[index].recipeCount! == 0) ? 20 : 1,
                                     onPressed: () {
                                       if (foods[index].recipeCount != null && foods[index].recipeCount! == 0) {
                                         showDialog(context: context, builder: (context) {
@@ -153,7 +157,7 @@ class FoodsPageState extends State<FoodsPage> {
                           itemCount: foods.length
                         )
                     ),
-                    if (state is FoodsLoading)
+                    if (state is FoodsLoading || isLoading)
                       buildLoading()
                   ],
                 ),

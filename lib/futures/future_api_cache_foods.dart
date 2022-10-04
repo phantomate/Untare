@@ -13,7 +13,7 @@ Future getFoodsFromApiCache(String query) async {
 
   try {
     Future<List<Food>> foods = apiFood.getFoods(query, 1, 25);
-    foods.then((value) => cacheFoodService.upsertFoods(value));
+    foods.then((value) => cacheFoodService.upsertFoods(value, query, 1, 25));
     return foods;
   } on ApiConnectionException catch (e) {
     if (cacheFoods != null && cacheFoods.isNotEmpty) {

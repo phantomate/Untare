@@ -34,7 +34,7 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
       List<Food> foods = await apiFood.getFoods(event.query, event.page, event.pageSize);
       emit(FoodsFetched(foods: foods));
 
-      cacheFoodService.upsertFoods(foods);
+      cacheFoodService.upsertFoods(foods, event.query, event.page, event.pageSize);
     } on ApiException catch (e) {
       if (e.statusCode == 401) {
         emit(FoodsUnauthorized());

@@ -48,11 +48,6 @@ abstract class CacheService {
 
         // If we found the entity in cache entities, overwrite data, if not add entity
         if (cacheEntityIndex >= 0) {
-          // Keep steps from recipe, because be get empty step list from recipe list call
-          if (cacheKey == 'recipes') {
-            entity = entity.copyWith(steps: cacheEntities[cacheEntityIndex].steps);
-          }
-
           cacheEntities[cacheEntityIndex] = entity;
         } else {
           cacheEntities.add(entity);

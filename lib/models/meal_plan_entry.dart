@@ -1,6 +1,7 @@
 import 'package:untare/models/meal_type.dart';
 import 'package:untare/models/recipe.dart';
 import 'package:hive/hive.dart';
+import 'package:untare/models/user.dart';
 
 part 'meal_plan_entry.g.dart';
 
@@ -26,7 +27,7 @@ class MealPlanEntry {
   @HiveField(8)
   final int? createdBy;
   @HiveField(9)
-  final List? shared;
+  final List<User> shared;
   @HiveField(10)
   final String? recipeName;
   @HiveField(11)
@@ -44,7 +45,7 @@ class MealPlanEntry {
     required this.date,
     required this.mealType,
     this.createdBy,
-    this.shared,
+    required this.shared,
     this.recipeName,
     this.mealTypeName,
     this.shopping
@@ -60,7 +61,7 @@ class MealPlanEntry {
     String? date,
     MealType? mealType,
     int? createdBy,
-    List? shared,
+    List<User>? shared,
     String? recipeName,
     String? mealTypeName,
     bool? shopping
@@ -93,7 +94,7 @@ class MealPlanEntry {
       date: json['date'] as String,
       mealType: MealType.fromJson(json['meal_type']),
       createdBy: json['created_by'] as int,
-      shared: json['shared'] as List?,
+      shared: json['shared'].map((item) => User.fromJson(item)).toList().cast<User>(),
       recipeName: json['recipe_name'] as String?,
       mealTypeName: json['meal_type_name'] as String?,
       shopping: json['shopping'] as bool
@@ -103,6 +104,13 @@ class MealPlanEntry {
   Map<String, dynamic> toJson() {
     Map<String, dynamic>? recipe = this.recipe != null ? this.recipe!.toJson() : null;
 
+    List<Map<String,dynamic>> sharedList = [];
+    if (shared.isNotEmpty) {
+      for (var share in shared) {
+        sharedList.add(share.toJson());
+      }
+    }
+
     return {
       'id': id,
       'title': title,
@@ -111,7 +119,7 @@ class MealPlanEntry {
       'note': note,
       'date': date,
       'meal_type': mealType.toJson(),
-      'shared': shared
+      'shared': sharedList
     };
   }
 }

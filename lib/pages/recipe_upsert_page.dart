@@ -727,7 +727,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
   Widget buildIngredient(Ingredient ingredient, int stepIndex, int ingredientIndex) {
     // Build ingredient text layout
     String amount = (ingredient.amount > 0) ? ('${ingredient.amount.toFormattedString()} ') : '';
-    String unit = (ingredient.unit != null) ? ('${ingredient.unit!.name} ') : '';
+    String unit = (ingredient.amount > 0 && ingredient.unit != null) ? ('${ingredient.unit!.name} ') : '';
     String food = (ingredient.food != null) ? ('${ingredient.food!.name} ') : '';
     String note = (ingredient.note != null && ingredient.note != '') ? ('(${ingredient.note !})') : '';
 
