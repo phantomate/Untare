@@ -1,23 +1,23 @@
-import 'package:tare/exceptions/api_connection_exception.dart';
-import 'package:tare/models/food.dart';
-import 'package:tare/services/api/api_food.dart';
-import 'package:tare/services/cache/cache_food_service.dart';
+// ignore_for_file: unused_catch_clause
+
+import 'package:untare/exceptions/api_connection_exception.dart';
+import 'package:untare/models/food.dart';
+import 'package:untare/services/api/api_food.dart';
+import 'package:untare/services/cache/cache_food_service.dart';
 
 Future getFoodsFromApiCache(String query) async {
-  final CacheFoodService _cacheFoodService = CacheFoodService();
-  final ApiFood _apiFood = ApiFood();
+  final CacheFoodService cacheFoodService = CacheFoodService();
+  final ApiFood apiFood = ApiFood();
 
-  List<Food>? cacheFoods = _cacheFoodService.getFoods(query, 1, 20);
-
-  if (cacheFoods != null) {
-    return cacheFoods;
-  }
+  List<Food>? cacheFoods = cacheFoodService.getFoods(query, 1, 25);
 
   try {
-    Future<List<Food>> foods = _apiFood.getFoods(query, 1, 25);
-    foods.then((value) => _cacheFoodService.upsertFoods(value));
+    Future<List<Food>> foods = apiFood.getFoods(query, 1, 25);
+    foods.then((value) => cacheFoodService.upsertFoods(value, query, 1, 25));
     return foods;
   } on ApiConnectionException catch (e) {
-    // Do nothing
+    if (cacheFoods != null && cacheFoods.isNotEmpty) {
+      return cacheFoods;
+    }
   }
 }

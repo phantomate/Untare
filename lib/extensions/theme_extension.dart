@@ -1,34 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:tare/constants/colors.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
-      primaryColor: primaryColor,
       brightness: Brightness.light,
       fontFamily: 'Montserrat',
-      iconTheme: IconThemeData(color: Colors.black87),
+      iconTheme: const IconThemeData(color: Colors.black87),
       inputDecorationTheme: InputDecorationTheme(
         prefixIconColor: Colors.grey[600],
         suffixIconColor: Colors.grey[600],
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: primaryColor,
+              color: Colors.grey[800]!,
             )
         ),
-        labelStyle: TextStyle(
+        labelStyle: const TextStyle(
           color: Colors.black26,
         ),
         isDense: true,
         contentPadding: const EdgeInsets.all(10),
-        disabledBorder: OutlineInputBorder(
+        disabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(
               color: Colors.black12,
             )
         )
       ),
-      appBarTheme: AppBarTheme(
+      appBarTheme: const AppBarTheme(
         titleTextStyle: TextStyle(
           color: Colors.black87
         ),
@@ -44,11 +42,11 @@ class AppTheme {
           primary: Colors.black87
         )
       ),
-      buttonTheme: ButtonThemeData(
+      buttonTheme: const ButtonThemeData(
         textTheme: ButtonTextTheme.primary
       ),
       primaryTextTheme: TextTheme(
-        bodyText1: TextStyle(
+        bodyText1: const TextStyle(
           color: Colors.black87
         ),
         bodyText2: TextStyle(
@@ -58,25 +56,29 @@ class AppTheme {
             color: Colors.grey[300]
         )
       ),
-      snackBarTheme: SnackBarThemeData(
+      snackBarTheme: const SnackBarThemeData(
         behavior: SnackBarBehavior.floating
+      ),
+      checkboxTheme: CheckboxThemeData(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(3)
+          )
       )
     );
   }
 
   static ThemeData get darkTheme {
     return ThemeData(
-      primaryColor: primaryColor,
       brightness: Brightness.dark,
       fontFamily: 'Montserrat',
       iconTheme: IconThemeData(color: Colors.grey[50]),
       inputDecorationTheme: InputDecorationTheme(
         prefixIconColor: Colors.grey[400],
         suffixIconColor: Colors.grey[400],
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: primaryColor,
+            color: Colors.grey[300]!,
           )
         ),
         labelStyle: TextStyle(
@@ -95,7 +97,7 @@ class AppTheme {
               primary: Colors.white
           )
       ),
-      buttonTheme: ButtonThemeData(
+      buttonTheme: const ButtonThemeData(
           textTheme: ButtonTextTheme.primary
       ),
       primaryTextTheme: TextTheme(
@@ -109,6 +111,11 @@ class AppTheme {
       snackBarTheme: SnackBarThemeData(
         behavior: SnackBarBehavior.floating,
         backgroundColor: Colors.grey[300]
+      ),
+      checkboxTheme: CheckboxThemeData(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(3)
+        )
       )
     );
   }

@@ -1,29 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tare/blocs/abstract_state.dart';
-import 'package:tare/blocs/recipe/recipe_state.dart';
-import 'package:tare/components/custom_scroll_notification.dart';
-import 'package:tare/components/recipes/recipe_grid_component.dart';
-import 'package:tare/components/recipes/recipe_list_component.dart';
-import 'package:tare/components/recipes/recipes_grid_component.dart';
-import 'package:tare/components/recipes/recipes_list_component.dart';
-import 'package:tare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
-import 'package:tare/components/loading_component.dart';
-import 'package:tare/cubits/settings_cubit.dart';
-import 'package:tare/models/app_setting.dart';
-import 'package:tare/models/recipe.dart';
+import 'package:untare/blocs/abstract_state.dart';
+import 'package:untare/blocs/recipe/recipe_state.dart';
+import 'package:untare/components/custom_scroll_notification.dart';
+import 'package:untare/components/recipes/recipe_grid_component.dart';
+import 'package:untare/components/recipes/recipe_list_component.dart';
+import 'package:untare/components/recipes/recipes_grid_component.dart';
+import 'package:untare/components/recipes/recipes_list_component.dart';
+import 'package:untare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
+import 'package:untare/components/loading_component.dart';
+import 'package:untare/cubits/settings_cubit.dart';
+import 'package:untare/models/app_setting.dart';
+import 'package:untare/models/recipe.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
-Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNavBarStatefulWidget widget, BuildContext context) {
+Widget buildRecipesView(List<Recipe> recipes, RecipeState state, HideBottomNavBarStatefulWidget widget, BuildContext context, bool isLoading) {
   final CustomScrollNotification customScrollNotification = CustomScrollNotification(widget: widget);
   final List<Widget> recipesWidgetList = [];
 
-  if (state is RecipeListLoading) {
-    recipesWidgetList.add(buildLoading());
-  }
-
-  if (recipes.length == 0) {
+  if (recipes.isEmpty) {
     if (state is RecipeListFetched) {
       return Center(
         child: Padding(
@@ -32,7 +28,7 @@ Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNav
         )
       );
     } else {
-      return Center();
+      return buildLoading();
     }
   } else {
     return BlocBuilder<SettingsCubit, AppSetting>(
@@ -62,7 +58,9 @@ Widget buildRecipesView(List<Recipe> recipes, AbstractState state, HideBottomNav
                         cacheExtent: recipesWidgetList.length * 100,
                         slivers: <Widget>[
                           recipesWidget,
-                          SliverPadding(padding: const EdgeInsets.only(bottom: 15))
+                          if (state is RecipeListLoading || isLoading)
+                            SliverToBoxAdapter(child: buildLoading()),
+                          const SliverPadding(padding: EdgeInsets.only(bottom: 15))
                         ],
                       )
                   );

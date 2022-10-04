@@ -1,11 +1,9 @@
-import 'package:tare/models/meal_plan_entry.dart';
-import 'package:tare/models/meal_type.dart';
+import 'package:untare/models/meal_plan_entry.dart';
+import 'package:untare/models/meal_type.dart';
 
 import '../abstract_event.dart';
 
 abstract class MealPlanEvent extends AbstractEvent {}
-
-class MealPlanPageLoaded extends MealPlanEvent {}
 
 class FetchMealPlan extends MealPlanEvent {
   final String from;

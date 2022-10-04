@@ -1,4 +1,4 @@
-import 'package:tare/models/unit.dart';
+import 'package:untare/models/unit.dart';
 import 'food.dart';
 import 'package:hive/hive.dart';
 
@@ -18,7 +18,7 @@ class Ingredient {
   @HiveField(4)
   final String? note;
   @HiveField(5)
-  final int order;
+  final int? order;
   @HiveField(6)
   final String? originalText;
 
@@ -28,7 +28,7 @@ class Ingredient {
     this.unit,
     required this.amount,
     this.note,
-    required this.order,
+    this.order,
     this.originalText
   });
 
@@ -57,24 +57,24 @@ class Ingredient {
     Map<String, dynamic>? food = this.food != null ? this.food!.toJson() : null;
 
     return {
-      'id': this.id,
+      'id': id,
       'food': food,
       'unit': unit,
-      'amount': this.amount,
-      'note': this.note,
-      'order': this.order,
-      'original_text': this.originalText
+      'amount': amount,
+      'note': note,
+      'order': order,
+      'original_text': originalText
     };
   }
 
   factory Ingredient.fromJson(Map<String, dynamic> json) {
     return Ingredient(
-      id: json['id'] as int,
+      id: json['id'] as int?,
       food: (json['food'] != null) ? Food.fromJson(json['food']) : null,
       unit: (json['unit'] != null) ? Unit.fromJson(json['unit']) : null,
-      amount: json['amount'] as double,
+      amount: (json['amount'] is int) ? json['amount'].toDouble() : json['amount'],
       note: json['note'] as String?,
-      order: json['order'] as int,
+      order: json['order'] as int?,
       originalText: json['original_text'] as String?,
     );
   }

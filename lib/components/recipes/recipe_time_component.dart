@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:tare/models/recipe.dart';
+import 'package:untare/models/recipe.dart';
 
 Widget? buildRecipeTime(Recipe recipe, {BoxDecoration? boxDecoration, Color? color}) {
   int recipeSumTime = (recipe.workingTime ?? 0) + (recipe.waitingTime ?? 0);
@@ -19,9 +18,9 @@ Widget? buildRecipeTime(Recipe recipe, {BoxDecoration? boxDecoration, Color? col
             size: 11,
             color: color,
           ),
-          SizedBox(width: 2),
+          const SizedBox(width: 2),
           Text(
-            recipeSumTime.toString() + ' min',
+            '$recipeSumTime min',
             style: TextStyle(
               fontSize: 11,
               color: color

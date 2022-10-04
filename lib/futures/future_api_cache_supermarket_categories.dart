@@ -1,23 +1,23 @@
-import 'package:tare/exceptions/api_connection_exception.dart';
-import 'package:tare/models/supermarket_category.dart';
-import 'package:tare/services/api/api_supermarket_category.dart';
-import 'package:tare/services/cache/cache_shopping_list_service.dart';
+// ignore_for_file: unused_catch_clause
+
+import 'package:untare/exceptions/api_connection_exception.dart';
+import 'package:untare/models/supermarket_category.dart';
+import 'package:untare/services/api/api_supermarket_category.dart';
+import 'package:untare/services/cache/cache_shopping_list_service.dart';
 
 Future getSupermarketCategoriesFromApiCache() async {
-  final CacheShoppingListService _cacheShoppingListService = CacheShoppingListService();
-  final ApiSupermarketCategory _apiSupermarketCategory = ApiSupermarketCategory();
+  final CacheShoppingListService cacheShoppingListService = CacheShoppingListService();
+  final ApiSupermarketCategory apiSupermarketCategory = ApiSupermarketCategory();
 
-  List<SupermarketCategory>? cacheCategories = _cacheShoppingListService.getSupermarketCategories();
-
-  if (cacheCategories != null) {
-    return cacheCategories;
-  }
+  List<SupermarketCategory>? cacheCategories = cacheShoppingListService.getSupermarketCategories();
 
   try {
-    Future<List<SupermarketCategory>> categories = _apiSupermarketCategory.getSupermarketCategories();
-    categories.then((value) => _cacheShoppingListService.upsertSupermarketCategories(value));
+    Future<List<SupermarketCategory>> categories = apiSupermarketCategory.getSupermarketCategories();
+    categories.then((value) => cacheShoppingListService.upsertSupermarketCategories(value));
     return categories;
   } on ApiConnectionException catch (e) {
-    // Do nothing
+    if (cacheCategories != null && cacheCategories.isNotEmpty) {
+      return cacheCategories;
+    }
   }
 }

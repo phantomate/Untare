@@ -1,4 +1,4 @@
-package com.example.tare
+package com.example.untare
 
 import io.flutter.embedding.android.FlutterActivity
 

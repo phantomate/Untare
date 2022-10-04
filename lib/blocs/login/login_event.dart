@@ -1,13 +1,14 @@
-import 'package:tare/blocs/abstract_event.dart';
+import 'package:untare/blocs/abstract_event.dart';
 
 abstract class LoginEvent extends AbstractEvent {}
 
-class LoginWithTokenButtonPressed extends LoginEvent {
+class LoginWithUsernameAndPassword extends LoginEvent {
   final String url;
-  final String token;
+  final String username;
+  final String password;
 
-  LoginWithTokenButtonPressed({required this.url, required this.token});
+  LoginWithUsernameAndPassword({required this.url, required this.username, required this.password});
 
   @override
-  List<Object> get props => [url, token];
+  List<Object> get props => [url, username, password];
 }

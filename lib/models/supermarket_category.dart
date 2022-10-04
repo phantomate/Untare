@@ -39,9 +39,9 @@ class SupermarketCategory {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': this.id,
-    'name': this.name,
-    'description': this.description ?? ''
+    'id': id,
+    'name': name,
+    'description': description ?? ''
   };
 
   @override

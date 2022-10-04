@@ -1,10 +1,8 @@
-import 'package:tare/blocs/abstract_event.dart';
-import 'package:tare/models/shopping_list_entry.dart';
-import 'package:tare/models/supermarket_category.dart';
+import 'package:untare/blocs/abstract_event.dart';
+import 'package:untare/models/shopping_list_entry.dart';
+import 'package:untare/models/supermarket_category.dart';
 
 abstract class ShoppingListEvent extends AbstractEvent {}
-
-class ShoppingListPageLoaded extends ShoppingListEvent {}
 
 class FetchShoppingListEntries extends ShoppingListEvent {
   final String checked;

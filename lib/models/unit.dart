@@ -11,37 +11,44 @@ class Unit {
   final String name;
   @HiveField(2)
   final String? description;
+  @HiveField(3)
+  final int? recipeCount;
 
   Unit({
     this.id,
     required this.name,
-    this.description
+    this.description,
+    this.recipeCount
   });
 
   Unit copyWith({
     int? id,
     String? name,
     String? description,
+    int? recipeCount
   }) {
     return Unit(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
+      recipeCount: recipeCount ?? this.recipeCount
     );
   }
 
   factory Unit.fromJson(Map<String, dynamic> json) {
     return Unit(
-        id: json['id'] as int,
+        id: json['id'] as int?,
         name: json['name'] as String,
-        description: json['description'] as String?
+        description: json['description'] as String?,
+        recipeCount: json['numrecipe'] as int?
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'id': this.id,
-    'name': this.name,
-    'description': this.description ?? ''
+    'id': id,
+    'name': name,
+    'description': description ?? '',
+    'numrecipe': recipeCount ?? 0
   };
 
   @override

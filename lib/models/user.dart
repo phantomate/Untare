@@ -33,8 +33,8 @@ class User {
   }
 
   Map<String, dynamic> toJson() => {
-    'id': this.id,
-    'username': this.username
+    'id': id,
+    'username': username
   };
 
   @override

@@ -1,7 +1,9 @@
+// ignore_for_file: annotate_overrides, overridden_fields
+
 import 'package:hive/hive.dart';
-import 'package:tare/models/meal_plan_entry.dart';
-import 'package:tare/models/meal_type.dart';
-import 'package:tare/services/cache/cache_service.dart';
+import 'package:untare/models/meal_plan_entry.dart';
+import 'package:untare/models/meal_type.dart';
+import 'package:untare/services/cache/cache_service.dart';
 
 class CacheMealPlanService extends CacheService{
   var box = Hive.box('unTaReBox');
@@ -17,20 +19,51 @@ class CacheMealPlanService extends CacheService{
       DateTime fromDate = DateTime.parse(from);
       DateTime toDate = DateTime.parse(to);
 
-      cacheMealPlanEntries.forEach((entry) {
+      for (var entry in cacheMealPlanEntries) {
         DateTime entryDate = DateTime.parse(entry.date);
 
         if ((fromDate.isBefore(entryDate) || fromDate.isAtSameMomentAs(entryDate)) && (toDate.isAfter(entryDate) || toDate.isAtSameMomentAs(entryDate))) {
-          mealPLanEntries!.add(entry);
+          mealPLanEntries.add(entry);
         }
-      });
+      }
     }
 
     return mealPLanEntries;
   }
 
-  upsertMealPlanEntries(List<MealPlanEntry> mealPlanEntries) {
-    upsertEntityList(mealPlanEntries, 'mealPlanEntries');
+  upsertMealPlanEntries(List<MealPlanEntry> mealPlanEntries, String from, String to) {
+    List<dynamic>? cacheEntities = box.get('mealPlanEntries');
+
+    if (cacheEntities != null && cacheEntities.isNotEmpty) {
+      for (var entity in mealPlanEntries) {
+        int cacheEntityIndex = cacheEntities.indexWhere((cacheEntity) => cacheEntity.id == entity.id);
+
+        // If we found the entity in cache entities, overwrite data, if not add entity
+        if (cacheEntityIndex >= 0) {
+          cacheEntities[cacheEntityIndex] = entity;
+        } else {
+          cacheEntities.add(entity);
+        }
+      }
+    } else {
+      cacheEntities = [];
+      cacheEntities.addAll(mealPlanEntries);
+    }
+
+    box.put('mealPlanEntries', cacheEntities);
+
+    // After upsert, check if we have to delete entries
+    List<MealPlanEntry>? cacheEntitiesForDeletion = getMealPlanList(from, to);
+
+    if (cacheEntitiesForDeletion != null) {
+      cacheEntitiesForDeletion.removeWhere((element) {
+        return mealPlanEntries.indexWhere((e) => e.id == element.id) >= 0;
+      });
+
+      for (var entity in cacheEntitiesForDeletion) {
+        deleteMealPlanEntry(entity);
+      }
+    }
   }
 
   upsertMealPlanEntry(MealPlanEntry mealPlanEntry) {

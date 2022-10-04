@@ -3,21 +3,21 @@ import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:tare/futures/future_api_cache_foods.dart';
-import 'package:tare/models/food.dart';
+import 'package:untare/futures/future_api_cache_foods.dart';
+import 'package:untare/models/food.dart';
 
-Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> _formBuilderKey, BuildContext context) {
-  final _foodTextController = TextEditingController();
-  final fieldName = 'food';
+Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilderKey, BuildContext context) {
+  final foodTextController = TextEditingController();
+  const fieldName = 'food';
 
   // Set text editors because type ahead field isn't aware of empty string
   if (food != null) {
-    _foodTextController.text = food.name;
+    foodTextController.text = food.name;
   }
 
   return FormBuilderTypeAhead<Food>(
     name: fieldName,
-    controller: _foodTextController,
+    controller: foodTextController,
     initialValue: food,
     selectionToTextTransformer: (food) => food.name,
     decoration: InputDecoration(
@@ -32,35 +32,41 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> _formBuild
     suggestionsCallback: (query) async {
       List<Food> foods = await getFoodsFromApiCache(query);
       bool hideOnEqual = false;
-      foods.forEach((element) => (element.name == query) ? hideOnEqual = true : null);
+      for (var element in foods) {
+        (element.name == query) ? hideOnEqual = true : null;
+      }
       if (foods.isEmpty || !hideOnEqual) {
         foods.add(Food(id: null, name: query, description: '', onHand: false));
       }
       return foods;
     },
     onSuggestionSelected: (suggestion) {
-      _foodTextController.text = suggestion.name;
+      foodTextController.text = suggestion.name;
     },
     onSaved: (Food? formFood) {
       Food? newFood = food;
 
-      if (_foodTextController.text.isEmpty) {
+      if (foodTextController.text.isEmpty) {
         // Invalidate empty string because type ahead field isn't aware
-        _formBuilderKey.currentState!.fields[fieldName]!.didChange(null);
+        formBuilderKey.currentState!.fields[fieldName]!.didChange(null);
       } else {
         // Overwrite food, if changed in form
         if (food != null && formFood != null) {
-          if (food.id != formFood.id) {
+          if (food.id != formFood.id || (food.id == null && formFood.id == null)) {
             newFood = Food(id: formFood.id, name: formFood.name, description: formFood.description, onHand: formFood.onHand);
           }
         } else if (formFood == null) {
-          newFood = null;
-          _foodTextController.text = '';
+          if (foodTextController.text != '') {
+            newFood = Food(name: foodTextController.text);
+          } else {
+            newFood = null;
+            foodTextController.text = '';
+          }
         } else if (food == null) {
           newFood = Food(id: formFood.id, name: formFood.name, description: formFood.description, onHand: formFood.onHand);
         }
 
-        _formBuilderKey.currentState!.fields[fieldName]!.didChange(newFood);
+        formBuilderKey.currentState!.fields[fieldName]!.didChange(newFood);
       }
     },
     hideOnEmpty: true,

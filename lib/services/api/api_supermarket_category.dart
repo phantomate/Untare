@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:tare/exceptions/api_exception.dart';
-import 'package:tare/models/supermarket_category.dart';
-import 'package:tare/services/api/api_service.dart';
+import 'package:untare/exceptions/api_exception.dart';
+import 'package:untare/models/supermarket_category.dart';
+import 'package:untare/services/api/api_service.dart';
 
 class ApiSupermarketCategory extends ApiService {
   Future<List<SupermarketCategory>> getSupermarketCategories() async {
@@ -14,9 +14,9 @@ class ApiSupermarketCategory extends ApiService {
       List<dynamic> jsonSupermarketCategories = jsonDecode(utf8.decode(res.bodyBytes));
       List<SupermarketCategory> supermarketCategories = [];
 
-      jsonSupermarketCategories.forEach((element) {
+      for (var element in jsonSupermarketCategories) {
         supermarketCategories.add(SupermarketCategory.fromJson(element));
-      });
+      }
 
       return supermarketCategories;
     } else if (res.statusCode == 404) {
@@ -30,7 +30,7 @@ class ApiSupermarketCategory extends ApiService {
   }
 
   Future<SupermarketCategory> patchSupermarketCategory(SupermarketCategory supermarketCategory) async {
-    var url = '/api/supermarket-category/' + supermarketCategory.id.toString() + '/';
+    var url = '/api/supermarket-category/${supermarketCategory.id}/';
 
     Response res = await httpPatch(url, supermarketCategory.toJson());
     if ([200, 201].contains(res.statusCode)) {
@@ -46,7 +46,7 @@ class ApiSupermarketCategory extends ApiService {
   }
 
   Future<SupermarketCategory> deleteSupermarketCategory(SupermarketCategory superMarketCategory) async {
-    var url = '/api/supermarket-category/' + superMarketCategory.id.toString() + '/';
+    var url = '/api/supermarket-category/${superMarketCategory.id}/';
 
     Response res = await httpDelete(url);
 

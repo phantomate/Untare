@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tare/cubits/settings_cubit.dart';
+import 'package:untare/cubits/settings_cubit.dart';
 
 Future settingsDefaultPageBottomSheet(BuildContext context) {
   return showModalBottomSheet(
@@ -11,7 +11,7 @@ Future settingsDefaultPageBottomSheet(BuildContext context) {
       builder: (btsContext) => Container(
         decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(10))
+            borderRadius: const BorderRadius.all(Radius.circular(10))
         ),
         margin: const EdgeInsets.all(12),
         child: Wrap(
@@ -20,12 +20,12 @@ Future settingsDefaultPageBottomSheet(BuildContext context) {
               height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                   color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300] : Colors.grey[700]
               ),
               child: Text(
                 AppLocalizations.of(context)!.settingsDefaultPage,
-                style: TextStyle(
+                style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18
                 ),
@@ -36,27 +36,27 @@ Future settingsDefaultPageBottomSheet(BuildContext context) {
               padding: const EdgeInsets.only(left: 12, right: 12),
               child: Column(
                 children: [
-                  TextButton(
-                    onPressed: () {
+                  ListTile(
+                    onTap: () {
                       context.read<SettingsCubit>().changeDefaultPageTo('plan');
                       Navigator.pop(btsContext);
                     },
-                    child: Text(AppLocalizations.of(context)!.mealPlanTitle),
+                    title: Text(AppLocalizations.of(context)!.mealPlanTitle),
                   ),
-                  TextButton(
-                    onPressed: () {
+                  ListTile(
+                    onTap: () {
                       context.read<SettingsCubit>().changeDefaultPageTo('recipes');
                       Navigator.pop(btsContext);
                     },
-                    child: Text(AppLocalizations.of(context)!.recipesTitle),
+                    title: Text(AppLocalizations.of(context)!.recipesTitle),
                   ),
-                  TextButton(
-                    onPressed: () {
+                  ListTile(
+                    onTap: () {
                       context.read<SettingsCubit>().changeDefaultPageTo('shopping');
                       Navigator.pop(btsContext);
                     },
-                    child: Text(AppLocalizations.of(context)!.shoppingListTitle),
-                  ),
+                    title: Text(AppLocalizations.of(context)!.shoppingListTitle),
+                  )
                 ],
               ),
             )

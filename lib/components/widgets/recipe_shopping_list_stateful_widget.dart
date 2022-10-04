@@ -1,29 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tare/blocs/recipe/recipe_bloc.dart';
-import 'package:tare/blocs/recipe/recipe_event.dart';
-import 'package:tare/blocs/recipe/recipe_state.dart';
-import 'package:tare/blocs/shopping_list/shopping_list_bloc.dart';
-import 'package:tare/components/loading_component.dart';
-import 'package:tare/models/food.dart';
-import 'package:tare/models/ingredient.dart';
-import 'package:tare/models/recipe.dart';
-import 'package:tare/models/shopping_list_entry.dart';
-import 'package:tare/services/api/api_food.dart';
-import 'package:tare/services/api/api_shopping_list.dart';
+import 'package:untare/blocs/recipe/recipe_bloc.dart';
+import 'package:untare/blocs/recipe/recipe_event.dart';
+import 'package:untare/blocs/recipe/recipe_state.dart';
+import 'package:untare/blocs/shopping_list/shopping_list_bloc.dart';
+import 'package:untare/components/loading_component.dart';
+import 'package:untare/models/food.dart';
+import 'package:untare/models/ingredient.dart';
+import 'package:untare/models/recipe.dart';
+import 'package:untare/models/shopping_list_entry.dart';
+import 'package:untare/models/step.dart';
+import 'package:untare/services/api/api_food.dart';
+import 'package:untare/services/api/api_shopping_list.dart';
 
 class RecipeShoppingListWidget extends StatefulWidget {
   final Recipe recipe;
   final BuildContext btsContext;
 
-  RecipeShoppingListWidget({required this.recipe, required this.btsContext});
+  const RecipeShoppingListWidget({Key? key, required this.recipe, required this.btsContext}) : super(key: key);
 
   @override
-  _RecipeShoppingListWidgetState createState() => _RecipeShoppingListWidgetState();
+  RecipeShoppingListWidgetState createState() => RecipeShoppingListWidgetState();
 }
 
-class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
+class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
   late int servings;
   late int newServings;
   late RecipeBloc recipeBloc;
@@ -75,6 +76,33 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
     });
   }
 
+  void prepareIngredientList() {
+    List<StepModel> recipeSteps = (recipe.steps.isNotEmpty) ? recipe.steps : [];
+    List<Ingredient> ingredientList = [];
+
+    for (var step in recipeSteps) {
+      for (var ingredient in step.ingredients) {
+        ingredientList.add(ingredient);
+      }
+    }
+
+    recipeIngredients = ingredientList;
+
+    // Get all food ids from this recipe to check if we have this already on our shopping list
+    for (var element in recipeIngredients) {
+      if (element.food != null) {
+        idShoppingListEntryString += '&id=${element.food.id}';
+      }
+
+      // Add ingredient to add list, if its not in stock
+      if (element.food == null || !element.food!.onHand) {
+        ingredientIdsToAdd.add(element.id);
+      }
+    }
+
+    getShoppingListEntries();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<RecipeBloc, RecipeState>(
@@ -82,23 +110,11 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
         if (state is RecipeFetched) {
           if (widget.recipe.id == state.recipe.id) {
             recipe = state.recipe;
-
-            recipeIngredients = (recipe.steps.isNotEmpty) ? recipe.steps.first.ingredients : [];
-
-            // Get all food ids from this recipe to check if we have this already on our shopping list
-            recipeIngredients.forEach((element) {
-              if (element.food != null) {
-                idShoppingListEntryString += '&id=' + element.food.id.toString();
-              }
-
-              // Add ingredient to add list, if its not in stock
-              if (element.food == null || !element.food!.onHand) {
-                ingredientIdsToAdd.add(element.id);
-              }
-            });
-
-            getShoppingListEntries();
+            prepareIngredientList();
           }
+        } else if (state is RecipeFetchedFromCache) {
+          recipe = state.recipe;
+          prepareIngredientList();
         }
       },
       builder: (context, state) {
@@ -122,7 +138,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                         padding: const EdgeInsets.only(left: 20),
                         child: Row(
                           children: [
-                            Text(AppLocalizations.of(context)!.servings + ':'),
+                            Text('${AppLocalizations.of(context)!.servings}:'),
                             IconButton(
                               onPressed: () => {
                                 decrement()
@@ -161,7 +177,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                     child: Container(
                       height: 100,
                       padding: const EdgeInsets.only(bottom: 10),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         borderRadius: BorderRadius.vertical(bottom: Radius.circular(10), top: Radius.zero),
                       ),
                       child: Container(
@@ -201,16 +217,16 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
   }
 
   Widget ingredientComponent(Ingredient ingredient, int initServing, int newServing) {
-    String amount = (ingredient.amount > 0) ? ((ingredient.amount * (((newServing/initServing))*100).ceil()/100).toString() + ' ') : '';
-    String unit = (ingredient.unit != null) ? (ingredient.unit!.name + ' ') : '';
-    String food = (ingredient.food != null) ? (ingredient.food!.name + ' ') : '';
-    bool? checkBoxValue = !(ingredient.food != null && ingredient.food!.onHand);
+    String amount = (ingredient.amount > 0) ? ('${ingredient.amount * (((newServing/initServing))*100).ceil()/100} ') : '';
+    String unit = (ingredient.unit != null && ingredient.amount > 0) ? ('${ingredient.unit!.name} ') : '';
+    String food = (ingredient.food != null) ? ('${ingredient.food!.name} ') : '';
+    bool? checkBoxValue = !(ingredient.food != null && ingredient.food!.onHand!);
     bool isAlreadyOnShoppingList = false;
-    shoppingListEntries.forEach((element) {
+    for (var element in shoppingListEntries) {
       if(element.ingredient == ingredient.id) {
         isAlreadyOnShoppingList = true;
       }
-    });
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -224,8 +240,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
       child: StatefulBuilder(
         builder: (context, setState) {
           return ListTile(
-            dense: true,
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+            visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
             contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             leading: Checkbox(
                 activeColor: Theme.of(context).primaryColor,
@@ -247,8 +262,8 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
             ),
             title: Wrap(
               children: [
-                Text(amount, style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(unit, style: TextStyle(fontWeight: FontWeight.bold)),
+                Text(amount, style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(unit, style: const TextStyle(fontWeight: FontWeight.bold)),
                 Text(food),
               ],
             ),
@@ -259,7 +274,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                   Tooltip(
                     triggerMode: TooltipTriggerMode.tap,
                     message: AppLocalizations.of(context)!.addToShoppingListTooltipAlreadyOnShoppingList,
-                    child: Icon(
+                    child: const Icon(
                       Icons.shopping_cart_outlined,
                       size: 18,
                     ),
@@ -267,12 +282,12 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                 if (ingredient.food != null)
                 IconButton(
                   padding: const EdgeInsets.fromLTRB(0, 6, 0, 8),
-                    tooltip: (ingredient.food!.onHand) ? AppLocalizations.of(context)!.addToShoppingListTooltipIsInStock : AppLocalizations.of(context)!.addToShoppingListTooltipAddToStock,
+                    tooltip: (ingredient.food!.onHand!) ? AppLocalizations.of(context)!.addToShoppingListTooltipIsInStock : AppLocalizations.of(context)!.addToShoppingListTooltipAddToStock,
                     onPressed: () {
-                      Food newFood = ingredient.food!.copyWith(onHand: !(ingredient.food!.onHand));
+                      Food newFood = ingredient.food!.copyWith(onHand: !(ingredient.food!.onHand!));
 
                       // Add to add list if we remove it from stock and vice versa
-                      if ((ingredient.food!.onHand)) {
+                      if ((ingredient.food!.onHand!)) {
                         ingredientIdsToAdd.add(ingredient.id!);
                       } else {
                         ingredientIdsToAdd.removeWhere((element) => element == ingredient.id);
@@ -285,7 +300,7 @@ class _RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                     icon: Icon(
                       Icons.home_outlined,
                       size: 20,
-                      color: (ingredient.food != null && ingredient.food!.onHand) ? Theme.of(context).primaryColor : null,
+                      color: (ingredient.food != null && ingredient.food!.onHand!) ? Theme.of(context).primaryColor : null,
                     )
                 ),
               ],

@@ -1,4 +1,4 @@
-import 'package:tare/blocs/abstract_state.dart';
+import 'package:untare/blocs/abstract_state.dart';
 
 abstract class AuthenticationState extends AbstractState {}
 

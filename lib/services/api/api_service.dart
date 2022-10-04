@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
-import 'package:tare/exceptions/api_connection_exception.dart';
+import 'package:untare/exceptions/api_connection_exception.dart';
 import 'package:workmanager/workmanager.dart';
 
 class ApiService {
@@ -21,8 +21,8 @@ class ApiService {
     return sendRequest(request);
   }
 
-  Future httpPost(String url, data) async {
-    Request request = prepareRequest('post', url, jsonBody: data);
+  Future httpPost(String url, data, {bool? withoutToken}) async {
+    Request request = prepareRequest('post', url, jsonBody: data, withoutToken: withoutToken);
     return sendRequest(request);
   }
 
@@ -46,26 +46,33 @@ class ApiService {
 
     File file = File(image.path);
 
+    baseUrl ??= box.get('url');
     var request = MultipartRequest('put', Uri.parse(baseUrl! + url));
-    request.files.add(new MultipartFile('image', file.readAsBytes().asStream(), file.lengthSync(), filename: image.path.split('/').last));
+    request.files.add(MultipartFile('image', file.readAsBytes().asStream(), file.lengthSync(), filename: image.path.split('/').last));
     request.headers.addAll(headers);
 
     return sendRequest(request);
   }
 
-  Map<String, String> getHeaders() {
+  Map<String, String> getHeaders({bool? withoutToken}) {
     Map<String, String> headers = {
       'content-type': 'application/json',
-      'authorization': 'token ' + (token ?? ''),
       'charset': 'UTF-8'
     };
+
+    if (withoutToken == null || !withoutToken) {
+      token ??= box.get('token');
+
+      headers['authorization'] = 'Bearer ${token ?? ''}';
+    }
 
     return headers;
   }
 
-  Request prepareRequest(String method, String url, {Map<String, dynamic>? jsonBody}) {
-    Map<String, String> headers = getHeaders();
+  Request prepareRequest(String method, String url, {Map<String, dynamic>? jsonBody, bool? withoutToken}) {
+    Map<String, String> headers = getHeaders(withoutToken: withoutToken);
 
+    baseUrl ??= box.get('url');
     Request request = Request(method, Uri.parse(baseUrl! + url));
 
     request.headers.addAll(headers);
@@ -89,9 +96,8 @@ class ApiService {
     } catch (e) {
       // On connection issue, save request to queue and retry later. Exclude get requests
       // @todo handle image
-      if (e is HandshakeException || e is SocketException || e is HttpException) {
-        if (request.method != 'get' && request is Request) {
-          Workmanager().registerOneOffTask(
+      if (request.method != 'get' && request is Request) {
+        Workmanager().registerOneOffTask(
             'retryFailedRequestTask',
             'retryFailedRequestTask',
             inputData: {
@@ -101,14 +107,11 @@ class ApiService {
             },
             constraints: Constraints(networkType: NetworkType.connected),
             existingWorkPolicy: ExistingWorkPolicy.append,
-            initialDelay: Duration(minutes: 1)
-          );
-        }
-
-        throw new ApiConnectionException();
-      } else {
-        throw e;
+            initialDelay: const Duration(minutes: 1)
+        );
       }
+
+      throw ApiConnectionException();
     }
   }
 

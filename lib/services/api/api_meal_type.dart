@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:tare/models/meal_type.dart';
-import 'package:tare/services/api/api_service.dart';
+import 'package:untare/models/meal_type.dart';
+import 'package:untare/services/api/api_service.dart';
 
 import '../../exceptions/api_exception.dart';
 
@@ -15,9 +15,9 @@ class ApiMealType extends ApiService {
       List<dynamic> jsonMealTypeList = jsonDecode(utf8.decode(res.bodyBytes));
       List<MealType> mealTypeList = [];
 
-      jsonMealTypeList.forEach((element) {
+      for (var element in jsonMealTypeList) {
         mealTypeList.add(MealType.fromJson(element));
-      });
+      }
 
       return mealTypeList;
     } else if (res.statusCode == 404) {
@@ -31,7 +31,7 @@ class ApiMealType extends ApiService {
   }
 
   Future<MealType> patchMealType(MealType mealType) async {
-    var url = '/api/meal-type/' + mealType.id.toString() + '/';
+    var url = '/api/meal-type/${mealType.id}/';
 
     Response res = await httpPatch(url, mealType.toJson());
     if ([200, 201].contains(res.statusCode)) {
@@ -47,7 +47,7 @@ class ApiMealType extends ApiService {
   }
 
   Future<MealType> deleteMealType(MealType mealType) async {
-    var url = '/api/meal-type/' + mealType.id.toString() + '/';
+    var url = '/api/meal-type/${mealType.id}/';
 
     Response res = await httpDelete(url);
 

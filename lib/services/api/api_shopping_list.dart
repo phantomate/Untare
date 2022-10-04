@@ -1,15 +1,15 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:tare/exceptions/api_exception.dart';
-import 'package:tare/exceptions/mapping_exception.dart';
-import 'package:tare/models/shopping_list_entry.dart';
-import 'package:tare/services/api/api_service.dart';
+import 'package:untare/exceptions/api_exception.dart';
+import 'package:untare/exceptions/mapping_exception.dart';
+import 'package:untare/models/shopping_list_entry.dart';
+import 'package:untare/services/api/api_service.dart';
 
 class ApiShoppingList extends ApiService {
   Future<List<ShoppingListEntry>> getShoppingListEntries(String checked, String idFilter) async {
     var url = '/api/shopping-list-entry/';
-    url += '?checked=' + checked;
+    url += '?checked=$checked';
     url += idFilter;
 
     Response res = await httpGet(url);
@@ -17,9 +17,9 @@ class ApiShoppingList extends ApiService {
       List<dynamic> jsonShoppingListEntries = jsonDecode(utf8.decode(res.bodyBytes));
       List<ShoppingListEntry> shoppingListEntries = [];
 
-      jsonShoppingListEntries.forEach((element) {
+      for (var element in jsonShoppingListEntries) {
         shoppingListEntries.add(ShoppingListEntry.fromJson(element));
-      });
+      }
 
       return shoppingListEntries;
     } else if (res.statusCode == 404) {
@@ -52,7 +52,7 @@ class ApiShoppingList extends ApiService {
     if (entry.id == null) {
       throw MappingException(message: 'Id missing for updating shopping list entry');
     }
-    var url = '/api/shopping-list-entry/' + entry.id.toString() + '/';
+    var url = '/api/shopping-list-entry/${entry.id}/';
 
     Response res = await httpPut(url, entry.toJson());
 
@@ -72,7 +72,7 @@ class ApiShoppingList extends ApiService {
     if (entry.id == null) {
       throw MappingException(message: 'Id missing for patching shopping list entry');
     }
-    var url = '/api/shopping-list-entry/' + entry.id.toString() + '/';
+    var url = '/api/shopping-list-entry/${entry.id}/';
 
     Map<String, dynamic> requestJson = {
       'id': entry.id,
@@ -97,7 +97,7 @@ class ApiShoppingList extends ApiService {
     if (entry.id == null) {
       throw MappingException(message: 'Id missing for deleting shopping list entry');
     }
-    var url = '/api/shopping-list-entry/' + entry.id.toString() + '/';
+    var url = '/api/shopping-list-entry/${entry.id}/';
 
     Response res = await httpDelete(url);
 

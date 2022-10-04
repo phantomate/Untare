@@ -1,4 +1,4 @@
-import 'package:tare/models/ingredient.dart';
+import 'package:untare/models/ingredient.dart';
 import 'package:hive/hive.dart';
 
 part 'step.g.dart';
@@ -60,24 +60,24 @@ class StepModel {
     List<Map<String,dynamic>> ingredients = [];
 
     if (this.ingredients.isNotEmpty) {
-      this.ingredients.forEach((Ingredient ingredient) {
+      for (var ingredient in this.ingredients) {
         ingredients.add(ingredient.toJson());
-      });
+      }
     }
 
     return {
-      'id': this.id,
-      'name': this.name ?? '',
-      'instruction': this.instruction ?? '',
+      'id': id,
+      'name': name ?? '',
+      'instruction': instruction ?? '',
       'ingredients': ingredients,
-      'time': this.time ?? 0,
-      'order': this.order ?? 0
+      'time': time ?? 0,
+      'order': order ?? 0
     };
   }
 
   factory StepModel.fromJson(Map<String, dynamic> json) {
     return StepModel(
-      id: json['id'] as int,
+      id: json['id'] as int?,
       name: json['name'] as String?,
       instruction: json['instruction'] as String?,
       ingredients: json['ingredients'].map((item) => Ingredient.fromJson(item)).toList().cast<Ingredient>(),

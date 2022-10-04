@@ -21,7 +21,7 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
       name: fields[1] as String,
       description: fields[2] as String?,
       image: fields[3] as String?,
-      keywords: (fields[4] as List).cast<dynamic>(),
+      keywords: (fields[4] as List).cast<Keyword>(),
       steps: (fields[5] as List).cast<StepModel>(),
       workingTime: fields[6] as int?,
       waitingTime: fields[7] as int?,

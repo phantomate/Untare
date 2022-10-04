@@ -18,6 +18,7 @@
   "remove": "Remove",
   "moreTooltip": "More",
   "saved": "Saved",
+  "cancel": "Cancel",
 
   "addToMealPlan": "Add to meal plan",
   "addMealPlanEntry": "Add meal plan entry",
@@ -42,7 +43,12 @@
   "prepTime": "Prep. time",
   "waitingTime": "Waiting time",
 
+  "screenLock": "Screen lock",
+  "disabledScreenLock": "Screen lock disabled",
+  "enabledScreenLock": "Screen lock enabled",
+
   "name": "Name",
+  "keywords": "Keywords",
 
   "mealPlanTitle": "Meal plan",
   "mealPlanThisWeek": "This week",
@@ -75,7 +81,9 @@
   "editMealPlanSharing": "Edit meal plan sharing",
 
   "food": "Food",
+  "foods": "Foods",
   "unit": "Unit",
+  "units": "Units",
   "note": "Note",
   "recipe": "Recipe",
   "quantity": "Quantity",
@@ -85,6 +93,14 @@
   "date": "Date",
   "days": "Days",
   "refreshIntervalInSeconds": "Refresh interval in seconds",
+  "manageFoods": "Manage foods",
+  "manageUnits": "Manage units",
+  "editFood": "Edit food",
+  "editUnit": "Edit unit",
+  "removeFood": "Remove food",
+  "removeUnit": "Remove unit",
+  "confirmRemoveFood": "Are you sure to remove %s?",
+  "confirmRemoveUnit": "Are you sure to remove %s?",
 
   "settingsTitle": "Settings",
   "settingsCustomization": "Customization",
@@ -100,6 +116,8 @@
   "settingsRecentDays": "Recent days",
   "settingsRecentDaysDescription": "Displays the last %s days of the shopping list",
   "settingsLogout": "Logout",
+  "accentColor": "Accent color",
+  "pickColor": "Pick a color",
 
   "editRecentDays": "Edit recent days",
   "editRefreshInterval": "Edit refresh interval",
@@ -109,8 +127,15 @@
 
   "addingIngredientsToShoppingList": "Adding ingredients to shopping list",
   "importingRecipe": "Importing recipe",
+  "splitDirections": "Split directions",
   "removedRecipe": "Removed recipe",
   "shoppingListItemsAdded": "Added items to shopping list",
   "updatingRecipe": "Updating recipe",
-  "addedToMealPlan": "Added to meal plan"
+  "addedToMealPlan": "Added to meal plan",
+
+  "officialServer": "Official server",
+  "username": "Username",
+  "password": "Password",
+
+  "spaces": "Spaces"
 }

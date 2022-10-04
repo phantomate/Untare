@@ -22,7 +22,7 @@ class IngredientAdapter extends TypeAdapter<Ingredient> {
       unit: fields[2] as Unit?,
       amount: fields[3] as double,
       note: fields[4] as String?,
-      order: fields[5] as int,
+      order: fields[5] as int?,
       originalText: fields[6] as String?,
     );
   }

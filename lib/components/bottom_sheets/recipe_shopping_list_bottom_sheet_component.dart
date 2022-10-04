@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:tare/components/widgets/recipe_shopping_list_stateful_widget.dart';
+import 'package:untare/components/widgets/recipe_shopping_list_stateful_widget.dart';
 
-import 'package:tare/models/recipe.dart';
+import 'package:untare/models/recipe.dart';
 
 Future recipeShoppingListBottomSheet(BuildContext context, Recipe recipe) {
   return showModalBottomSheet(
@@ -12,7 +12,7 @@ Future recipeShoppingListBottomSheet(BuildContext context, Recipe recipe) {
       builder: (btsContext) => Container(
         decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(10))
+            borderRadius: const BorderRadius.all(Radius.circular(10))
         ),
         margin: const EdgeInsets.all(12),
         child: Wrap(
@@ -21,13 +21,13 @@ Future recipeShoppingListBottomSheet(BuildContext context, Recipe recipe) {
               height: 44,
               alignment: Alignment.center,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                   color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300] : Colors.grey[700]
               ),
               child: Text(
                 recipe.name,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18
                 ),
@@ -35,7 +35,7 @@ Future recipeShoppingListBottomSheet(BuildContext context, Recipe recipe) {
                 overflow: TextOverflow.ellipsis,
               ),
             ),
-            Container(height: 600,child: RecipeShoppingListWidget(recipe: recipe, btsContext: btsContext))
+            SizedBox(height: 600,child: RecipeShoppingListWidget(recipe: recipe, btsContext: btsContext))
           ],
         ),
       )

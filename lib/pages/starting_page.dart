@@ -1,63 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tare/blocs/authentication/authentication_bloc.dart';
-import 'package:tare/blocs/authentication/authentication_event.dart';
-import 'package:tare/blocs/authentication/authentication_state.dart';
-import 'package:tare/blocs/login/login_bloc.dart';
-import 'package:tare/blocs/login/login_event.dart';
-import 'package:tare/blocs/login/login_state.dart';
+import 'package:untare/blocs/authentication/authentication_bloc.dart';
+import 'package:untare/blocs/authentication/authentication_event.dart';
+import 'package:untare/blocs/authentication/authentication_state.dart';
+import 'package:untare/blocs/login/login_bloc.dart';
+import 'package:untare/blocs/login/login_event.dart';
+import 'package:untare/blocs/login/login_state.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 class StartingPage extends StatelessWidget {
+  const StartingPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: SafeArea(
-            minimum: const EdgeInsets.all(16),
-            child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              builder: (context, state){
-                final authBloc = BlocProvider.of<AuthenticationBloc>(context);
-                if (state is AuthenticationNotAuthenticated){
-                  return StartWidget(); // show authentication form
-                }
-                if (state is AuthenticationFailure) {
-                  // show error message
-                  return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(state.message),
-                          TextButton(
-                            style: TextButton.styleFrom(
-                              padding: const EdgeInsets.all(16),
-                              shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(8.0)),
-                            ),
-                            child: Text('Retry'),
-                            onPressed: () {
-                              authBloc.add(AppLoaded());
-                            },
-                          )
-                        ],
-                      ));
-                }
-                // show splash screen
+    return Scaffold(
+      body: SafeArea(
+          minimum: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+          child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state){
+              final authBloc = BlocProvider.of<AuthenticationBloc>(context);
+              if (state is AuthenticationNotAuthenticated){
+                return const StartWidget(); // show authentication form
+              }
+              if (state is AuthenticationFailure) {
+                // show error messages
                 return Center(
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                );
-              },
-            )
-        ),
-      )
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(state.message),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.all(16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                          ),
+                          child: const Text('Retry'),
+                          onPressed: () {
+                            authBloc.add(AppLoaded());
+                          },
+                        )
+                      ],
+                    ));
+              }
+              // show splash screen
+              return Center(
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Theme.of(context).primaryColor,
+                ),
+              );
+            },
+          )
+      ),
     );
   }
 }
 
 class StartWidget extends StatelessWidget {
+  const StartWidget({Key? key}) : super(key: key);
+
+  @override
   Widget build(BuildContext context) {
     final authBloc = BlocProvider.of<AuthenticationBloc>(context);
 
@@ -78,20 +81,23 @@ class _SignInForm extends StatefulWidget {
 
 class __SignInFormState extends State<_SignInForm> {
   final GlobalKey<FormState> _key = GlobalKey<FormState>();
-  final _tokenController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
   final _urlController = TextEditingController();
   AutovalidateMode _autoValidation = AutovalidateMode.disabled;
 
 
   @override
   Widget build(BuildContext context) {
-    final _loginBloc = BlocProvider.of<LoginBloc>(context);
+    final loginBloc = BlocProvider.of<LoginBloc>(context);
 
     _onLoginButtonPressed () {
       if (_key.currentState!.validate()) {
-        _loginBloc.add(LoginWithTokenButtonPressed(
+
+        loginBloc.add(LoginWithUsernameAndPassword(
             url: _urlController.text,
-            token: _tokenController.text
+            username: _usernameController.text,
+            password: _passwordController.text
         ));
       } else {
         setState(() {
@@ -116,66 +122,109 @@ class __SignInFormState extends State<_SignInForm> {
               ),
             );
           }
-          return Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-              ),
-              child: Form(
-                key: _key,
-                autovalidateMode: _autoValidation,
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Server Url',
-                          isDense: true,
-                        ),
-                        controller: _urlController,
-                        keyboardType: TextInputType.name,
-                        autocorrect: false,
-                        validator: (value){
-                          if (value == null){
-                            return 'Server url is required';
-                          }
-                          return null;
-                        },
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'Api Token',
-                          isDense: true,
-                        ),
-                        obscureText: true,
-                        controller: _tokenController,
-                        validator: (value) {
-                          if (value == null){
-                            return 'Api token is required.';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(
-                        height: 35,
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: Theme.of(context).primaryColor,
-                          onPrimary: Colors.black87,
-                          padding: const EdgeInsets.all(16),
-                          shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(8.0)),
-                        ),
-                        child: Text('LOG IN'),
-                        onPressed: _onLoginButtonPressed,
-                      )
-                    ],
+          return SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    'images/tare_logo.png',
+                    width: 180,
+                    height: 180,
                   ),
-                ),
+                  const SizedBox(height: 40),
+                  const Text('Unofficial Tandoor Recipes App', style: TextStyle(fontSize: 24)),
+                  const SizedBox(height: 30),
+                  Form(
+                    key: _key,
+                    autovalidateMode: _autoValidation,
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              Flexible(
+                                  child: TextFormField(
+                                    decoration: const InputDecoration(
+                                        isDense: true,
+                                        hintText: 'https://recipes.excample.com'
+                                    ),
+                                    controller: _urlController,
+                                    keyboardType: TextInputType.name,
+                                    autocorrect: false,
+                                    validator: (value){
+                                      if (value == null){
+                                        return 'Server url is required';
+                                      }
+                                      return null;
+                                    },
+                                  )
+                              ),
+                              const SizedBox(width: 10),
+                              SizedBox(
+                                  width: 80,
+                                  child: MaterialButton(
+                                    color: Theme.of(context).primaryColor,
+                                    minWidth: double.maxFinite,
+                                    padding: const EdgeInsets.fromLTRB(8, 4.5, 8, 4.5),
+                                    child: Text(AppLocalizations.of(context)!.officialServer, style: const TextStyle(fontSize: 13), textAlign: TextAlign.center),
+                                    onPressed: () {
+                                      _urlController.text = 'https://app.tandoor.dev';
+                                    },
+                                  ),
+                              )
+                            ],
+                          ),
+                          const SizedBox(height: 15),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!.username,
+                              isDense: true,
+                            ),
+                            controller: _usernameController,
+                            validator: (value) {
+                              if (value == null){
+                                return 'Username is required.';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          TextFormField(
+                            decoration: InputDecoration(
+                              labelText: AppLocalizations.of(context)!.password,
+                              isDense: true,
+                            ),
+                            obscureText: true,
+                            controller: _passwordController,
+                            validator: (value) {
+                              if (value == null){
+                                return 'Password is required.';
+                              }
+                              return null;
+                            },
+                          ),
+                          const SizedBox(height: 15),
+                          MaterialButton(
+                            color: Theme.of(context).primaryColor,
+                            minWidth: double.maxFinite,
+                            padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
+                            onPressed: _onLoginButtonPressed,
+                            child: const Text('LOGIN'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 100),
+                  const Text(
+                      'This product uses the Tandoor Recipes API which is licensed under the GNU AGPL v3 license by vabene1111.',
+                      style: TextStyle(fontSize: 8),
+                      textAlign: TextAlign.center
+                  )
+                ],
               )
           );
         },
@@ -186,8 +235,8 @@ class __SignInFormState extends State<_SignInForm> {
   void _showError(String error) {
     ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text(error),
-            duration: Duration(seconds: 8),
+          content: Text(error),
+          duration: const Duration(seconds: 8),
         )
     );
   }

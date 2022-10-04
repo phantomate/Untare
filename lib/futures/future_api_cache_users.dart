@@ -1,23 +1,23 @@
-import 'package:tare/exceptions/api_connection_exception.dart';
-import 'package:tare/models/user.dart';
-import 'package:tare/services/api/api_user.dart';
-import 'package:tare/services/cache/cache_user_service.dart';
+// ignore_for_file: unused_catch_clause
+
+import 'package:untare/exceptions/api_connection_exception.dart';
+import 'package:untare/models/user.dart';
+import 'package:untare/services/api/api_user.dart';
+import 'package:untare/services/cache/cache_user_service.dart';
 
 Future getUsersFromApiCache() async {
-  final CacheUserService _cacheUsersService = CacheUserService();
-  final ApiUser _apiUser = ApiUser();
+  final CacheUserService cacheUsersService = CacheUserService();
+  final ApiUser apiUser = ApiUser();
 
-  List<User>? cacheUsers = _cacheUsersService.getUsers();
-
-  if (cacheUsers != null) {
-    return cacheUsers;
-  }
+  List<User>? cacheUsers = cacheUsersService.getUsers();
 
   try {
-    Future<List<User>> users = _apiUser.getUsers();
-    users.then((value) => _cacheUsersService.upsertUsers(value));
+    Future<List<User>> users = apiUser.getUsers();
+    users.then((value) => cacheUsersService.upsertUsers(value));
     return users;
   } on ApiConnectionException catch (e) {
-    // Do nothing
+    if (cacheUsers != null && cacheUsers.isNotEmpty) {
+      return cacheUsers;
+    }
   }
 }

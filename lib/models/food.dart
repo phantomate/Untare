@@ -1,4 +1,4 @@
-import 'package:tare/models/supermarket_category.dart';
+import 'package:untare/models/supermarket_category.dart';
 import 'package:hive/hive.dart';
 
 part 'food.g.dart';
@@ -13,19 +13,22 @@ class Food {
   @HiveField(2)
   final String? description;
   @HiveField(3)
-  final bool onHand;
+  final bool? onHand;
   @HiveField(4)
   final SupermarketCategory? supermarketCategory;
   @HiveField(5)
   final bool? ignoreShopping;
+  @HiveField(6)
+  final int? recipeCount;
 
   Food({
     this.id,
     required this.name,
     this.description,
-    required this.onHand,
+    this.onHand,
     this.supermarketCategory,
-    this.ignoreShopping
+    this.ignoreShopping,
+    this.recipeCount
   });
 
   Food copyWith({
@@ -34,7 +37,8 @@ class Food {
     String? description,
     bool? onHand,
     SupermarketCategory? supermarketCategory,
-    bool? ignoreShopping
+    bool? ignoreShopping,
+    int? recipeCount
   }) {
     return Food(
       id: id ?? this.id,
@@ -42,20 +46,22 @@ class Food {
       description: description ?? this.description,
       onHand: onHand ?? this.onHand,
       supermarketCategory: supermarketCategory ?? this.supermarketCategory,
-      ignoreShopping: ignoreShopping ?? this.ignoreShopping
+      ignoreShopping: ignoreShopping ?? this.ignoreShopping,
+      recipeCount: recipeCount ?? this.recipeCount
     );
   }
 
   factory Food.fromJson(Map<String, dynamic> json) {
     return Food(
-        id: json['id'] as int,
+        id: json['id'] as int?,
         name: json['name'] as String,
         description: json['description'] as String?,
-        onHand: json['food_onhand'] as bool,
+        onHand: json['food_onhand'] as bool?,
         supermarketCategory: (json['supermarket_category'] != null)
             ? SupermarketCategory.fromJson(json['supermarket_category'])
             : null,
-        ignoreShopping: json['ignore_shopping'] as bool
+        ignoreShopping: json['ignore_shopping'] as bool?,
+        recipeCount: json['numrecipe'] as int?,
     );
   }
 
@@ -63,12 +69,13 @@ class Food {
     Map<String, dynamic>? supermarketCategory = this.supermarketCategory != null ? this.supermarketCategory!.toJson() : null;
     
     return {
-      'id': this.id,
-      'name': this.name,
-      'description': this.description ?? '',
-      'food_onhand': this.onHand,
+      'id': id,
+      'name': name,
+      'description': description ?? '',
+      'food_onhand': onHand,
       'supermarket_category': supermarketCategory,
-      'ignore_shopping': this.ignoreShopping ?? false
+      'ignore_shopping': ignoreShopping ?? false,
+      'numrecipe': recipeCount
     };
   }
 

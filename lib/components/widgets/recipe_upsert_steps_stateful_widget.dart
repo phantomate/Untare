@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:tare/components/dialogs/upsert_recipe_ingredient_dialog.dart';
-import 'package:tare/extensions/double_extension.dart';
-import 'package:tare/models/ingredient.dart';
-import 'package:tare/models/recipe.dart';
-import 'package:tare/models/step.dart';
+import 'package:untare/components/dialogs/upsert_recipe_ingredient_dialog.dart';
+import 'package:untare/extensions/double_extension.dart';
+import 'package:untare/models/ingredient.dart';
+import 'package:untare/models/recipe.dart';
+import 'package:untare/models/step.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
@@ -12,13 +12,13 @@ class RecipeUpsertStepsWidget extends StatefulWidget {
   final Recipe? recipe;
   final Function({List<StepModel>? steps}) rebuildRecipe;
 
-  RecipeUpsertStepsWidget({required this.recipe, required this.rebuildRecipe});
+  const RecipeUpsertStepsWidget({Key? key, required this.recipe, required this.rebuildRecipe}) : super(key: key);
 
   @override
-  _RecipeUpsertStepsWidgetState createState() => _RecipeUpsertStepsWidgetState();
+  RecipeUpsertStepsWidgetState createState() => RecipeUpsertStepsWidgetState();
 }
 
-class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
+class RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
   late Recipe? recipe;
 
   @override
@@ -151,7 +151,7 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
               child: IconButton(
                 padding: const EdgeInsets.all(0),
                 splashRadius: 18,
-                visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                 icon: Icon(
                   Icons.add,
                   color: Theme.of(context).primaryColor,
@@ -186,7 +186,7 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
     return DragAndDropList(
       canDrag: false,
       children: ingredientWidgetList,
-      contentsWhenEmpty: Text(AppLocalizations.of(context)!.recipeNoIngredientsPresent, style: TextStyle(fontStyle: FontStyle.italic)),
+      contentsWhenEmpty: Text(AppLocalizations.of(context)!.recipeNoIngredientsPresent, style: const TextStyle(fontStyle: FontStyle.italic)),
       header: Container(
         alignment: Alignment.centerLeft,
         margin: const EdgeInsets.only(top: 20),
@@ -219,9 +219,9 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
                   )
               ),
               child: ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
                 contentPadding: const EdgeInsets.fromLTRB(20, 0, 13, 0),
-                title: Text(AppLocalizations.of(context)!.ingredients, style: TextStyle(fontWeight: FontWeight.bold)),
+                title: Text(AppLocalizations.of(context)!.ingredients, style: const TextStyle(fontWeight: FontWeight.bold)),
                 trailing: IconButton(
                   splashRadius: 20,
                   icon: Icon(
@@ -254,15 +254,20 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
 
   Widget buildIngredient(Ingredient ingredient, int stepIndex, int ingredientIndex) {
     // Build ingredient text layout
-    String amount = (ingredient.amount > 0) ? (ingredient.amount.toFormattedString() + ' ') : '';
-    String unit = (ingredient.unit != null) ? (ingredient.unit!.name + ' ') : '';
-    String food = (ingredient.food != null) ? (ingredient.food!.name + ' ') : '';
-    String note = (ingredient.note != null && ingredient.note != '') ? ('(' + ingredient.note !+ ')') : '';
+    String amount = (ingredient.amount > 0) ? ('${ingredient.amount.toFormattedString()} ') : '';
+    String unit = (ingredient.unit != null) ? ('${ingredient.unit!.name} ') : '';
+    String food = (ingredient.food != null) ? ('${ingredient.food!.name} ') : '';
+    String note = (ingredient.note != null && ingredient.note != '') ? ('(${ingredient.note !})') : '';
 
     return Slidable(
         key: UniqueKey(),
         endActionPane: ActionPane(
-          motion: ScrollMotion(),
+          motion: const ScrollMotion(),
+          dismissible: DismissiblePane(
+              onDismissed: () {
+                _removeIngredientOnDismiss(ingredientIndex, stepIndex);
+              }
+          ),
           children: [
             SlidableAction(
               autoClose: false,
@@ -283,11 +288,6 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
               icon: Icons.delete_outline,
             ),
           ],
-          dismissible: DismissiblePane(
-              onDismissed: () {
-                _removeIngredientOnDismiss(ingredientIndex, stepIndex);
-              }
-          ),
         ),
         child: Container(
             margin: const EdgeInsets.only(left: 15, right: 20),
@@ -300,13 +300,13 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
                 )
             ),
             child: ListTile(
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
                 contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                 title: Wrap(
                   children: [
-                    Text(amount, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                    Text(unit, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                    Text(food, style: TextStyle(fontSize: 15)),
+                    Text(amount, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    Text(unit, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    Text(food, style: const TextStyle(fontSize: 15)),
                     Text(
                         note,
                         style: TextStyle(
@@ -317,7 +317,7 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
                     )
                   ],
                 ),
-              trailing: Icon(Icons.drag_handle_outlined),
+              trailing: const Icon(Icons.drag_handle_outlined),
             )
         )
     );
@@ -332,13 +332,13 @@ class _RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
           labelText: AppLocalizations.of(context)!.directions,
           isDense: true,
           contentPadding: const EdgeInsets.all(10),
-          border: OutlineInputBorder(),
+          border: const OutlineInputBorder(),
         ),
         keyboardType: TextInputType.multiline,
         maxLines: null,
         minLines: null,
         onChanged: (String? text) => _editDirections(text, stepIndex),
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 15
         ),
       ),

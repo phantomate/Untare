@@ -26,7 +26,7 @@ class MealPlanEntryAdapter extends TypeAdapter<MealPlanEntry> {
       date: fields[6] as String,
       mealType: fields[7] as MealType,
       createdBy: fields[8] as int?,
-      shared: (fields[9] as List?)?.cast<dynamic>(),
+      shared: (fields[9] as List).cast<User>(),
       recipeName: fields[10] as String?,
       mealTypeName: fields[11] as String?,
       shopping: fields[12] as bool?,

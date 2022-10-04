@@ -1,4 +1,4 @@
-import 'package:tare/models/user_setting.dart';
+import 'package:untare/models/user_setting.dart';
 import 'package:hive/hive.dart';
 
 part 'app_setting.g.dart';
@@ -9,16 +9,19 @@ class AppSetting {
   @HiveField(0)
   final String layout;
   @HiveField(1)
-  final String theme;
+  final String? theme;
   @HiveField(2)
   final String defaultPage;
   @HiveField(3)
+  final int materialHexColor;
+  @HiveField(4)
   final UserSetting? userServerSetting;
 
   AppSetting({
     required this.layout,
-    required this.theme,
+    this.theme,
     required this.defaultPage,
+    required this.materialHexColor,
     this.userServerSetting
   });
 
@@ -26,12 +29,14 @@ class AppSetting {
     String? layout,
     String? theme,
     String? defaultPage,
+    int? materialHexColor,
     UserSetting? userServerSetting
   }) {
     return AppSetting(
       layout: layout ?? this.layout,
       theme: theme ?? this.theme,
       defaultPage: defaultPage ?? this.defaultPage,
+      materialHexColor: materialHexColor ?? this.materialHexColor,
       userServerSetting: userServerSetting ?? this.userServerSetting
     );
   }
