@@ -15,3 +15,7 @@ Google Play and the Google Play logo are trademarks of Google LLC.
 <br>
 
 ### If there is great demand, I can also port the app to IPhone
+
+<br>
+
+[<img src="https://raw.githubusercontent.com/appcraftstudio/buymeacoffee/master/Images/snapshot-bmc-button.png" alt="Buy me a coffee" width="150" />](https://www.buymeacoffee.com/tommaass)
