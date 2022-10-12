@@ -1,1 +1,22 @@
-{}
+{
+  "search": "Rechercher",
+  "@search": {},
+  "create": "Créer",
+  "@create": {},
+  "import": "Importer",
+  "@import": {},
+  "importRecipe": "Importer une recette",
+  "@importRecipe": {},
+  "url": "Url",
+  "@url": {},
+  "recipesTooltipAddRecipe": "Ajouter une recette",
+  "@recipesTooltipAddRecipe": {},
+  "recipeEdit": "Modifier la recette",
+  "@recipeEdit": {},
+  "recipeCreate": "Nouvelle recette",
+  "@recipeCreate": {},
+  "recipesTitle": "Recettes",
+  "@recipesTitle": {},
+  "noRecipesFound": "Pas de recettes trouvées",
+  "@noRecipesFound": {}
+}
