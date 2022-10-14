@@ -1,0 +1,22 @@
+name: Feature Request
+description: Suggest a feature request for Untare
+labels: feature request
+body:
+  - type: textarea
+    attributes:
+      label: Your Request
+      description: >
+        What issue/problem is your feature request trying to solve? What becomes easier when implemented?
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: The Current State
+      description: >
+        If, how is it currently solved?
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: If there is anything else to say, please do so here.
