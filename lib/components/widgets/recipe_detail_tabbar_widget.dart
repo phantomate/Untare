@@ -3,6 +3,7 @@ import 'package:untare/models/ingredient.dart';
 import 'package:untare/models/recipe.dart';
 import 'package:untare/extensions/double_extension.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
+import 'package:collapsible/collapsible.dart';
 
 class RecipeDetailTabBarWidget extends StatefulWidget {
   final Recipe recipe;
@@ -122,7 +123,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
 
           stepList.add(Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(widget.recipe.steps[i].instruction ?? '', style: const TextStyle(fontSize: 15))));
 
-          directionsSteps.add(directionStepLayout(context, Column(crossAxisAlignment: CrossAxisAlignment.start, children: stepList), i+1));
+          directionsSteps.add(directionStepLayout(context, Column(crossAxisAlignment: CrossAxisAlignment.start, children: stepList), i+1, widget.recipe.steps[i].time));
         }
 
       } else if (widget.recipe.steps.length == 1) {
@@ -146,7 +147,8 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
               directionStepLayout(
                 context,
                 Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(splitInstruction, style: const TextStyle(fontSize: 15))),
-                i+1
+                i+1,
+                widget.recipe.steps.first.time
               )
             );
           }
@@ -165,41 +167,82 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
   }
 }
 
-Widget directionStepLayout(BuildContext context, Widget widget, int stepNumber) {
-  return Container(
-    alignment: Alignment.centerLeft,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-            width: 60,
-            alignment: Alignment.center,
-            margin: const EdgeInsets.only(bottom: 5),
-            child: Container(
-              height: 30,
-              width: 30,
-              alignment: Alignment.center,
+Widget directionStepLayout(BuildContext context, Widget widget, int stepNumber, int? stepTime) {
+  bool collapsed = false;
+  return StatefulBuilder(builder: (context, setState) {
+      return Container(
+        alignment: Alignment.centerLeft,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                        width: 60,
+                        alignment: Alignment.center,
+                        margin: const EdgeInsets.only(bottom: 5),
+                        child: Container(
+                          height: 30,
+                          width: 30,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+                          ),
+                          child:Text((stepNumber).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+                        )
+                    ),
+                    if (stepTime != null && stepTime != 0)
+                    Row(
+                      children: [
+                        Icon(Icons.timer_outlined, size: 15, color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!),
+                        Text(
+                            ' $stepTime min',
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                                fontSize: 15
+                            )
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                IconButton(
+                  icon: const Icon(Icons.check),
+                  color: (collapsed) ? Theme.of(context).primaryColor : ((Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!),
+                  onPressed: () {
+                    setState(() {
+                      collapsed = !collapsed;
+                    });
+                  },
+                )
+              ],
+            ),
+            Container(
+              margin: const EdgeInsets.only(left: 30, bottom: 15),
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Theme.of(context).primaryColor, width: 2),
-              ),
-              child: Text((stepNumber).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
-            )
-        ),
-        Container(
-          margin: const EdgeInsets.only(left: 30, bottom: 15),
-          decoration: BoxDecoration(
-              border: Border(
-                  left: BorderSide(
-                      color: Theme.of(context).primaryColor,
-                      width: 1
+                  border: Border(
+                      left: BorderSide(
+                          color: Theme.of(context).primaryColor,
+                          width: 1
+                      )
                   )
-              )
-          ),
-          child: widget,
-        )
-      ],
-    ),
+              ),
+              child: Collapsible(
+                collapsed: collapsed,
+                axis: CollapsibleAxis.vertical,
+                alignment: Alignment.topCenter,
+                child: widget,
+              ),
+            )
+          ],
+        ),
+      );
+    }
   );
 }
 

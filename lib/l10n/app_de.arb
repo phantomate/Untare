@@ -137,5 +137,9 @@
   "username": "Benutzername",
   "password": "Passwort",
 
-  "spaces": "Spaces"
+  "spaces": "Spaces",
+
+  "addTime": "Zeit hinzufügen",
+  "editTime": "Zeit ändern",
+  "timeInMinutes": "Zeit in Minuten"
 }

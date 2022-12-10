@@ -138,5 +138,8 @@
   "mealPlanLastWeek": "La semaine dernière",
   "@mealPlanLastWeek": {},
   "disabledAutoSync": "Synchronisation automatique désactivée",
-  "@disabledAutoSync": {}
+  "@disabledAutoSync": {},
+  "addTime": "Ajouter du temps",
+  "editTime": "Temps d'édition",
+  "timeInMinutes": "Temps en minutes"
 }

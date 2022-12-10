@@ -240,5 +240,8 @@
   "removedRecipe": "Verwijder recept",
   "@removedRecipe": {},
   "shoppingListItemsAdded": "Artikelen toegevoegd aan boodschappenlijst",
-  "@shoppingListItemsAdded": {}
+  "@shoppingListItemsAdded": {},
+  "addTime": "Tijd toevoegen",
+  "editTime": "Wijzigingstijd",
+  "timeInMinutes": "Tijd in minuten"
 }

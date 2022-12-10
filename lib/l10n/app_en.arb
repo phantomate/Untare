@@ -137,5 +137,9 @@
   "username": "Username",
   "password": "Password",
 
-  "spaces": "Spaces"
+  "spaces": "Spaces",
+
+  "addTime": "Add time",
+  "editTime": "Edit time",
+  "timeInMinutes": "Time in minutes"
 }

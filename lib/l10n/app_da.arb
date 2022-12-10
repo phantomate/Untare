@@ -240,5 +240,8 @@
   "createIngredient": "Opret ingrediens",
   "@createIngredient": {},
   "shoppingListItemsAdded": "Tilføjet artikler til indkøbsliste",
-  "@shoppingListItemsAdded": {}
+  "@shoppingListItemsAdded": {},
+  "addTime": "Tilføj tid",
+  "editTime": "Rediger tid",
+  "timeInMinutes": "Tid i minutter"
 }
