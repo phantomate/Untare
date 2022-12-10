@@ -308,7 +308,7 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                                         visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
                                                         contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                                                         trailing: Transform.scale(
-                                                            scale: 1.1,
+                                                            scale: 1.2,
                                                             child: Checkbox(
                                                                 value: checkBoxValue,
                                                                 activeColor: Theme.of(context).primaryColor,
@@ -354,7 +354,7 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                                             visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
                                                             contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                                                             trailing: Transform.scale(
-                                                                scale: 1.1,
+                                                                scale: 1.2,
                                                                 child: Checkbox(
                                                                     value: checkBoxValue,
                                                                     activeColor: Theme.of(context).primaryColor,
@@ -488,7 +488,7 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                         ? Padding(padding: const EdgeInsets.only(top: 4), child: Text(shoppingListEntry.recipeMealPlan!.name, style: TextStyle(color: Colors.grey[600]!)))
                         : null,
                     trailing: Transform.scale(
-                      scale: 1.1,
+                      scale: 1.2,
                       child: Checkbox(
                         activeColor: Theme.of(context).primaryColor,
                         value: checkBoxValue,

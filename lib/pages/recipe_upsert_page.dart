@@ -28,6 +28,8 @@ import 'package:untare/pages/recipe_detail_page.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../components/dialogs/upsert_recipe_step_time_dialog.dart';
+
 class RecipeUpsertPage extends StatefulWidget {
   final Recipe? recipe;
   final bool? splitDirections;
@@ -208,6 +210,15 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
   void _removeStep(int stepIndex) {
     List<StepModel> newStepList = (recipe != null && recipe!.steps.isNotEmpty) ? recipe!.steps : [];
     newStepList.removeAt(stepIndex);
+
+    setState(() {
+      recipe = rebuildRecipe(steps: newStepList);
+    });
+  }
+
+  void _upsertTimeToStep(Map<String, dynamic> map) {
+    List<StepModel> newStepList = (recipe != null && recipe!.steps.isNotEmpty) ? recipe!.steps : [];
+    newStepList[map['stepIndex']] = recipe!.steps[map['stepIndex']].copyWith(time: int.parse(map['stepTime']));
 
     setState(() {
       recipe = rebuildRecipe(steps: newStepList);
@@ -633,20 +644,38 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                    width: 60,
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.only(bottom: 5),
-                    child: Container(
-                      height: 30,
-                      width: 30,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Theme.of(context).primaryColor, width: 2),
-                      ),
-                      child: Text((stepIndex+1).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+                Row(
+                  children: [
+                    Container(
+                        width: 60,
+                        alignment: Alignment.center,
+                        margin: const EdgeInsets.only(bottom: 5),
+                        child: Container(
+                          height: 30,
+                          width: 30,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+                          ),
+                          child: Text((stepIndex+1).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+                        )
+                    ),
+                    if (step.time != null && step.time != 0)
+                    Row(
+                      children: [
+                        Icon(Icons.timer_outlined, size: 15, color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!),
+                        Text(
+                            ' ${step.time} min',
+                            style: TextStyle(
+                                fontStyle: FontStyle.italic,
+                                color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                                fontSize: 15
+                            )
+                        )
+                      ],
                     )
+                  ],
                 ),
                 PopupMenuButton(
                   padding: const EdgeInsets.only(right: 25),
@@ -659,8 +688,19 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                   ),
                   itemBuilder: (context) => [
                     PopupMenuItem(
+                      padding: const EdgeInsets.fromLTRB(15, 5 ,15, 10),
                       height: 18,
                       value: 1,
+                      child: Row(
+                          children: [
+                            const Icon(Icons.timer_outlined),
+                            Text(' ${(step.time == null || step.time == 0) ? AppLocalizations.of(context)!.addTime : AppLocalizations.of(context)!.editTime}')
+                          ]),
+                    ),
+                    PopupMenuItem(
+                      padding: const EdgeInsets.fromLTRB(15, 5 ,15, 5),
+                      height: 18,
+                      value: 2,
                       child: Row(
                         children: [
                           const Icon(Icons.delete_outline, color: Colors.redAccent),
@@ -673,6 +713,8 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                   ],
                   onSelected: (value) {
                     if (value == 1) {
+                      upsertRecipeStepTimeDialog(context, stepIndex, _upsertTimeToStep, stepTime: step.time);
+                    } else if (value == 2) {
                       _removeStep(stepIndex);
                     }
                   },
