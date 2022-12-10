@@ -5,7 +5,9 @@ import 'package:untare/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:untare/blocs/shopping_list/shopping_list_event.dart';
 import 'package:untare/components/form_fields/food_type_ahead_form_field.dart';
 import 'package:untare/components/form_fields/quantity_text_form_field.dart';
+import 'package:untare/components/form_fields/supermarket_category_type_ahead_form_field.dart';
 import 'package:untare/components/form_fields/unit_type_ahead_form_field.dart';
+import 'package:untare/models/food.dart';
 import 'package:untare/models/shopping_list_entry.dart';
 import 'package:untare/models/unit.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
@@ -64,6 +66,8 @@ Future addShoppingListEntryDialog(BuildContext context) {
                                         )
                                       ],
                                     ),
+                                    const SizedBox(height: 15),
+                                    supermarketCategoryTypeAheadFormField(null, formBuilderKey, context),
                                   ],
                                 )
                             ),
@@ -83,7 +87,10 @@ Future addShoppingListEntryDialog(BuildContext context) {
                                     unit = formBuilderData['unit'];
                                   }
 
-                                  ShoppingListEntry newShoppingListEntry =  ShoppingListEntry(food: formBuilderData['food'], unit: unit, amount: amount, checked: false);
+                                  // Set supermarket category on food
+                                  Food foodWithNewCategory = formBuilderData['food'].copyWith(supermarketCategory: formBuilderData['category']);
+
+                                  ShoppingListEntry newShoppingListEntry =  ShoppingListEntry(food: foodWithNewCategory, unit: unit, amount: amount, checked: false);
 
                                   shoppingListBloc.add(CreateShoppingListEntry(shoppingListEntry: newShoppingListEntry));
                                   Navigator.pop(dContext);
