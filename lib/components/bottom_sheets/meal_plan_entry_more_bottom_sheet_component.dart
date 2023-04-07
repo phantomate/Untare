@@ -43,7 +43,7 @@ Future mealPlanEntryMoreBottomSheet(BuildContext context, MealPlanEntry mealPlan
             ),
             Container(
                 alignment: Alignment.center,
-                padding: const EdgeInsets.only(left: 12, right: 12),
+                padding: const EdgeInsets.only(left: 12, right: 12, bottom: 6),
                 child: Column(
                     children: [
                       ListTile(
@@ -63,6 +63,7 @@ Future mealPlanEntryMoreBottomSheet(BuildContext context, MealPlanEntry mealPlan
                           leading: const Icon(Icons.add_shopping_cart_outlined),
                           title: Text(AppLocalizations.of(context)!.addToShoppingList)
                         ),
+                      const Divider(),
                       ListTile(
                         onTap: () {
                           Navigator.pop(btsContext);
