@@ -123,7 +123,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
 
           stepList.add(Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(widget.recipe.steps[i].instruction ?? '', style: const TextStyle(fontSize: 15))));
 
-          directionsSteps.add(directionStepLayout(context, Column(crossAxisAlignment: CrossAxisAlignment.start, children: stepList), i+1, widget.recipe.steps[i].time));
+          directionsSteps.add(directionStepLayout(context, Column(crossAxisAlignment: CrossAxisAlignment.start, children: stepList), i+1, widget.recipe.steps[i].time, widget.recipe.steps[i].name));
         }
 
       } else if (widget.recipe.steps.length == 1) {
@@ -148,7 +148,8 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                 context,
                 Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(splitInstruction, style: const TextStyle(fontSize: 15))),
                 i+1,
-                widget.recipe.steps.first.time
+                widget.recipe.steps.first.time,
+                widget.recipe.steps.first.name
               )
             );
           }
@@ -167,7 +168,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
   }
 }
 
-Widget directionStepLayout(BuildContext context, Widget widget, int stepNumber, int? stepTime) {
+Widget directionStepLayout(BuildContext context, Widget widget, int stepNumber, int? stepTime, String? stepName) {
   bool collapsed = false;
   return StatefulBuilder(builder: (context, setState) {
       return Container(
@@ -181,9 +182,9 @@ Widget directionStepLayout(BuildContext context, Widget widget, int stepNumber, 
                 Row(
                   children: [
                     Container(
-                        width: 60,
+                        width: 48,
                         alignment: Alignment.center,
-                        margin: const EdgeInsets.only(bottom: 5),
+                        margin: const EdgeInsets.fromLTRB(6, 0, 0, 5),
                         child: Container(
                           height: 30,
                           width: 30,
@@ -195,16 +196,25 @@ Widget directionStepLayout(BuildContext context, Widget widget, int stepNumber, 
                           child:Text((stepNumber).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
                         )
                     ),
+                    if (stepName != null && stepName != '')
+                    Text(
+                        '$stepName ',
+                        style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                            fontSize: 15.5
+                        )
+                    ),
                     if (stepTime != null && stepTime != 0)
                     Row(
                       children: [
-                        Icon(Icons.timer_outlined, size: 15, color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!),
+                        Icon(Icons.timer_outlined, size: 15.5, color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!),
                         Text(
                             ' $stepTime min',
                             style: TextStyle(
                                 fontStyle: FontStyle.italic,
                                 color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
-                                fontSize: 15
+                                fontSize: 15.5
                             )
                         )
                       ],
@@ -248,8 +258,8 @@ Widget directionStepLayout(BuildContext context, Widget widget, int stepNumber, 
 
 Widget ingredientComponent(Ingredient ingredient, int initServing, int newServing, bool isDense, BuildContext context) {
   String amount = (ingredient.amount > 0) ? ('${(ingredient.amount * (((newServing/initServing))*100).ceil()/100).toFormattedString()} ') : '';
-  String unit = (ingredient.amount > 0 && ingredient.unit != null) ? ('${ingredient.unit!.name} ') : '';
-  String food = (ingredient.food != null) ? ('${ingredient.food!.name} ') : '';
+  String unit = (ingredient.amount > 0 && ingredient.unit != null) ? ('${ingredient.unit!.getUnitName(ingredient.amount)} ') : '';
+  String food = (ingredient.food != null) ? ('${ingredient.food!.getFoodName(ingredient.amount)} ') : '';
   String note = (ingredient.note != null && ingredient.note != '') ? ('(${ingredient.note!})') : '';
 
   return Container(

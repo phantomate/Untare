@@ -661,16 +661,25 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                           child: Text((stepIndex+1).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
                         )
                     ),
+                    if (step.name != null && step.name != '')
+                      Text(
+                          '${step.name} ',
+                          style: TextStyle(
+                              fontStyle: FontStyle.italic,
+                              color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                              fontSize: 15.5
+                          )
+                      ),
                     if (step.time != null && step.time != 0)
                     Row(
                       children: [
-                        Icon(Icons.timer_outlined, size: 15, color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!),
+                        Icon(Icons.timer_outlined, size: 15.5, color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!),
                         Text(
                             ' ${step.time} min',
                             style: TextStyle(
                                 fontStyle: FontStyle.italic,
                                 color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
-                                fontSize: 15
+                                fontSize: 15.5
                             )
                         )
                       ],
@@ -769,8 +778,8 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
   Widget buildIngredient(Ingredient ingredient, int stepIndex, int ingredientIndex) {
     // Build ingredient text layout
     String amount = (ingredient.amount > 0) ? ('${ingredient.amount.toFormattedString()} ') : '';
-    String unit = (ingredient.amount > 0 && ingredient.unit != null) ? ('${ingredient.unit!.name} ') : '';
-    String food = (ingredient.food != null) ? ('${ingredient.food!.name} ') : '';
+    String unit = (ingredient.amount > 0 && ingredient.unit != null) ? ('${ingredient.unit!.getUnitName(ingredient.amount)} ') : '';
+    String food = (ingredient.food != null) ? ('${ingredient.food!.getFoodName(ingredient.amount)} ') : '';
     String note = (ingredient.note != null && ingredient.note != '') ? ('(${ingredient.note !})') : '';
 
     return Slidable(
