@@ -48,6 +48,7 @@
   "enabledScreenLock": "Screen lock enabled",
 
   "name": "Name",
+  "plural": "Plural",
   "keywords": "Keywords",
 
   "mealPlanTitle": "Meal plan",
@@ -141,5 +142,6 @@
 
   "addTime": "Add time",
   "editTime": "Edit time",
-  "timeInMinutes": "Time in minutes"
+  "timeInMinutes": "Time in minutes",
+  "share": "Share"
 }
