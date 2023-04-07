@@ -24,6 +24,9 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
   List<User> userList = await getUsersFromApiCache();
   List<User> sharedUsers = [];
   final SettingsCubit settingsCubit = context.read<SettingsCubit>();
+  final locale = AppLocalizations.supportedLocales.where((element) =>
+  element.toLanguageTag() == AppLocalizations.of(context)!.localeName
+  );
 
   for (var element in userList) {
     if (loggedInUser == null || loggedInUser.id != element.id) {
@@ -66,6 +69,7 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                                     initialValue: (mealPlan != null) ? DateTime.parse(mealPlan.date) : date,
                                     enabled: (referer == 'recipe' || referer == 'edit'),
                                     inputType: InputType.date,
+                                    locale: locale.isNotEmpty ? locale.first : Locale('en'),
                                     decoration: InputDecoration(
                                         labelText: AppLocalizations.of(context)!.date
                                     ),
