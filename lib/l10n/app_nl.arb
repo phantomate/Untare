@@ -243,5 +243,7 @@
   "@shoppingListItemsAdded": {},
   "addTime": "Tijd toevoegen",
   "editTime": "Wijzigingstijd",
-  "timeInMinutes": "Tijd in minuten"
+  "timeInMinutes": "Tijd in minuten",
+  "share": "Deel",
+  "plural": "Meervoud"
 }

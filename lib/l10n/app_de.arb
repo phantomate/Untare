@@ -48,6 +48,7 @@
   "enabledScreenLock": "Displaysperre aktiviert",
 
   "name": "Name",
+  "plural": "Mehrzahl",
   "keywords": "Schlagwörter",
 
   "mealPlanTitle": "Essensplan",
@@ -141,5 +142,6 @@
 
   "addTime": "Zeit hinzufügen",
   "editTime": "Zeit ändern",
-  "timeInMinutes": "Zeit in Minuten"
+  "timeInMinutes": "Zeit in Minuten",
+  "share": "Teilen"
 }

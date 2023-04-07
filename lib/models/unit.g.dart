@@ -21,13 +21,14 @@ class UnitAdapter extends TypeAdapter<Unit> {
       name: fields[1] as String,
       description: fields[2] as String?,
       recipeCount: fields[3] as int?,
+      pluralName: fields[4] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Unit obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class UnitAdapter extends TypeAdapter<Unit> {
       ..writeByte(2)
       ..write(obj.description)
       ..writeByte(3)
-      ..write(obj.recipeCount);
+      ..write(obj.recipeCount)
+      ..writeByte(4)
+      ..write(obj.pluralName);
   }
 
   @override

@@ -126,12 +126,6 @@ class RecipesPageState extends State<RecipesPage> {
                 }
                 isLoading = false;
                 recipes.addAll(state.recipes);
-              } else if (state is RecipeListFetchedFromCache) {
-                if (state.recipes.isEmpty || state.recipes.length < pageSize) {
-                  isLastPage = true;
-                }
-                isLoading = false;
-                recipes.addAll(state.recipes);
               }
 
               if (state is RecipeError) {

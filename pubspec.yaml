@@ -42,7 +42,7 @@ dependencies:
   hive_flutter: ^1.1.0
   flutter_form_builder: ^7.5.0
   form_builder_validators: ^8.3.0
-  form_builder_extra_fields: ^8.3.0
+  form_builder_extra_fields: ^8.5.0
   form_builder_image_picker: ^3.1.0
   flutter_slidable: ^2.0.0
   intl: ^0.17.0
@@ -55,14 +55,15 @@ dependencies:
   wakelock: ^0.6.2
   path_provider: ^2.0.11
   collapsible: ^1.0.0
+  share_plus: ^6.3.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  hive_generator: ^1.1.2
-  build_runner: ^2.1.11
+  hive_generator: ^2.0.0
+  build_runner: ^2.3.3
   flutter_lints: ^2.0.0
-  flutter_launcher_icons: ^0.10.0
+  flutter_launcher_icons: ^0.12.0
   rename: ^2.0.1
 
 flutter_icons:

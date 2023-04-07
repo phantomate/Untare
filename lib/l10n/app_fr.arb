@@ -141,5 +141,7 @@
   "@disabledAutoSync": {},
   "addTime": "Ajouter du temps",
   "editTime": "Temps d'édition",
-  "timeInMinutes": "Temps en minutes"
+  "timeInMinutes": "Temps en minutes",
+  "share": "Partager",
+  "plural": "Pluriel"
 }

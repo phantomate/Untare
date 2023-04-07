@@ -20,6 +20,8 @@ class Food {
   final bool? ignoreShopping;
   @HiveField(6)
   final int? recipeCount;
+  @HiveField(7)
+  final String? pluralName;
 
   Food({
     this.id,
@@ -28,7 +30,8 @@ class Food {
     this.onHand,
     this.supermarketCategory,
     this.ignoreShopping,
-    this.recipeCount
+    this.recipeCount,
+    this.pluralName
   });
 
   Food copyWith({
@@ -38,7 +41,8 @@ class Food {
     bool? onHand,
     SupermarketCategory? supermarketCategory,
     bool? ignoreShopping,
-    int? recipeCount
+    int? recipeCount,
+    String? pluralName
   }) {
     return Food(
       id: id ?? this.id,
@@ -47,7 +51,8 @@ class Food {
       onHand: onHand ?? this.onHand,
       supermarketCategory: supermarketCategory ?? this.supermarketCategory,
       ignoreShopping: ignoreShopping ?? this.ignoreShopping,
-      recipeCount: recipeCount ?? this.recipeCount
+      recipeCount: recipeCount ?? this.recipeCount,
+      pluralName: pluralName ?? this.pluralName
     );
   }
 
@@ -62,6 +67,7 @@ class Food {
             : null,
         ignoreShopping: json['ignore_shopping'] as bool?,
         recipeCount: json['numrecipe'] as int?,
+        pluralName: json['plural_name'] as String?
     );
   }
 
@@ -75,8 +81,17 @@ class Food {
       'food_onhand': onHand,
       'supermarket_category': supermarketCategory,
       'ignore_shopping': ignoreShopping ?? false,
-      'numrecipe': recipeCount
+      'numrecipe': recipeCount,
+      'plural_name': pluralName
     };
+  }
+
+  String getFoodName (double amount) {
+    if (amount > 1 && pluralName != null && pluralName != '') {
+      return pluralName!;
+    }
+
+    return name;
   }
 
   @override

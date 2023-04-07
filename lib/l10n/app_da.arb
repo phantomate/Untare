@@ -243,5 +243,7 @@
   "@shoppingListItemsAdded": {},
   "addTime": "Tilføj tid",
   "editTime": "Rediger tid",
-  "timeInMinutes": "Tid i minutter"
+  "timeInMinutes": "Tid i minutter",
+  "share": "Del",
+  "plural": "Flertal"
 }

@@ -13,7 +13,7 @@ Widget buildShoppingListMore(BuildContext context, BuildContext btsContext) {
 
   return Container(
     alignment: Alignment.center,
-    padding: const EdgeInsets.only(left: 12, right: 12),
+    padding: const EdgeInsets.only(left: 12, right: 12, bottom: 6),
     child: Column(
       children: [
         ListTile(
@@ -51,6 +51,7 @@ Widget buildShoppingListMore(BuildContext context, BuildContext btsContext) {
             leading: const Icon(Icons.edit_outlined),
             title: Text(AppLocalizations.of(context)!.editSupermarketCategories)
         ),
+        const Divider(),
         ListTile(
             minLeadingWidth: 35,
             onTap: () {

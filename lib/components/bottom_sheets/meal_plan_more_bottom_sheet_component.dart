@@ -35,7 +35,7 @@ Future mealPlanMoreBottomSheet(BuildContext context) {
             ),
             Container(
                 alignment: Alignment.center,
-                padding: const EdgeInsets.only(left: 12, right: 12),
+                padding: const EdgeInsets.only(left: 12, right: 12, bottom: 6),
                 child: Column(
                     children: [
                       ListTile(
@@ -47,6 +47,7 @@ Future mealPlanMoreBottomSheet(BuildContext context) {
                         leading: const Icon(Icons.edit_outlined),
                         title: Text(AppLocalizations.of(context)!.editMealType),
                       ),
+                      const Divider(),
                       ListTile(
                         minLeadingWidth: 35,
                         onTap: () {
