@@ -32,9 +32,20 @@ Future editUnitDialog(BuildContext context, Unit unit) {
                             FormBuilderTextField(
                               name: 'name',
                               initialValue: unit.name,
+                              decoration: InputDecoration(
+                                  label: Text(AppLocalizations.of(context)!.name)
+                              ),
                               validator: FormBuilderValidators.compose([
                                 FormBuilderValidators.required()
                               ]),
+                            ),
+                            const SizedBox(height: 15),
+                            FormBuilderTextField(
+                              name: 'plural',
+                              decoration: InputDecoration(
+                                  label: Text(AppLocalizations.of(context)!.plural)
+                              ),
+                              initialValue: unit.pluralName,
                             ),
                             const SizedBox(height: 15),
                             Container(
@@ -46,7 +57,7 @@ Future editUnitDialog(BuildContext context, Unit unit) {
                                       if (formBuilderKey.currentState!.validate()) {
                                         Map<String, dynamic> formBuilderData = formBuilderKey.currentState!.value;
 
-                                        Unit newUnit = unit.copyWith(name: formBuilderData['name']);
+                                        Unit newUnit = unit.copyWith(name: formBuilderData['name'], pluralName: formBuilderData['plural']);
                                         unitBloc.add(UpdateUnit(unit: newUnit));
 
                                         Navigator.pop(dContext);

@@ -415,8 +415,8 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
 
   Widget buildShoppingListEntryWidget(ShoppingListEntry shoppingListEntry, {bool? grouped}) {
     String amount = (shoppingListEntry.amount > 0) ? ('${shoppingListEntry.amount.toFormattedString()} ') : '';
-    String unit = (shoppingListEntry.amount > 0 && shoppingListEntry.unit != null) ? ('${shoppingListEntry.unit!.name} ') : '';
-    String food = (shoppingListEntry.food != null) ? (shoppingListEntry.food!.name) : '';
+    String unit = (shoppingListEntry.amount > 0 && shoppingListEntry.unit != null) ? ('${shoppingListEntry.unit!.getUnitName(shoppingListEntry.amount)} ') : '';
+    String food = (shoppingListEntry.food != null) ? (shoppingListEntry.food!.getFoodName(shoppingListEntry.amount)) : '';
     bool checkBoxValue = shoppingListEntry.checked;
     double paddingLeft = (grouped != null && grouped == true) ? 35 : 20;
 

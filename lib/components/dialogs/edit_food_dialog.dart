@@ -32,9 +32,20 @@ Future editFoodDialog(BuildContext context, Food food) {
                             FormBuilderTextField(
                               name: 'name',
                               initialValue: food.name,
+                              decoration: InputDecoration(
+                                  label: Text(AppLocalizations.of(context)!.name)
+                              ),
                               validator: FormBuilderValidators.compose([
                                 FormBuilderValidators.required()
                               ]),
+                            ),
+                            const SizedBox(height: 15),
+                            FormBuilderTextField(
+                              name: 'plural',
+                              decoration: InputDecoration(
+                                  label: Text(AppLocalizations.of(context)!.plural)
+                              ),
+                              initialValue: food.pluralName,
                             ),
                             const SizedBox(height: 15),
                             Container(
@@ -46,7 +57,7 @@ Future editFoodDialog(BuildContext context, Food food) {
                                       if (formBuilderKey.currentState!.validate()) {
                                         Map<String, dynamic> formBuilderData = formBuilderKey.currentState!.value;
 
-                                        Food newFood = food.copyWith(name: formBuilderData['name']);
+                                        Food newFood = food.copyWith(name: formBuilderData['name'], pluralName: formBuilderData['plural']);
                                         foodBloc.add(UpdateFood(food: newFood));
 
                                         Navigator.pop(dContext);
