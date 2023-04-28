@@ -55,3 +55,9 @@ class FetchRecipeList extends RecipeEvent {
 
   FetchRecipeList({required this.query, required this.random, required this.page, required this.pageSize, this.sortOrder});
 }
+
+class ShareLink extends RecipeEvent {
+  final int recipeId;
+
+  ShareLink({required this.recipeId});
+}

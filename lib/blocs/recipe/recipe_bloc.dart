@@ -1,11 +1,13 @@
 // ignore_for_file: unused_catch_clause
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:untare/blocs/recipe/recipe_event.dart';
 import 'package:untare/blocs/recipe/recipe_state.dart';
 import 'package:untare/exceptions/api_connection_exception.dart';
 import 'package:untare/exceptions/api_exception.dart';
 import 'package:untare/models/recipe.dart';
+import 'package:untare/models/share.dart';
 import 'package:untare/services/api/api_recipe.dart';
 import 'package:untare/services/cache/cache_recipe_service.dart';
 
@@ -21,6 +23,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     on<DeleteRecipe>(_onDeleteRecipe);
     on<AddIngredientsToShoppingList>(_onAddIngredientsToShoppingList);
     on<ImportRecipe>(_onImportRecipe);
+    on<ShareLink>(_onShareLink);
   }
 
   Future<void> _onFetchRecipeList(FetchRecipeList event, Emitter<RecipeState> emit) async {
@@ -172,6 +175,28 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
 
       emit(RecipeImported(recipe: recipe, spiltDirections: event.splitDirections));
 
+    } on ApiException catch (e) {
+      if (e.statusCode == 401) {
+        emit(RecipeUnauthorized());
+      } else {
+        emit(RecipeError(error: e.message ?? e.toString()));
+      }
+    } on ApiConnectionException catch (e) {
+      // Do nothing
+    } catch (e) {
+      emit(RecipeError(error: e.toString()));
+    }
+  }
+
+  Future<void> _onShareLink(ShareLink event, Emitter<RecipeState> emit) async {
+    emit(RecipeProcessing(processingString: 'sharingLink'));
+    try {
+      ShareModel? share = await apiRecipe.getRecipeShareLink(event.recipeId);
+
+      if (share != null && share.link != null) {
+        await Share.share(share.link!);
+        emit(RecipeSharedLink());
+      }
     } on ApiException catch (e) {
       if (e.statusCode == 401) {
         emit(RecipeUnauthorized());
