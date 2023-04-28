@@ -110,7 +110,10 @@
   "settingsRecipeLayout": "Recipe layout",
   "settingRecipeLayoutCard": "Card",
   "settingRecipeLayoutList": "List",
-  "settingsDarkMode": "Dark mode",
+  "settingsThemeMode": "Theme",
+  "settingsDarkMode": "Dark",
+  "settingsLightMode": "Light",
+  "settingsSystemMode": "System",
   "settingsSharedWith": "Shared with",
   "settingsRefreshInterval": "Refresh interval",
   "settingsRefreshIntervalDescription": "Refreshes the shopping list every %s seconds when autosync is enabled",
@@ -128,6 +131,7 @@
 
   "addingIngredientsToShoppingList": "Adding ingredients to shopping list",
   "importingRecipe": "Importing recipe",
+  "importedRecipe": "Recipe was imported",
   "splitDirections": "Split directions",
   "removedRecipe": "Removed recipe",
   "shoppingListItemsAdded": "Added items to shopping list",
@@ -143,5 +147,6 @@
   "addTime": "Add time",
   "editTime": "Edit time",
   "timeInMinutes": "Time in minutes",
-  "share": "Share"
+  "share": "Share",
+  "useFractions": "Use fractions"
 }

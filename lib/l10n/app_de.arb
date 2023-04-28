@@ -110,7 +110,10 @@
   "settingsRecipeLayout": "Rezept Layout",
   "settingRecipeLayoutCard": "Karte",
   "settingRecipeLayoutList": "Liste",
-  "settingsDarkMode": "Dark mode",
+  "settingsThemeMode": "Thema",
+  "settingsDarkMode": "Dunkel",
+  "settingsLightMode": "Hell",
+  "settingsSystemMode": "System",
   "settingsSharedWith": "Geteilt mit",
   "settingsRefreshInterval": "Aktualisierungsintervall",
   "settingsRefreshIntervalDescription": "Aktualisiert die Einkaufsliste alle %s Sekunden, wenn Autosync aktiviert ist",
@@ -128,6 +131,7 @@
 
   "addingIngredientsToShoppingList": "Füge Zutaten zur Einkaufsliste hinzu",
   "importingRecipe": "Importiere Rezept",
+  "importedRecipe": "Rezept wurde importiert",
   "splitDirections": "Zubereitung aufteilen",
   "removedRecipe": "Rezept wurde entfernt",
   "shoppingListItemsAdded": "Zutaten wurden zur Einkaufsliste hinzugefügt",
@@ -143,5 +147,6 @@
   "addTime": "Zeit hinzufügen",
   "editTime": "Zeit ändern",
   "timeInMinutes": "Zeit in Minuten",
-  "share": "Teilen"
+  "share": "Teilen",
+  "useFractions": "Brüche verwenden"
 }

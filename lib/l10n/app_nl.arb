@@ -161,8 +161,10 @@
   "@settingRecipeLayoutCard": {},
   "settingRecipeLayoutList": "Lijst",
   "@settingRecipeLayoutList": {},
-  "settingsDarkMode": "Donkere modus",
-  "@settingsDarkMode": {},
+  "settingsThemeMode": "Thema",
+  "settingsDarkMode": "Donker",
+  "settingsLightMode": "Helder",
+  "settingsSystemMode": "Systeem",
   "settingsSharedWith": "Gedeeld met",
   "@settingsSharedWith": {},
   "settingsRefreshIntervalDescription": "Ververst de boodschappenlijst elke %s seconden wanneer automatisch synchroniseren is ingeschakeld",
@@ -187,6 +189,7 @@
   "@addingIngredientsToShoppingList": {},
   "importingRecipe": "Recept importeren",
   "@importingRecipe": {},
+  "importedRecipe": "Het recept werd geïmporteerd",
   "splitDirections": "Beschrijving splitsen",
   "@splitDirections": {},
   "updatingRecipe": "Recept bijwerken",
@@ -245,5 +248,6 @@
   "editTime": "Wijzigingstijd",
   "timeInMinutes": "Tijd in minuten",
   "share": "Deel",
-  "plural": "Meervoud"
+  "plural": "Meervoud",
+  "useFractions": "Gebruik fracties"
 }
