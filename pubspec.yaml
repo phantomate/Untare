@@ -40,11 +40,11 @@ dependencies:
   sliver_tools: ^0.2.5
   hive: ^2.2.2
   hive_flutter: ^1.1.0
-  flutter_form_builder: ^7.5.0
+  flutter_form_builder: 7.5.0
   form_builder_validators: ^8.3.0
-  form_builder_extra_fields: ^8.5.0
+  form_builder_extra_fields: ^8.3.0
   form_builder_image_picker: ^3.1.0
-  flutter_slidable: ^2.0.0
+  flutter_slidable: ^3.0.0
   intl: ^0.17.0
   grouped_list: ^5.1.2
   configurable_expansion_tile_null_safety: ^3.0.0
@@ -56,6 +56,11 @@ dependencies:
   path_provider: ^2.0.11
   collapsible: ^1.0.0
   share_plus: ^6.3.1
+  fraction: ^4.1.4
+
+dependency_overrides:
+  flutter_chips_input:
+    git: https://github.com/bradintheusa/flutter_chips_input
 
 dev_dependencies:
   flutter_test:
