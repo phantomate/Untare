@@ -148,15 +148,15 @@ class Tare extends StatelessWidget {
             SettingsCubit settingsCubit = context.watch<SettingsCubit>();
 
             ThemeMode themeMode = ThemeMode.system;
-            if (settingsCubit.state.theme != null) {
-              themeMode = (settingsCubit.state.theme == 'light') ? ThemeMode.light : ThemeMode.dark;
-            } else {
-              String systemThemeMode = 'light';
-              if (SchedulerBinding.instance.window.platformBrightness == Brightness.dark) {
-                systemThemeMode = 'dark';
-              }
-
-              settingsCubit.changeThemeTo(systemThemeMode);
+            switch(settingsCubit.state.theme) {
+              case 'light':
+                themeMode = ThemeMode.light;
+                break;
+              case 'dark':
+                themeMode = ThemeMode.dark;
+                break;
+              default:
+                themeMode = ThemeMode.system;
             }
 
             return MaterialApp(
@@ -293,6 +293,8 @@ class TarePageState extends State<TarePage> with SingleTickerProviderStateMixin 
                     snackBarText = AppLocalizations.of(context)!.addingIngredientsToShoppingList;
                   } else if (state.processingString == 'importingRecipe') {
                     snackBarText = AppLocalizations.of(context)!.importingRecipe;
+                  } else if (state.processingString == 'sharingLink') {
+                    snackBarText = AppLocalizations.of(context)!.share;
                   }
 
                   ScaffoldMessenger.of(context).showSnackBar(

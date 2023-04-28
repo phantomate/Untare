@@ -6,6 +6,7 @@ import 'package:untare/blocs/authentication/authentication_bloc.dart';
 import 'package:untare/blocs/authentication/authentication_event.dart';
 import 'package:untare/components/bottom_sheets/settings_default_page_bottom_sheet_component.dart';
 import 'package:untare/components/bottom_sheets/settings_layout_bottom_sheet_component.dart';
+import 'package:untare/components/bottom_sheets/settings_theme_bottom_sheet_component.dart';
 import 'package:untare/components/dialogs/edit_share_dialog.dart';
 import 'package:untare/components/dialogs/edit_shopping_list_recent_days_dialog.dart';
 import 'package:untare/components/dialogs/edit_shopping_list_refresh_dialog.dart';
@@ -13,6 +14,7 @@ import 'package:untare/cubits/settings_cubit.dart';
 import 'package:untare/extensions/string_extension.dart';
 import 'package:untare/models/app_setting.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:untare/models/user_setting.dart';
 import 'package:untare/pages/spaces_page.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -33,7 +35,7 @@ class SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final AuthenticationBloc authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     SettingsCubit settingsCubit = context.read<SettingsCubit>();
-    bool? themeModeSwitch = (settingsCubit.state.theme == 'dark');
+    bool? useFraction = (settingsCubit.state.userServerSetting != null && settingsCubit.state.userServerSetting!.useFractions == true);
 
     return Scaffold(
       body:  NestedScrollView(
@@ -89,21 +91,11 @@ class SettingsPageState extends State<SettingsPage> {
                             title: Text(AppLocalizations.of(context)!.settingsRecipeLayout),
                             value: Text((setting.layout == 'card') ? AppLocalizations.of(context)!.settingRecipeLayoutCard : AppLocalizations.of(context)!.settingRecipeLayoutList),
                           ),
-                          SettingsTile.switchTile(
-                            onToggle: (bool value) {
-                              setState(() {
-                                themeModeSwitch = value;
-                              });
-                              if (value) {
-                                settingsCubit.changeThemeTo('dark');
-                              } else {
-                                settingsCubit.changeThemeTo('light');
-                              }
-                            },
-                            initialValue: themeModeSwitch,
-                            activeSwitchColor: Theme.of(context).primaryColor,
+                          SettingsTile.navigation(
+                            onPressed: (context) => settingsThemeBottomSheet(context),
                             leading: const Icon(Icons.format_paint),
-                            title: Text(AppLocalizations.of(context)!.settingsDarkMode),
+                            title: Text(AppLocalizations.of(context)!.settingsThemeMode),
+                            value: Text((setting.theme != 'system') ? ((setting.theme == 'light') ? AppLocalizations.of(context)!.settingsLightMode : AppLocalizations.of(context)!.settingsDarkMode) : AppLocalizations.of(context)!.settingsSystemMode),
                           ),
                           SettingsTile.navigation(
                               onPressed: (context) {
@@ -217,23 +209,29 @@ class SettingsPageState extends State<SettingsPage> {
                               ),
                               leading: const Icon(Icons.workspaces_outline),
                               title: Text(AppLocalizations.of(context)!.spaces)
-                          )
+                          ),
                           /*SettingsTile(
                             enabled: false,
                             leading: Icon(Icons.scale_outlined),
                             title: Text('Default unit'),
                             value: Text(setting.userServerSetting!.defaultUnit),
-                          ),
+                          ),*/
                           SettingsTile.switchTile(
-                            enabled: false,
-                            leading: Icon(Icons.settings),
+                            leading: const Icon(Icons.numbers_outlined),
                             onToggle: (bool value) {
+                              setState(() {
+                                useFraction = value;
+                              });
 
+                              UserSetting newUserSetting;
+                              newUserSetting = setting.userServerSetting!.copyWith(useFractions: value);
+                              settingsCubit.updateServerSetting(newUserSetting);
                             },
-                            initialValue: setting.userServerSetting!.useFractions,
-                            title: Text('Use fractions'),
+                            activeSwitchColor: Theme.of(context).primaryColor,
+                            initialValue: useFraction,
+                            title: Text(AppLocalizations.of(context)!.useFractions),
                           ),
-                          SettingsTile.switchTile(
+                          /*SettingsTile.switchTile(
                             enabled: false,
                             leading: Icon(Icons.settings),
                             onToggle: (bool value) {

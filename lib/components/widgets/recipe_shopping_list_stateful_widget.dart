@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fraction/fraction.dart';
 import 'package:untare/blocs/recipe/recipe_bloc.dart';
 import 'package:untare/blocs/recipe/recipe_event.dart';
 import 'package:untare/blocs/recipe/recipe_state.dart';
 import 'package:untare/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:untare/components/loading_component.dart';
+import 'package:untare/cubits/settings_cubit.dart';
+import 'package:untare/extensions/double_extension.dart';
 import 'package:untare/models/food.dart';
 import 'package:untare/models/ingredient.dart';
 import 'package:untare/models/recipe.dart';
@@ -217,9 +220,16 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
   }
 
   Widget ingredientComponent(Ingredient ingredient, int initServing, int newServing) {
-    String amount = (ingredient.amount > 0) ? ('${ingredient.amount * (((newServing/initServing))*100).ceil()/100} ') : '';
-    String unit = (ingredient.unit != null && ingredient.amount > 0) ? ('${ingredient.unit!.name} ') : '';
-    String food = (ingredient.food != null) ? ('${ingredient.food!.name} ') : '';
+    SettingsCubit settingsCubit = context.read<SettingsCubit>();
+    bool? useFractions = (settingsCubit.state.userServerSetting!.useFractions == true);
+
+    double rawAmount = (ingredient.amount * (((newServing/initServing))*100).ceil()/100);
+    String amount = (ingredient.amount > 0) ? ('${rawAmount.toFormattedString()} ') : '';
+    if (amount != '' && useFractions == true && (rawAmount % 1) != 0) {
+      amount = '${rawAmount.toMixedFraction()} ';
+    }
+    String unit = (ingredient.unit != null && ingredient.amount > 0) ? ('${ingredient.unit!.getUnitName(ingredient.amount)} ') : '';
+    String food = (ingredient.food != null) ? ('${ingredient.food!.getFoodName(ingredient.amount)} ') : '';
     bool? checkBoxValue = !(ingredient.food != null && ingredient.food!.onHand!);
     bool isAlreadyOnShoppingList = false;
     for (var element in shoppingListEntries) {
@@ -240,9 +250,11 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
       child: StatefulBuilder(
         builder: (context, setState) {
           return ListTile(
-            visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+            visualDensity: const VisualDensity(horizontal: 0, vertical: -3),
             contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-            leading: Checkbox(
+            leading: Transform.scale(
+                scale: 1.2,
+                child: Checkbox(
                 activeColor: Theme.of(context).primaryColor,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(3)
@@ -259,6 +271,7 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                   });
                 },
                 value: checkBoxValue
+              )
             ),
             title: Wrap(
               children: [
@@ -276,7 +289,7 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                     message: AppLocalizations.of(context)!.addToShoppingListTooltipAlreadyOnShoppingList,
                     child: const Icon(
                       Icons.shopping_cart_outlined,
-                      size: 18,
+                      size: 19,
                     ),
                   ),
                 if (ingredient.food != null)
@@ -299,7 +312,7 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                     },
                     icon: Icon(
                       Icons.home_outlined,
-                      size: 20,
+                      size: 21,
                       color: (ingredient.food != null && ingredient.food!.onHand!) ? Theme.of(context).primaryColor : null,
                     )
                 ),
