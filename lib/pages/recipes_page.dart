@@ -144,10 +144,20 @@ class RecipesPageState extends State<RecipesPage> {
               } else if (state is RecipeDeleted) {
                 recipes.removeWhere((element) => element.id == state.recipe.id);
               } else if (state is RecipeImported) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RecipeUpsertPage(recipe: state.recipe, splitDirections: state.spiltDirections)),
-                );
+                if (state.recipe.id != null) {
+                  recipes.add(state.recipe);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(AppLocalizations.of(context)!.importedRecipe),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RecipeUpsertPage(recipe: state.recipe, splitDirections: state.spiltDirections)),
+                  );
+                }
               }
             },
             builder: (context, state) {
