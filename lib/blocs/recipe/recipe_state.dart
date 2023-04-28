@@ -45,6 +45,8 @@ class RecipeImported extends RecipeState {
 
 class RecipeAddedIngredientsToShoppingList extends RecipeState {}
 
+class RecipeSharedLink extends RecipeState {}
+
 class RecipeListLoading extends RecipeState {}
 
 class RecipeListFetched extends RecipeState {

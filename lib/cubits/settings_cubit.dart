@@ -25,7 +25,7 @@ class SettingsCubit extends Cubit<AppSetting> {
   }
 
   void changeThemeTo(String? theme) {
-    if (['light', 'dark'].contains(theme)) {
+    if (['light', 'dark', 'system'].contains(theme)) {
       AppSetting newState = state.copyWith(theme: theme);
       emit(newState);
       box.put('settings', newState);

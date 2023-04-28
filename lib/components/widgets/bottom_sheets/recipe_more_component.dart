@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:untare/blocs/recipe/recipe_bloc.dart';
 import 'package:untare/blocs/recipe/recipe_event.dart';
 import 'package:untare/components/bottom_sheets/recipe_shopping_list_bottom_sheet_component.dart';
+import 'package:untare/components/dialogs/delete_recipe_dialog.dart';
 import 'package:untare/components/dialogs/upsert_meal_plan_entry_dialog.dart';
 import 'package:untare/models/recipe.dart';
 import 'package:untare/pages/recipe_upsert_page.dart';
@@ -13,9 +14,19 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
 
   return Container(
     alignment: Alignment.center,
-    padding: const EdgeInsets.only(left: 12, right: 12),
+    padding: const EdgeInsets.only(left: 12, right: 12, bottom: 6),
     child: Column(
       children: [
+        ListTile(
+          minLeadingWidth: 35,
+          onTap: () {
+            recipeBloc.add(ShareLink(recipeId: recipe.id!));
+
+            Navigator.pop(btsContext);
+          },
+          leading: const Icon(Icons.share_outlined),
+          title: Text(AppLocalizations.of(context)!.share),
+        ),
         ListTile(
           minLeadingWidth: 35,
           onTap: () {
@@ -46,11 +57,12 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
           leading: const Icon(Icons.add_shopping_cart_outlined),
           title: Text(AppLocalizations.of(context)!.addToShoppingList),
         ),
+        const Divider(),
         ListTile(
           minLeadingWidth: 35,
           onTap: () {
             Navigator.pop(btsContext);
-            recipeBloc.add(DeleteRecipe(recipe: recipe));
+            deleteRecipeDialog(context, recipe);
           },
           leading: const Icon(Icons.delete_outline, color: Colors.redAccent),
           title: Text(

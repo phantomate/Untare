@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:untare/exceptions/api_exception.dart';
 import 'package:untare/exceptions/mapping_exception.dart';
 import 'package:untare/models/recipe.dart';
+import 'package:untare/models/share.dart';
 import 'dart:convert';
 import 'package:untare/services/api/api_service.dart';
 
@@ -46,6 +47,24 @@ class ApiRecipe extends ApiService {
 
     if ([200, 201].contains(res.statusCode)) {
       return Recipe.fromJson(json);
+    } else if (res.statusCode == 404) {
+      return null;
+    } else {
+      throw ApiException(
+          message: 'Recipe api error: ' + (json['detail'] ?? json['error']),
+          statusCode: res.statusCode
+      );
+    }
+  }
+
+  Future<ShareModel?> getRecipeShareLink(int id) async {
+    var url = '/api/share-link/$id';
+
+    Response res = await httpGet(url);
+    Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
+
+    if ([200, 201].contains(res.statusCode)) {
+      return ShareModel.fromJson(json);
     } else if (res.statusCode == 404) {
       return null;
     } else {
@@ -159,7 +178,13 @@ class ApiRecipe extends ApiService {
     Map<String, dynamic> json = jsonDecode(utf8.decode(res.bodyBytes));
 
     if ([200, 201].contains(res.statusCode)) {
-      return Recipe.fromJson(json['recipe_json']);
+      if (json['link'] != null) {
+        final linkParts = json['link'].split('/');
+        Recipe? recipe = await getRecipe(int.parse(linkParts[linkParts.length-1]));
+        return recipe!;
+      } else {
+        return Recipe.fromJson(json['recipe_json']);
+      }
     } else {
       throw ApiException(
           message: 'Recipe api error - could not import recipe',

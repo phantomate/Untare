@@ -165,8 +165,10 @@
   "@settingRecipeLayoutCard": {},
   "settingRecipeLayoutList": "Liste",
   "@settingRecipeLayoutList": {},
-  "settingsDarkMode": "Dark mode",
-  "@settingsDarkMode": {},
+  "settingsThemeMode": "Tema",
+  "settingsDarkMode": "Mørk",
+  "settingsLightMode": "Lys",
+  "settingsSystemMode": "System",
   "settingsSharedWith": "Delt med",
   "@settingsSharedWith": {},
   "settingsRefreshInterval": "Opdateringsinterval",
@@ -211,6 +213,7 @@
   "@recipesTitle": {},
   "importRecipe": "Importer opskrift",
   "@importRecipe": {},
+  "importedRecipe": "Opskriften blev importeret",
   "recipeNoStepsFound": "Ingen trin fundet - tilføj nogle",
   "@recipeNoStepsFound": {},
   "addMealPlanEntry": "Tilføj punkt på madplan",
@@ -245,5 +248,6 @@
   "editTime": "Rediger tid",
   "timeInMinutes": "Tid i minutter",
   "share": "Del",
-  "plural": "Flertal"
+  "plural": "Flertal",
+  "useFractions": "Brug brøker"
 }

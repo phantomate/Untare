@@ -109,8 +109,10 @@
   "@settingsMiscellaneous": {},
   "settingRecipeLayoutList": "Liste",
   "@settingRecipeLayoutList": {},
-  "settingsDarkMode": "Mode sombre",
-  "@settingsDarkMode": {},
+  "settingsThemeMode": "Thème",
+  "settingsDarkMode": "Sombre",
+  "settingsLightMode": "Lumière",
+  "settingsSystemMode": "Système",
   "settingsSharedWith": "Partagé avec",
   "@settingsSharedWith": {},
   "settingsRefreshInterval": "Intervalle de rafraîchissement",
@@ -127,6 +129,7 @@
   "@createIngredient": {},
   "importingRecipe": "Importer recette",
   "@importingRecipe": {},
+  "importedRecipe": "La recette a été importée",
   "splitDirections": "Séparer les instructions",
   "@splitDirections": {},
   "removedRecipe": "Recette supprimée",
@@ -143,5 +146,6 @@
   "editTime": "Temps d'édition",
   "timeInMinutes": "Temps en minutes",
   "share": "Partager",
-  "plural": "Pluriel"
+  "plural": "Pluriel",
+  "useFractions": "Utiliser des fractions"
 }
