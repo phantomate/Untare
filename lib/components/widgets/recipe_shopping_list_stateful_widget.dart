@@ -228,8 +228,8 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
     if (amount != '' && useFractions == true && (rawAmount % 1) != 0) {
       amount = '${rawAmount.toMixedFraction()} ';
     }
-    String unit = (ingredient.unit != null && ingredient.amount > 0) ? ('${ingredient.unit!.getUnitName(ingredient.amount)} ') : '';
-    String food = (ingredient.food != null) ? ('${ingredient.food!.getFoodName(ingredient.amount)} ') : '';
+    String unit = (ingredient.unit != null && ingredient.amount > 0) ? ('${ingredient.unit!.getUnitName(rawAmount)} ') : '';
+    String food = (ingredient.food != null) ? ('${ingredient.food!.getFoodName(rawAmount)} ') : '';
     bool? checkBoxValue = !(ingredient.food != null && ingredient.food!.onHand!);
     bool isAlreadyOnShoppingList = false;
     for (var element in shoppingListEntries) {

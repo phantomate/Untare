@@ -267,8 +267,8 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
     if (amount != '' && useFractions == true && (rawAmount % 1) != 0) {
       amount = '${rawAmount.toMixedFraction()} ';
     }
-    String unit = (ingredient.amount > 0 && ingredient.unit != null) ? ('${ingredient.unit!.getUnitName(ingredient.amount)} ') : '';
-    String food = (ingredient.food != null) ? ('${ingredient.food!.getFoodName(ingredient.amount)} ') : '';
+    String unit = (ingredient.amount > 0 && ingredient.unit != null) ? ('${ingredient.unit!.getUnitName(rawAmount)} ') : '';
+    String food = (ingredient.food != null) ? ('${ingredient.food!.getFoodName(rawAmount)} ') : '';
     String note = (ingredient.note != null && ingredient.note != '') ? ('(${ingredient.note!})') : '';
 
     return Container(
