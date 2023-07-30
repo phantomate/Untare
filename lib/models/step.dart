@@ -1,5 +1,6 @@
 import 'package:untare/models/ingredient.dart';
 import 'package:hive/hive.dart';
+import 'package:untare/models/recipe.dart';
 
 part 'step.g.dart';
 
@@ -22,6 +23,10 @@ class StepModel {
   final int? time;
   @HiveField(7)
   final int? order;
+  @HiveField(8)
+  final int? stepRecipe;
+  @HiveField(9)
+  final Recipe? stepRecipeData;
 
   StepModel({
     this.id,
@@ -31,7 +36,9 @@ class StepModel {
     this.ingredientsMarkdown,
     this.ingredientsVue,
     this.time,
-    this.order
+    this.order,
+    this.stepRecipe,
+    this.stepRecipeData
   });
 
   StepModel copyWith({
@@ -43,6 +50,8 @@ class StepModel {
     String? ingredientsVue,
     int? time,
     int? order,
+    int? stepRecipe,
+    Recipe? stepRecipeData
   }) {
     return StepModel(
       id: id ?? this.id,
@@ -52,7 +61,8 @@ class StepModel {
       ingredientsMarkdown: ingredientsMarkdown ?? this.ingredientsMarkdown,
       ingredientsVue: ingredientsVue ?? this.ingredientsVue,
       time: time ?? this.time,
-      order: order ?? this.order
+      order: order ?? this.order,
+      stepRecipe: stepRecipe ?? this.stepRecipe
     );
   }
 
@@ -71,7 +81,8 @@ class StepModel {
       'instruction': instruction ?? '',
       'ingredients': ingredients,
       'time': time ?? 0,
-      'order': order ?? 0
+      'order': order ?? 0,
+      'step_recipe': stepRecipe
     };
   }
 
@@ -85,6 +96,8 @@ class StepModel {
       ingredientsVue: json['ingredients_vue'] as String?,
       time: json['time'] as int?,
       order: json['order'] as int?,
+      stepRecipe: json['step_recipe'] as int?,
+      stepRecipeData: (json['step_recipe_data'] != null) ? Recipe.fromJson(json['step_recipe_data']) : null
     );
   }
 }

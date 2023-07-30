@@ -30,7 +30,7 @@ class Recipe {
   @HiveField(10)
   final String? updatedAt;
   @HiveField(11)
-  final bool internal;
+  final bool? internal;
   @HiveField(12)
   final int? servings;
   @HiveField(13)
@@ -56,7 +56,7 @@ class Recipe {
     this.createdBy,
     this.createdAt,
     this.updatedAt,
-    required this.internal,
+    this.internal,
     this.servings,
     this.servingsText,
     this.rating,
@@ -158,7 +158,7 @@ class Recipe {
       createdBy: json['created_by'] as int?,
       createdAt: json['created_at'] as String?,
       updatedAt: json['updated_at'] as String?,
-      internal: json['internal'] as bool,
+      internal: json['internal'] as bool?,
       servings: (json['servings'] is int) ? json['servings'] : ((json['servings'] is double) ? json['servings'].toInt() : null),
       servingsText: json['servings_text'] as String?,
       rating: (json['rating'] is int) ? json['rating'] : ((json['rating'] is double) ? json['rating'].toInt() : null),

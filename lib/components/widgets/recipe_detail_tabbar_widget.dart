@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untare/cubits/settings_cubit.dart';
@@ -50,7 +48,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
     return TabBarView(
       children: [
         ingredientTabView(),
-        directionsTabView()
+        directionsTabView(widget.recipe)
       ],
     );
   }
@@ -116,24 +114,24 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
     }
   }
 
-  Widget directionsTabView() {
+  Widget directionsTabView(Recipe recipe) {
     List<Widget> directionsSteps = [];
 
-    if (widget.recipe.steps.isNotEmpty) {
-      if (widget.recipe.steps.length > 1) {
-        for (int i = 0; i < widget.recipe.steps.length; i++) {
+    if (recipe.steps.isNotEmpty) {
+      if (recipe.steps.length > 1) {
+        for (int i = 0; i < recipe.steps.length; i++) {
           List<Widget> stepList = [];
 
-          stepList.addAll(widget.recipe.steps[i].ingredients.map((item) => ingredientComponent(item, servings, newServings, true, context)).toList());
+          stepList.addAll(recipe.steps[i].ingredients.map((item) => ingredientComponent(item, servings, newServings, true, context)).toList());
 
-          stepList.add(Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(widget.recipe.steps[i].instruction ?? '', style: const TextStyle(fontSize: 15))));
+          stepList.add(Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(recipe.steps[i].instruction ?? '', style: const TextStyle(fontSize: 15))));
 
-          directionsSteps.add(directionStepLayout(context, Column(crossAxisAlignment: CrossAxisAlignment.start, children: stepList), i+1, widget.recipe.steps[i].time, widget.recipe.steps[i].name));
+          directionsSteps.add(directionStepLayout(context, Column(crossAxisAlignment: CrossAxisAlignment.start, children: stepList), i+1, recipe.steps[i].time, recipe.steps[i].name));
         }
 
-      } else if (widget.recipe.steps.length == 1) {
-        List<String> splitDirectionsStrings = (widget.recipe.steps.first.instruction != null && widget.recipe.steps.first.instruction != '')
-            ? widget.recipe.steps.first.instruction!.split("\n\n")
+      } else if (recipe.steps.length == 1) {
+        List<String> splitDirectionsStrings = (recipe.steps.first.instruction != null && recipe.steps.first.instruction != '')
+            ? recipe.steps.first.instruction!.split("\n\n")
             : [];
 
         if (splitDirectionsStrings.length <= 2) {
@@ -153,8 +151,8 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                 context,
                 Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(splitInstruction, style: const TextStyle(fontSize: 15))),
                 i+1,
-                widget.recipe.steps.first.time,
-                widget.recipe.steps.first.name
+                recipe.steps.first.time,
+                recipe.steps.first.name
               )
             );
           }
