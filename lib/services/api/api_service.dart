@@ -86,7 +86,7 @@ class ApiService {
 
   Future sendRequest(BaseRequest request) async {
     try {
-      Response response = await Response.fromStream(await request.send());
+      Response response = await Response.fromStream(await request.send().timeout(const Duration(seconds: 10)));
 
       if (response.statusCode == 401) {
         box.clear();
