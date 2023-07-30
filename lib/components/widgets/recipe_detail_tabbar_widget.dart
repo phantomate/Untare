@@ -7,6 +7,7 @@ import 'package:untare/extensions/double_extension.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:collapsible/collapsible.dart';
 import 'package:fraction/fraction.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class RecipeDetailTabBarWidget extends StatefulWidget {
   final Recipe recipe;
@@ -124,7 +125,12 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
 
           stepList.addAll(widget.recipe.steps[i].ingredients.map((item) => ingredientComponent(item, servings, newServings, true, context)).toList());
 
-          stepList.add(Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(widget.recipe.steps[i].instruction ?? '', style: const TextStyle(fontSize: 15))));
+          stepList.add(Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 15, 10),
+              child: MarkdownBody(
+                  data: widget.recipe.steps[i].instruction ?? '',
+                  styleSheet:
+                      MarkdownStyleSheet(p: const TextStyle(fontSize: 15)))));
 
           directionsSteps.add(directionStepLayout(context, Column(crossAxisAlignment: CrossAxisAlignment.start, children: stepList), i+1, widget.recipe.steps[i].time, widget.recipe.steps[i].name));
         }
@@ -149,7 +155,12 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
             directionsSteps.add(
               directionStepLayout(
                 context,
-                Padding(padding: const EdgeInsets.fromLTRB(20, 12, 15, 10), child: Text(splitInstruction, style: const TextStyle(fontSize: 15))),
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 12, 15, 10),
+                    child: MarkdownBody(
+                        data: splitInstruction,
+                        styleSheet: MarkdownStyleSheet(
+                            p: const TextStyle(fontSize: 15)))),
                 i+1,
                 widget.recipe.steps.first.time,
                 widget.recipe.steps.first.name
