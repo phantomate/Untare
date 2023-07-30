@@ -25,13 +25,15 @@ class StepModelAdapter extends TypeAdapter<StepModel> {
       ingredientsVue: fields[5] as String?,
       time: fields[6] as int?,
       order: fields[7] as int?,
+      stepRecipe: fields[8] as int?,
+      stepRecipeData: fields[9] as Recipe?,
     );
   }
 
   @override
   void write(BinaryWriter writer, StepModel obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +49,11 @@ class StepModelAdapter extends TypeAdapter<StepModel> {
       ..writeByte(6)
       ..write(obj.time)
       ..writeByte(7)
-      ..write(obj.order);
+      ..write(obj.order)
+      ..writeByte(8)
+      ..write(obj.stepRecipe)
+      ..writeByte(9)
+      ..write(obj.stepRecipeData);
   }
 
   @override
