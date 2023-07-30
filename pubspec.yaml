@@ -57,7 +57,6 @@ dependencies:
   collapsible: ^1.0.0
   share_plus: ^6.3.1
   fraction: ^4.1.4
-  flutter_markdown: ^0.6.15
 
 dependency_overrides:
   flutter_chips_input:
