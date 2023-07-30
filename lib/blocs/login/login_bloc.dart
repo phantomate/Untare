@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:untare/blocs/authentication/authentication_bloc.dart';
 import 'package:untare/blocs/authentication/authentication_event.dart';
+import 'package:untare/exceptions/api_connection_exception.dart';
 import 'package:untare/exceptions/api_exception.dart';
 import 'package:untare/models/user.dart';
 import 'package:untare/models/userToken.dart';
@@ -50,6 +51,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       } else {
         emit(LoginFailure(error: e.message ?? e.toString()));
       }
+    } on ApiConnectionException catch(e) {
+      emit(LoginFailure(error: e.message));
     } catch (err) {
       emit(LoginFailure(error: err.toString()));
     }

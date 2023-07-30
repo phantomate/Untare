@@ -152,7 +152,7 @@ class __SignInFormState extends State<_SignInForm> {
                                         hintText: 'https://recipes.excample.com'
                                     ),
                                     controller: _urlController,
-                                    keyboardType: TextInputType.name,
+                                    keyboardType: TextInputType.url,
                                     autocorrect: false,
                                     validator: (value){
                                       if (value == null){

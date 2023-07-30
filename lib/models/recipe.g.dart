@@ -28,7 +28,7 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
       createdBy: fields[8] as int?,
       createdAt: fields[9] as String?,
       updatedAt: fields[10] as String?,
-      internal: fields[11] as bool,
+      internal: fields[11] as bool?,
       servings: fields[12] as int?,
       servingsText: fields[13] as String?,
       rating: fields[14] as int?,
