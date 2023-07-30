@@ -111,7 +111,7 @@ class ApiService {
         );
       }
 
-      throw ApiConnectionException();
+      throw ApiConnectionException(message: e.toString());
     }
   }
 
