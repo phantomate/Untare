@@ -223,11 +223,28 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
     SettingsCubit settingsCubit = context.read<SettingsCubit>();
     bool? useFractions = (settingsCubit.state.userServerSetting!.useFractions == true);
 
-    double rawAmount = (ingredient.amount * (((newServing/initServing))*100).ceil()/100);
+    double rawAmount = ingredient.amount * newServing / initServing;
     String amount = (ingredient.amount > 0) ? ('${rawAmount.toFormattedString()} ') : '';
     if (amount != '' && useFractions == true && (rawAmount % 1) != 0) {
-      amount = '${rawAmount.toMixedFraction()} ';
+      // If we have a complex decimal we build a "simple" fraction. Otherwise we do the normal one
+      if ((((rawAmount - rawAmount.toInt()) * 100) % 5) != 0) {
+        // Use this crap because we can't change precision programmatically
+        if (rawAmount.toInt() < 1) {
+          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-1).reduce()} ';
+        } else if (rawAmount.toInt() < 10) {
+          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-2).reduce()} ';
+        } else if (rawAmount.toInt() < 100) {
+          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-3).reduce()} ';
+        } else if(rawAmount.toInt() < 1000) {
+          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-4).reduce()} ';
+        } else {
+          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-5).reduce()} ';
+        }
+      } else {
+        amount = '${MixedFraction.fromDouble(rawAmount)} ';
+      }
     }
+
     String unit = (ingredient.unit != null && ingredient.amount > 0) ? ('${ingredient.unit!.getUnitName(rawAmount)} ') : '';
     String food = (ingredient.food != null) ? ('${ingredient.food!.getFoodName(rawAmount)} ') : '';
     bool? checkBoxValue = !(ingredient.food != null && ingredient.food!.onHand!);
