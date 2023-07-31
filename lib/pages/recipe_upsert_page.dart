@@ -17,11 +17,12 @@ import 'package:untare/blocs/recipe/recipe_state.dart';
 import 'package:untare/components/dialogs/upsert_recipe_ingredient_dialog.dart';
 import 'package:untare/components/loading_component.dart';
 import 'package:untare/components/recipes/recipe_image_component.dart';
-import 'package:untare/extensions/double_extension.dart';
+import 'package:untare/cubits/settings_cubit.dart';
 import 'package:untare/futures/future_api_cache_keywords.dart';
 import 'package:untare/models/ingredient.dart';
 import 'package:untare/models/keyword.dart';
 import 'package:untare/models/recipe.dart';
+import 'package:untare/utils.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:untare/models/step.dart';
 import 'package:untare/pages/recipe_detail_page.dart';
@@ -777,7 +778,9 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
 
   Widget buildIngredient(Ingredient ingredient, int stepIndex, int ingredientIndex) {
     // Build ingredient text layout
-    String amount = (ingredient.amount > 0) ? ('${ingredient.amount.toFormattedString()} ') : '';
+    SettingsCubit settingsCubit = context.read<SettingsCubit>();
+    bool? useFractions = (settingsCubit.state.userServerSetting!.useFractions == true);
+
     String unit = (ingredient.amount > 0 && ingredient.unit != null) ? ('${ingredient.unit!.getUnitName(ingredient.amount)} ') : '';
     String food = (ingredient.food != null) ? ('${ingredient.food!.getFoodName(ingredient.amount)} ') : '';
     String note = (ingredient.note != null && ingredient.note != '') ? ('(${ingredient.note !})') : '';
@@ -828,7 +831,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
               contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
               title: Wrap(
                 children: [
-                  Text(amount, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  amountWrap(ingredient.amount, useFractions),
                   Text(unit, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                   Text(food, style: const TextStyle(fontSize: 15)),
                   Text(

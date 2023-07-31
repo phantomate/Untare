@@ -3,11 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untare/cubits/settings_cubit.dart';
 import 'package:untare/models/ingredient.dart';
 import 'package:untare/models/recipe.dart';
-import 'package:untare/extensions/double_extension.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:collapsible/collapsible.dart';
-import 'package:fraction/fraction.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:untare/utils.dart';
 
 class RecipeDetailTabBarWidget extends StatefulWidget {
   final Recipe recipe;
@@ -274,27 +273,6 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
     bool? useFractions = (settingsCubit.state.userServerSetting!.useFractions == true);
 
     double rawAmount = ingredient.amount * newServing / initServing;
-    String amount = (ingredient.amount > 0) ? ('${rawAmount.toFormattedString()} ') : '';
-    if (amount != '' && useFractions == true && (rawAmount % 1) != 0) {
-      // If we have a complex decimal we build a "simple" fraction. Otherwise we do the normal one
-      if ((((rawAmount - rawAmount.toInt()) * 100) % 5) != 0) {
-        // Use this crap because we can't change precision programmatically
-        if (rawAmount.toInt() < 1) {
-          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-1).reduce()} ';
-        } else if (rawAmount.toInt() < 10) {
-          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-2).reduce()} ';
-        } else if (rawAmount.toInt() < 100) {
-          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-3).reduce()} ';
-        } else if(rawAmount.toInt() < 1000) {
-          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-4).reduce()} ';
-        } else {
-          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-5).reduce()} ';
-        }
-      } else {
-        amount = '${MixedFraction.fromDouble(rawAmount)} ';
-      }
-    }
-
     String unit = (ingredient.amount > 0 && ingredient.unit != null) ? ('${ingredient.unit!.getUnitName(rawAmount)} ') : '';
     String food = (ingredient.food != null) ? ('${ingredient.food!.getFoodName(rawAmount)} ') : '';
     String note = (ingredient.note != null && ingredient.note != '') ? ('(${ingredient.note!})') : '';
@@ -315,7 +293,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
             contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
             title: Wrap(
               children: [
-                Text(amount, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                amountWrap(rawAmount, useFractions),
                 Text(unit, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                 Text(food, style: const TextStyle(fontSize: 15)),
                 Text(

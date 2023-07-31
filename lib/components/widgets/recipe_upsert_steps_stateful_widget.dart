@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:untare/components/dialogs/upsert_recipe_ingredient_dialog.dart';
-import 'package:untare/extensions/double_extension.dart';
+import 'package:untare/cubits/settings_cubit.dart';
 import 'package:untare/models/ingredient.dart';
 import 'package:untare/models/recipe.dart';
 import 'package:untare/models/step.dart';
+import 'package:untare/utils.dart';
 import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
@@ -254,7 +256,9 @@ class RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
 
   Widget buildIngredient(Ingredient ingredient, int stepIndex, int ingredientIndex) {
     // Build ingredient text layout
-    String amount = (ingredient.amount > 0) ? ('${ingredient.amount.toFormattedString()} ') : '';
+    SettingsCubit settingsCubit = context.read<SettingsCubit>();
+    bool? useFractions = (settingsCubit.state.userServerSetting!.useFractions == true);
+
     String unit = (ingredient.unit != null) ? ('${ingredient.unit!.name} ') : '';
     String food = (ingredient.food != null) ? ('${ingredient.food!.name} ') : '';
     String note = (ingredient.note != null && ingredient.note != '') ? ('(${ingredient.note !})') : '';
@@ -304,7 +308,7 @@ class RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
                 contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
                 title: Wrap(
                   children: [
-                    Text(amount, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    amountWrap(ingredient.amount, useFractions),
                     Text(unit, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                     Text(food, style: const TextStyle(fontSize: 15)),
                     Text(
