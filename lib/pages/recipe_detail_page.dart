@@ -12,6 +12,7 @@ import 'package:untare/components/recipes/recipe_image_component.dart';
 import 'package:untare/components/loading_component.dart';
 import 'package:untare/models/keyword.dart';
 import 'package:untare/models/recipe.dart';
+import 'package:untare/extensions/int_extension.dart';
 import 'package:wakelock/wakelock.dart';
 
 class RecipeDetailPage extends StatefulWidget {
@@ -271,7 +272,7 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                               )
                             ],
                           ),
-                          Column(
+                          if (recipe.workingTime != null && recipe.workingTime! > 0) Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
@@ -282,7 +283,7 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                                   ),
                                   const SizedBox(width: 2),
                                   Text(
-                                    '${recipe.workingTime} min',
+                                    recipe.workingTime!.minutesToTimeString(),
                                     style: const TextStyle(fontSize: 13),
                                   ),
                                 ],
@@ -297,7 +298,7 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                               )
                             ],
                           ),
-                          Column(
+                          if (recipe.waitingTime != null && recipe.waitingTime! > 0) Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Row(
@@ -308,7 +309,7 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                                   ),
                                   const SizedBox(width: 2),
                                   Text(
-                                    '${recipe.waitingTime} min',
+                                    recipe.waitingTime!.minutesToTimeString(),
                                     style: const TextStyle(
                                       fontSize: 13,
                                     ),
