@@ -72,7 +72,7 @@ class Food {
   }
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic>? supermarketCategory = this.supermarketCategory != null ? this.supermarketCategory!.toJson() : null;
+    Map<String, dynamic>? supermarketCategory = this.supermarketCategory?.toJson();
     
     return {
       'id': id,

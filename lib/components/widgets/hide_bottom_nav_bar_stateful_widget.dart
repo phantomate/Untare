@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 class HideBottomNavBarStatefulWidget extends StatefulWidget{
   final Function(bool) isHideBottomNavBar;
 
-  const HideBottomNavBarStatefulWidget({Key? key, required this.isHideBottomNavBar}) : super(key: key);
+  const HideBottomNavBarStatefulWidget({super.key, required this.isHideBottomNavBar});
 
   @override
   State<StatefulWidget> createState() {

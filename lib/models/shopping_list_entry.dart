@@ -113,8 +113,8 @@ class ShoppingListEntry {
   }
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic>? unit = this.unit != null ? this.unit!.toJson() : null;
-    Map<String, dynamic>? food = this.food != null ? this.food!.toJson() : null;
+    Map<String, dynamic>? unit = this.unit?.toJson();
+    Map<String, dynamic>? food = this.food?.toJson();
 
     return {
       'id': id,

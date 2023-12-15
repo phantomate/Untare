@@ -21,7 +21,7 @@ class RecipeShoppingListWidget extends StatefulWidget {
   final Recipe recipe;
   final BuildContext btsContext;
 
-  const RecipeShoppingListWidget({Key? key, required this.recipe, required this.btsContext}) : super(key: key);
+  const RecipeShoppingListWidget({super.key, required this.recipe, required this.btsContext});
 
   @override
   RecipeShoppingListWidgetState createState() => RecipeShoppingListWidgetState();

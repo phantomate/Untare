@@ -20,7 +20,7 @@ class CacheMealPlanService extends CacheService{
       DateTime toDate = DateTime.parse(to);
 
       for (var entry in cacheMealPlanEntries) {
-        DateTime entryDate = DateTime.parse(entry.date);
+        DateTime entryDate = DateTime.parse(entry.fromDate!);
 
         if ((fromDate.isBefore(entryDate) || fromDate.isAtSameMomentAs(entryDate)) && (toDate.isAfter(entryDate) || toDate.isAtSameMomentAs(entryDate))) {
           mealPLanEntries.add(entry);

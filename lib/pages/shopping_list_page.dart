@@ -26,7 +26,7 @@ import 'package:grouped_list/grouped_list.dart';
 import 'package:untare/extensions/double_extension.dart';
 
 class ShoppingListPage extends HideBottomNavBarStatefulWidget {
-  const ShoppingListPage({Key? key, required isHideBottomNavBar}) : super(key: key, isHideBottomNavBar: isHideBottomNavBar);
+  const ShoppingListPage({super.key, required super.isHideBottomNavBar});
 
   @override
   ShoppingListPageState createState() => ShoppingListPageState();
@@ -339,53 +339,55 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                                         leading: const Icon(Icons.keyboard_arrow_up),
                                                       )
                                                   ),
-                                                  header: Flexible(
-                                                      child: Container(
-                                                          decoration: BoxDecoration(
-                                                              border: Border(
-                                                                  bottom: BorderSide(
-                                                                      color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
-                                                                      width: 0.8
-                                                                  )
-                                                              )
-                                                          ),
-                                                          child: ListTile(
-                                                            minLeadingWidth: 20,
-                                                            visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
-                                                            contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                                                            trailing: Transform.scale(
-                                                                scale: 1.2,
-                                                                child: Checkbox(
-                                                                    value: checkBoxValue,
-                                                                    activeColor: Theme.of(context).primaryColor,
-                                                                    shape: RoundedRectangleBorder(
-                                                                        borderRadius: BorderRadius.circular(3)
-                                                                    ),
-                                                                    onChanged: (bool? value) {
-                                                                      setState(() {
-                                                                        checkBoxValue = value ?? false;
-                                                                      });
-
-                                                                      // Delay for animation purpose
-                                                                      Future.delayed(const Duration(milliseconds: 100), () {
-                                                                        for (var element in groupedList) {
-                                                                          ShoppingListEntry entry = element.copyWith(checked: value);
-                                                                          _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
-                                                                        }
-                                                                      });
-                                                                    }
+                                                  header: (isExpanded,_,heightFactor, configController) {
+                                                    return Flexible(
+                                                        child: Container(
+                                                            decoration: BoxDecoration(
+                                                                border: Border(
+                                                                    bottom: BorderSide(
+                                                                        color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                                                                        width: 0.8
+                                                                    )
                                                                 )
                                                             ),
-                                                            title: Text(
-                                                                groupedList.first.food!.name,
-                                                                style: (checkBoxValue)
-                                                                    ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
-                                                                    : const TextStyle(fontWeight: FontWeight.bold)
-                                                            ),
-                                                            leading: const Icon(Icons.keyboard_arrow_down),
-                                                          )
-                                                      )
-                                                  ),
+                                                            child: ListTile(
+                                                              minLeadingWidth: 20,
+                                                              visualDensity: const VisualDensity(horizontal: 0, vertical: -2),
+                                                              contentPadding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                                                              trailing: Transform.scale(
+                                                                  scale: 1.2,
+                                                                  child: Checkbox(
+                                                                      value: checkBoxValue,
+                                                                      activeColor: Theme.of(context).primaryColor,
+                                                                      shape: RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.circular(3)
+                                                                      ),
+                                                                      onChanged: (bool? value) {
+                                                                        setState(() {
+                                                                          checkBoxValue = value ?? false;
+                                                                        });
+
+                                                                        // Delay for animation purpose
+                                                                        Future.delayed(const Duration(milliseconds: 100), () {
+                                                                          for (var element in groupedList) {
+                                                                            ShoppingListEntry entry = element.copyWith(checked: value);
+                                                                            _shoppingListBloc.add(UpdateShoppingListEntryChecked(shoppingListEntry: entry));
+                                                                          }
+                                                                        });
+                                                                      }
+                                                                  )
+                                                              ),
+                                                              title: Text(
+                                                                  groupedList.first.food!.name,
+                                                                  style: (checkBoxValue)
+                                                                      ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
+                                                                      : const TextStyle(fontWeight: FontWeight.bold)
+                                                              ),
+                                                              leading: const Icon(Icons.keyboard_arrow_down),
+                                                            )
+                                                        )
+                                                    );
+                                                  },
                                                   childrenBody: Column(children: groupedWidgetList),
                                                 );
                                               });

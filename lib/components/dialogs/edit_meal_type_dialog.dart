@@ -19,6 +19,8 @@ Future editMealTypeDialog(BuildContext context) async {
   )).toList();
   bool isVisible = false;
 
+  if (!context.mounted) return;
+
   return showDialog(context: context, builder: (BuildContext dContext){
     return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -38,7 +40,6 @@ Future editMealTypeDialog(BuildContext context) async {
                           ),
                           FormBuilderDropdown(
                             name: 'type',
-                            allowClear: true,
                             items: mealTypeWidgetList,
                             decoration: InputDecoration(
                                 label: Text(AppLocalizations.of(context)!.mealType)

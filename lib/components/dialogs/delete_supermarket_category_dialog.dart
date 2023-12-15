@@ -18,6 +18,8 @@ Future deleteSupermarketCategoryDialog(BuildContext context) async {
     child: Text(category.name),
   )).toList();
 
+  if (!context.mounted) return;
+
   return showDialog(context: context, builder: (BuildContext dContext){
     return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -36,7 +38,6 @@ Future deleteSupermarketCategoryDialog(BuildContext context) async {
                     ),
                     FormBuilderDropdown(
                       name: 'category',
-                      allowClear: true,
                       items: supermarketCategoriesWidgetList,
                       decoration: InputDecoration(
                           label: Text(AppLocalizations.of(context)!.category)

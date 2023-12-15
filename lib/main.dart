@@ -104,7 +104,7 @@ void _callbackDispatcher() {
 }
 
 class Tare extends StatelessWidget {
-  const Tare({Key? key}) : super(key: key);
+  const Tare({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +189,7 @@ class Tare extends StatelessWidget {
 }
 
 class TarePage extends StatefulWidget {
-  const TarePage({Key? key}) : super(key: key);
+  const TarePage({super.key});
 
   @override
   TarePageState createState() => TarePageState();

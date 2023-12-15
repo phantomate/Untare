@@ -19,7 +19,7 @@ class RecipeDetailPage extends StatefulWidget {
   final Recipe recipe;
   final String? referer;
 
-  const RecipeDetailPage({Key? key, required this.recipe, this.referer}) : super(key: key);
+  const RecipeDetailPage({super.key, required this.recipe, this.referer});
 
   @override
   RecipeDetailPageState createState() => RecipeDetailPageState();

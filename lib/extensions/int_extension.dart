@@ -8,12 +8,12 @@ extension IntExtension on int {
     int hours = (minLeftForHours / minInHour).floor();
     int minutes = (minLeftForHours - (hours * minInHour)).round();
 
-    String time_str = "";
+    String timeStr = "";
 
-    if (days > 0) time_str += "${days}d ";
-    if (hours > 0) time_str += "${hours}h ";
-    if (minutes > 0) time_str += "${minutes}min ";
+    if (days > 0) timeStr += "${days}d ";
+    if (hours > 0) timeStr += "${hours}h ";
+    if (minutes > 0) timeStr += "${minutes}min ";
 
-    return time_str.trim();
+    return timeStr.trim();
   }
 }

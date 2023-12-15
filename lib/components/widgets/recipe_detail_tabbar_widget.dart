@@ -12,7 +12,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 class RecipeDetailTabBarWidget extends StatefulWidget {
   final Recipe recipe;
 
-  const RecipeDetailTabBarWidget({Key? key, required this.recipe}) : super(key: key);
+  const RecipeDetailTabBarWidget({super.key, required this.recipe});
 
   @override
   RecipeDetailTabBarWidgetState createState() => RecipeDetailTabBarWidgetState();

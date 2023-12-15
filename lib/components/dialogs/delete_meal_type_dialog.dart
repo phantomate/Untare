@@ -19,6 +19,8 @@ Future deleteMealTypeDialog(BuildContext context) async {
     child: Text(type.name),
   )).toList();
 
+  if (!context.mounted) return;
+
   return showDialog(context: context, builder: (BuildContext dContext){
     return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -37,7 +39,6 @@ Future deleteMealTypeDialog(BuildContext context) async {
                     ),
                     FormBuilderDropdown(
                       name: 'type',
-                      allowClear: true,
                       items: mealTypeWidgetList,
                       decoration: InputDecoration(
                           label: Text(AppLocalizations.of(context)!.mealType)

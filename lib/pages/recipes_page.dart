@@ -17,7 +17,7 @@ import 'package:untare/pages/recipe_upsert_page.dart';
 
 
 class RecipesPage extends HideBottomNavBarStatefulWidget {
-  const RecipesPage({Key? key, required isHideBottomNavBar}) : super(key: key, isHideBottomNavBar: isHideBottomNavBar);
+  const RecipesPage({super.key, required super.isHideBottomNavBar});
 
   @override
   RecipesPageState createState() => RecipesPageState();

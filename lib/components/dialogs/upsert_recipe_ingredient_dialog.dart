@@ -53,9 +53,9 @@ Future upsertRecipeIngredientDialog(BuildContext context, int stepIndex, int ing
                         child: Text((ingredient != null) ? AppLocalizations.of(context)!.edit : AppLocalizations.of(context)!.add),
                         onPressed: () {
 
-                          formKey.currentState!.setInternalFieldValue('stepIndex', stepIndex, isSetState: true);
-                          formKey.currentState!.setInternalFieldValue('ingredientIndex', ingredientIndex, isSetState: true);
-                          formKey.currentState!.setInternalFieldValue('method', ((ingredient != null) ? 'edit' : 'add'), isSetState: true);
+                          formKey.currentState!.setInternalFieldValue('stepIndex', stepIndex);
+                          formKey.currentState!.setInternalFieldValue('ingredientIndex', ingredientIndex);
+                          formKey.currentState!.setInternalFieldValue('method', ((ingredient != null) ? 'edit' : 'add'));
                           formKey.currentState!.save();
 
                           if (formKey.currentState!.validate()) {

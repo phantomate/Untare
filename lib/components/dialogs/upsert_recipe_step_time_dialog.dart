@@ -39,7 +39,7 @@ Future upsertRecipeStepTimeDialog(BuildContext context, int stepIndex, Function(
                         child: MaterialButton(
                             color: Theme.of(context).primaryColor,
                             onPressed: () {
-                              formKey.currentState!.setInternalFieldValue('stepIndex', stepIndex, isSetState: true);
+                              formKey.currentState!.setInternalFieldValue('stepIndex', stepIndex);
                               formKey.currentState!.save();
                               if (formKey.currentState!.validate()) {
                                 upsertStepTime(formKey.currentState!.value);

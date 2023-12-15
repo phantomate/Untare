@@ -26,6 +26,8 @@ Future editShareDialog(BuildContext context, UserSetting userSetting, String ref
     }
   }
 
+  if (!context.mounted) return;
+
   return showDialog(context: context, builder: (BuildContext dContext){
     return Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),

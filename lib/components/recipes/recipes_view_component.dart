@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:untare/blocs/abstract_state.dart';
 import 'package:untare/blocs/recipe/recipe_state.dart';
 import 'package:untare/components/custom_scroll_notification.dart';
 import 'package:untare/components/recipes/recipe_grid_component.dart';

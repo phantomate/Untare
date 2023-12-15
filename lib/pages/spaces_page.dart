@@ -7,7 +7,7 @@ import 'package:untare/services/cache/cache_space_service.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 class SpacesPage extends StatefulWidget {
-  const SpacesPage({Key? key}) : super(key: key);
+  const SpacesPage({super.key});
 
   @override
   SpacesPageState createState() => SpacesPageState();

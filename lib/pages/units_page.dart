@@ -13,7 +13,7 @@ import 'package:untare/services/api/api_unit.dart';
 import 'package:untare/services/cache/cache_unit_service.dart';
 
 class UnitsPage extends StatefulWidget {
-  const UnitsPage({Key? key}) : super(key: key);
+  const UnitsPage({super.key});
 
   @override
   UnitsPageState createState() => UnitsPageState();

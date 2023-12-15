@@ -23,20 +23,21 @@ class MealPlanEntryAdapter extends TypeAdapter<MealPlanEntry> {
       servings: fields[3] as int,
       note: fields[4] as String,
       noteMarkdown: fields[5] as String?,
-      date: fields[6] as String,
-      mealType: fields[7] as MealType,
-      createdBy: fields[8] as int?,
-      shared: (fields[9] as List).cast<User>(),
-      recipeName: fields[10] as String?,
-      mealTypeName: fields[11] as String?,
-      shopping: fields[12] as bool?,
+      mealType: fields[6] as MealType,
+      createdBy: fields[7] as int?,
+      shared: (fields[8] as List).cast<User>(),
+      recipeName: fields[9] as String?,
+      mealTypeName: fields[10] as String?,
+      shopping: fields[11] as bool?,
+      fromDate: fields[12] as String?,
+      toDate: fields[13] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, MealPlanEntry obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,19 +51,21 @@ class MealPlanEntryAdapter extends TypeAdapter<MealPlanEntry> {
       ..writeByte(5)
       ..write(obj.noteMarkdown)
       ..writeByte(6)
-      ..write(obj.date)
-      ..writeByte(7)
       ..write(obj.mealType)
-      ..writeByte(8)
+      ..writeByte(7)
       ..write(obj.createdBy)
-      ..writeByte(9)
+      ..writeByte(8)
       ..write(obj.shared)
-      ..writeByte(10)
+      ..writeByte(9)
       ..write(obj.recipeName)
-      ..writeByte(11)
+      ..writeByte(10)
       ..write(obj.mealTypeName)
+      ..writeByte(11)
+      ..write(obj.shopping)
       ..writeByte(12)
-      ..write(obj.shopping);
+      ..write(obj.fromDate)
+      ..writeByte(13)
+      ..write(obj.toDate);
   }
 
   @override

@@ -9,7 +9,7 @@ import 'package:untare/blocs/login/login_state.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 
 class StartingPage extends StatelessWidget {
-  const StartingPage({Key? key}) : super(key: key);
+  const StartingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class StartingPage extends StatelessWidget {
 }
 
 class StartWidget extends StatelessWidget {
-  const StartWidget({Key? key}) : super(key: key);
+  const StartWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,7 @@ class __SignInFormState extends State<_SignInForm> {
   Widget build(BuildContext context) {
     final loginBloc = BlocProvider.of<LoginBloc>(context);
 
-    _onLoginButtonPressed () {
+    onLoginButtonPressed () {
       if (_key.currentState!.validate()) {
 
         loginBloc.add(LoginWithUsernameAndPassword(
@@ -211,7 +211,7 @@ class __SignInFormState extends State<_SignInForm> {
                             color: Theme.of(context).primaryColor,
                             minWidth: double.maxFinite,
                             padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
-                            onPressed: _onLoginButtonPressed,
+                            onPressed: onLoginButtonPressed,
                             child: const Text('LOGIN'),
                           ),
                         ],

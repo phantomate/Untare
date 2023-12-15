@@ -12,7 +12,7 @@ class RecipeUpsertStepsWidget extends StatefulWidget {
   final Recipe? recipe;
   final Function({List<StepModel>? steps}) rebuildRecipe;
 
-  const RecipeUpsertStepsWidget({Key? key, required this.recipe, required this.rebuildRecipe}) : super(key: key);
+  const RecipeUpsertStepsWidget({super.key, required this.recipe, required this.rebuildRecipe});
 
   @override
   RecipeUpsertStepsWidgetState createState() => RecipeUpsertStepsWidgetState();
