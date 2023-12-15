@@ -363,8 +363,8 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "488074b341d42d2ab5bb29dd022fe7cadadd1064"
-      url: "https://github.com/bradintheusa/flutter_chips_input"
+      resolved-ref: a2c5c22847d863902002fe05407e7f6b16de972c
+      url: "https://github.com/phantomate/flutter_chips_input"
     source: git
     version: "2.0.0"
   flutter_colorpicker:

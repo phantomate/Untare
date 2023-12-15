@@ -62,7 +62,7 @@ dependencies:
 
 dependency_overrides:
   flutter_chips_input:
-    git: https://github.com/bradintheusa/flutter_chips_input
+    git: https://github.com/phantomate/flutter_chips_input
 
 dev_dependencies:
   flutter_test:

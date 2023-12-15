@@ -7,7 +7,7 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
+import 'package:flutter_chips_input/flutter_chips_input.dart';
 import 'package:form_builder_image_picker/form_builder_image_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:http/http.dart';
@@ -34,7 +34,7 @@ class RecipeUpsertPage extends StatefulWidget {
   final Recipe? recipe;
   final bool? splitDirections;
 
-  const RecipeUpsertPage({Key? key, this.recipe, this.splitDirections}) : super(key: key);
+  const RecipeUpsertPage({super.key, this.recipe, this.splitDirections});
 
   @override
   RecipeUpsertPageState createState() => RecipeUpsertPageState();
@@ -44,6 +44,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
   final formKey = GlobalKey<FormBuilderState>();
   Recipe? recipe;
   late RecipeBloc _recipeBloc;
+  List<Keyword> keywords = [];
 
   @override
   void initState() {
@@ -58,6 +59,8 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
     } else {
       recipe = widget.recipe;
     }
+
+    keywords = [];
   }
 
   void splitDirections() {
@@ -136,12 +139,6 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
     int? servings = (recipe != null) ? recipe!.servings : 1;
     if (formBuilderData.containsKey('servings') && servings != formBuilderData['servings']) {
       servings = (!["", null].contains(formBuilderData['servings'])) ? int.parse(formBuilderData['servings']) : 1;
-    }
-
-    // Overwrite keywords
-    List<Keyword> keywords = [];
-    if (formBuilderData.containsKey('keywords')) {
-      keywords = formBuilderData['keywords'];
     }
 
     if (recipe != null) {
@@ -446,8 +443,10 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                     ),
                     Container(
                       padding: const EdgeInsets.only(top: 15, right: 20, bottom: 10, left: 20),
-                      child: FormBuilderChipsInput<Keyword>(
-                        name: 'keywords',
+                      child: ChipsInput<Keyword>(
+                        onChanged: (data) {
+                          keywords = data;
+                        },
                         decoration: InputDecoration(
                           labelText: AppLocalizations.of(context)!.keywords,
                           isDense: true,
