@@ -9,7 +9,7 @@ import 'package:untare/models/meal_plan_entry.dart';
 import 'package:untare/models/recipe.dart';
 import 'package:untare/pages/recipe_detail_page.dart';
 
-Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer, MealPlanEntry? mealPlan}) {
+Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer, MealPlanEntry? mealPlan, bool? disabled}) {
   BoxDecoration recipeTimeDecoration = BoxDecoration(
       color: (Theme.of(context).brightness.name == 'light') ? Colors.white.withOpacity(0.8) : Colors.grey[800]!.withOpacity(0.8),
       borderRadius: BorderRadius.circular(30)
@@ -45,70 +45,79 @@ Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer
     shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(10))
     ),
-    child:InkWell(
-      borderRadius: const BorderRadius.all(Radius.circular(10)),
-      onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: recipe, referer: referer)),
-        );
-      },
-      onLongPress: () {
-        if (mealPlan != null) {
-          mealPlanEntryMoreBottomSheet(context, mealPlan);
-        } else {
-          recipeMoreBottomSheet(context, recipe);
-        }
-      },
-      child: Column(
-        children: [
-          Stack(
+    child: InkWell(
+        borderRadius: const BorderRadius.all(Radius.circular(10)),
+        onTap: () {
+          if ((disabled != null && !disabled) || disabled == null) {
+            FocusManager.instance.primaryFocus?.unfocus();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: recipe, referer: referer)),
+            );
+          }
+        },
+        onLongPress: () {
+          if (mealPlan != null) {
+            mealPlanEntryMoreBottomSheet(context, mealPlan);
+          } else {
+            recipeMoreBottomSheet(context, recipe);
+          }
+        },
+        child: Container(
+          foregroundDecoration: (disabled != null && disabled) ? const BoxDecoration(
+            color: Colors.grey,
+            backgroundBlendMode: BlendMode.saturation,
+            borderRadius: BorderRadius.all(Radius.circular(10))
+          ) : null,
+          child: Column(
             children: [
-              buildRecipeImage(recipe, const BorderRadius.vertical(top: Radius.circular(10)), 140, referer: referer),
-              Container(
-                padding: const EdgeInsets.all(5),
-                alignment: Alignment.topRight,
-                child: buildRecipeTime(recipe, boxDecoration: recipeTimeDecoration),
-              ),
-              if (recipe.lastCooked != null || (recipe.rating != null && recipe.rating! > 0) || mealPlan != null)
-                Container(
-                  height: 140,
-                  width: double.maxFinite,
-                  alignment: Alignment.bottomLeft,
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
-                    margin: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                        color: (Theme.of(context).brightness.name == 'light') ? Colors.white.withOpacity(0.8) : Colors.grey[800]!.withOpacity(0.8),
-                        borderRadius: BorderRadius.circular(30)
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: joinedWidgets,
-                    ),
+              Stack(
+                children: [
+                  buildRecipeImage(recipe, const BorderRadius.vertical(top: Radius.circular(10)), 140, referer: referer),
+                  Container(
+                    padding: const EdgeInsets.all(5),
+                    alignment: Alignment.topRight,
+                    child: buildRecipeTime(recipe, boxDecoration: recipeTimeDecoration),
                   ),
-                )
+                  if (recipe.lastCooked != null || (recipe.rating != null && recipe.rating! > 0) || mealPlan != null)
+                    Container(
+                      height: 140,
+                      width: double.maxFinite,
+                      alignment: Alignment.bottomLeft,
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
+                        margin: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            color: (Theme.of(context).brightness.name == 'light') ? Colors.white.withOpacity(0.8) : Colors.grey[800]!.withOpacity(0.8),
+                            borderRadius: BorderRadius.circular(30)
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: joinedWidgets,
+                        ),
+                      ),
+                    )
+                ],
+              ),
+              Container(
+                height: 48,
+                alignment: Alignment.centerLeft,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+                ),
+                padding: const EdgeInsets.only(top: 6, right: 15, bottom: 8, left: 15),
+                child: Text(
+                  recipe.name,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              )
             ],
           ),
-          Container(
-            height: 48,
-            alignment: Alignment.centerLeft,
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
-            ),
-            padding: const EdgeInsets.only(top: 6, right: 15, bottom: 8, left: 15),
-            child: Text(
-              recipe.name,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          )
-        ],
-      )
+        )
     ),
   );
 }

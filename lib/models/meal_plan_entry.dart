@@ -21,19 +21,21 @@ class MealPlanEntry {
   @HiveField(5)
   final String? noteMarkdown;
   @HiveField(6)
-  final String date;
-  @HiveField(7)
   final MealType mealType;
-  @HiveField(8)
+  @HiveField(7)
   final int? createdBy;
-  @HiveField(9)
+  @HiveField(8)
   final List<User> shared;
-  @HiveField(10)
+  @HiveField(9)
   final String? recipeName;
-  @HiveField(11)
+  @HiveField(10)
   final String? mealTypeName;
-  @HiveField(12)
+  @HiveField(11)
   final bool? shopping;
+  @HiveField(12)
+  final String? fromDate;
+  @HiveField(13)
+  final String? toDate;
 
   MealPlanEntry({
     this.id,
@@ -42,13 +44,14 @@ class MealPlanEntry {
     required this.servings,
     required this.note,
     this.noteMarkdown,
-    required this.date,
     required this.mealType,
     this.createdBy,
     required this.shared,
     this.recipeName,
     this.mealTypeName,
-    this.shopping
+    this.shopping,
+    required this.fromDate,
+    this.toDate
   });
 
   MealPlanEntry copyWith({
@@ -58,13 +61,14 @@ class MealPlanEntry {
     int? servings,
     String? note,
     String? noteMarkdown,
-    String? date,
     MealType? mealType,
     int? createdBy,
     List<User>? shared,
     String? recipeName,
     String? mealTypeName,
-    bool? shopping
+    bool? shopping,
+    String? fromDate,
+    String? toDate
   }) {
     return MealPlanEntry(
       id: id ?? this.id,
@@ -73,13 +77,14 @@ class MealPlanEntry {
       servings: servings ?? this.servings,
       note: note ?? this.note,
       noteMarkdown: noteMarkdown ?? this.noteMarkdown,
-      date: date ?? this.date,
       mealType: mealType ?? this.mealType,
       createdBy: createdBy ?? this.createdBy,
       shared: shared ?? this.shared,
       recipeName: recipeName ?? this.recipeName,
       mealTypeName: mealTypeName ?? this.mealTypeName,
-      shopping: shopping ?? this.shopping
+      shopping: shopping ?? this.shopping,
+      fromDate: fromDate ?? this.fromDate,
+      toDate: toDate ?? this.toDate
     );
   }
 
@@ -91,18 +96,19 @@ class MealPlanEntry {
       servings: (json['servings'] is int) ? json['servings'] : ((json['servings'] is double) ? json['servings'].toInt() : 1),
       note: json['note'] as String,
       noteMarkdown: json['note_markdown'] as String,
-      date: json['date'] as String,
       mealType: MealType.fromJson(json['meal_type']),
       createdBy: json['created_by'] as int,
       shared: json['shared'].map((item) => User.fromJson(item)).toList().cast<User>(),
       recipeName: json['recipe_name'] as String?,
       mealTypeName: json['meal_type_name'] as String?,
-      shopping: json['shopping'] as bool
+      shopping: json['shopping'] as bool,
+      fromDate: json['from_date'] as String,
+      toDate: json['to_date'] as String
     );
   }
 
   Map<String, dynamic> toJson() {
-    Map<String, dynamic>? recipe = this.recipe != null ? this.recipe!.toJson() : null;
+    Map<String, dynamic>? recipe = this.recipe?.toJson();
 
     List<Map<String,dynamic>> sharedList = [];
     if (shared.isNotEmpty) {
@@ -117,9 +123,10 @@ class MealPlanEntry {
       'recipe': recipe,
       'servings': servings,
       'note': note,
-      'date': date,
       'meal_type': mealType.toJson(),
-      'shared': sharedList
+      'shared': sharedList,
+      'from_date': fromDate,
+      'to_date': toDate
     };
   }
 }

@@ -20,7 +20,7 @@ import '../components/custom_scroll_notification.dart';
 
 
 class MealPlanPage extends HideBottomNavBarStatefulWidget {
-  const MealPlanPage({Key? key, required isHideBottomNavBar}) : super(key: key, isHideBottomNavBar: isHideBottomNavBar);
+  const MealPlanPage({super.key, required super.isHideBottomNavBar});
 
   @override
   MealPlanPageState createState() => MealPlanPageState();
@@ -289,9 +289,16 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
   List<Widget> dailyMealPlanWidgetList = [];
 
   for (var mealPlan in mealPlanList) {
-    DateTime temp = DateTime.parse(mealPlan.date);
-    if (day.year == temp.year && day.month == temp.month && day.day == temp.day) {
+    DateTime tempFromDate = DateTime.parse(mealPlan.fromDate!);
+    DateTime tempToDate = DateTime.parse(mealPlan.toDate!);
+
+    if (day.year == tempFromDate.year && day.month == tempFromDate.month && day.day == tempFromDate.day) {
       dailyMealPlanList.add(mealPlan);
+    }
+    if (tempFromDate.year != tempToDate.year || tempFromDate.month != tempToDate.month || tempFromDate.day != tempToDate.day) {
+      if (day.year == tempToDate.year && day.month == tempToDate.month && day.day == tempToDate.day) {
+        dailyMealPlanList.add(mealPlan);
+      }
     }
   }
 
@@ -335,6 +342,9 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
             builder: (context, setting) {
               dailyMealPlanWidgetList.clear();
               for (var mealPlan in dailyMealPlanList) {
+                DateTime tempFromDate = DateTime.parse(mealPlan.fromDate!);
+                bool disabled = (day.year != tempFromDate.year || day.month != tempFromDate.month || day.day != tempFromDate.day);
+
                 if (mealPlan.recipe != null) {
                   if (setting.layout == 'list') {
                     dailyMealPlanWidgetList.add(
@@ -349,7 +359,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                                 )
                             )
                         ),
-                        child: recipeListComponent(mealPlan.recipe!, context, referer: 'mealList${mealPlan.id}', mealPlan: mealPlan),
+                        child: recipeListComponent(mealPlan.recipe!, context, referer: 'mealList${mealPlan.id}${day.toString()}', mealPlan: mealPlan, disabled: disabled),
                       )
 
                     );
@@ -357,7 +367,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                     dailyMealPlanWidgetList.add(
                         SizedBox(
                             width: 180,
-                            child: recipeGridComponent(mealPlan.recipe!, context, referer: 'mealGrid${mealPlan.id}', mealPlan: mealPlan)
+                            child: recipeGridComponent(mealPlan.recipe!, context, referer: 'mealGrid${mealPlan.id}${day.toString()}', mealPlan: mealPlan, disabled: disabled)
                         )
                     );
                     dailyMealPlanWidgetList.add(const SizedBox(width: 5));

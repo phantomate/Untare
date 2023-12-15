@@ -8,7 +8,7 @@ import 'package:untare/models/meal_plan_entry.dart';
 import 'package:untare/models/recipe.dart';
 import 'package:untare/pages/recipe_detail_page.dart';
 
-Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer, MealPlanEntry? mealPlan}) {
+Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer, MealPlanEntry? mealPlan, bool? disabled}) {
   BoxShadow boxShadow = const BoxShadow(
     color: Colors.black12,
     blurRadius: 3.0,
@@ -17,11 +17,13 @@ Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer
   return ListTile(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onTap: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: recipe, referer: referer)),
-        );
+        if ((disabled != null && !disabled) || disabled == null) {
+          FocusManager.instance.primaryFocus?.unfocus();
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: recipe, referer: referer)),
+          );
+        }
       },
       onLongPress: () {
         if (mealPlan != null) {
@@ -31,8 +33,13 @@ Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer
         }
       },
       contentPadding: (recipe.lastCooked != null || (recipe.rating != null && recipe.rating! > 0)) ? const EdgeInsets.fromLTRB(5, 0 ,5, 0) : const EdgeInsets.fromLTRB(5, 2 ,5, 2),
-      leading: SizedBox(
+      leading: Container(
         width: 100,
+          foregroundDecoration: (disabled != null && disabled) ? const BoxDecoration(
+              color: Colors.grey,
+              backgroundBlendMode: BlendMode.saturation,
+              borderRadius: BorderRadius.all(Radius.circular(10))
+          ) : null,
         child: buildRecipeImage(recipe, const BorderRadius.all(Radius.circular(10)), 100, boxShadow: boxShadow, referer: referer),
       ),
       title: Text(recipe.name, maxLines: 2, overflow: TextOverflow.ellipsis),
