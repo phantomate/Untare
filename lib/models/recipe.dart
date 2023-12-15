@@ -43,6 +43,8 @@ class Recipe {
   final bool? isNew;
   @HiveField(17)
   final int? recent;
+  @HiveField(18)
+  final String? sourceUrl;
 
   Recipe({
     this.id,
@@ -62,7 +64,8 @@ class Recipe {
     this.rating,
     this.lastCooked,
     this.isNew,
-    this.recent
+    this.recent,
+    this.sourceUrl
   });
 
   Recipe copyWith({
@@ -83,7 +86,8 @@ class Recipe {
     int? rating,
     String? lastCooked,
     bool? isNew,
-    int? recent
+    int? recent,
+    String? sourceUrl
   }) {
     return Recipe(
       id: id ?? this.id,
@@ -103,7 +107,8 @@ class Recipe {
       rating: rating ?? this.rating,
       lastCooked: lastCooked ?? this.lastCooked,
       isNew: isNew ?? this.isNew,
-      recent: recent ?? this.recent
+      recent: recent ?? this.recent,
+      sourceUrl: sourceUrl ?? this.sourceUrl
     );
   }
 
@@ -141,7 +146,8 @@ class Recipe {
       'rating': rating,
       'last_cooked': lastCooked,
       'is_new': isNew,
-      'recent': recent
+      'recent': recent,
+      'source_url': sourceUrl
     };
   }
 
@@ -164,7 +170,8 @@ class Recipe {
       rating: (json['rating'] is int) ? json['rating'] : ((json['rating'] is double) ? json['rating'].toInt() : null),
       lastCooked: json['last_cooked'] as String?,
       isNew: json['new'] as bool?,
-      recent: json['recent'] as int?
+      recent: json['recent'] as int?,
+      sourceUrl: json['source_url'] as String?,
     );
   }
 }

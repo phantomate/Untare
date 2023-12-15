@@ -147,5 +147,6 @@
   "timeInMinutes": "Temps en minutes",
   "share": "Partager",
   "plural": "Pluriel",
-  "useFractions": "Utiliser des fractions"
+  "useFractions": "Utiliser des fractions",
+  "openInBrowser": "Ouvrir dans le navigateur"
 }

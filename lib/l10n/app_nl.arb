@@ -249,5 +249,6 @@
   "timeInMinutes": "Tijd in minuten",
   "share": "Deel",
   "plural": "Meervoud",
-  "useFractions": "Gebruik fracties"
+  "useFractions": "Gebruik fracties",
+  "openInBrowser": "Openen in browser"
 }

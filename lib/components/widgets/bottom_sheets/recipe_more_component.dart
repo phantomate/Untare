@@ -8,6 +8,7 @@ import 'package:untare/components/dialogs/delete_recipe_dialog.dart';
 import 'package:untare/components/dialogs/upsert_meal_plan_entry_dialog.dart';
 import 'package:untare/models/recipe.dart';
 import 'package:untare/pages/recipe_upsert_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe recipe) {
   RecipeBloc recipeBloc = BlocProvider.of<RecipeBloc>(context);
@@ -17,6 +18,17 @@ Widget buildRecipeMore(BuildContext context, BuildContext btsContext, Recipe rec
     padding: const EdgeInsets.only(left: 12, right: 12, bottom: 6),
     child: Column(
       children: [
+        if (recipe.sourceUrl != null)
+          ListTile(
+            minLeadingWidth: 35,
+            enabled: (recipe.sourceUrl != null),
+            onTap: () {
+              launchUrl(Uri.parse(recipe.sourceUrl!));
+              Navigator.pop(btsContext);
+            },
+            leading: const Icon(Icons.open_in_browser_outlined),
+            title: Text(AppLocalizations.of(context)!.openInBrowser),
+          ),
         ListTile(
           minLeadingWidth: 35,
           onTap: () {

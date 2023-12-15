@@ -35,13 +35,14 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
       lastCooked: fields[15] as String?,
       isNew: fields[16] as bool?,
       recent: fields[17] as int?,
+      sourceUrl: fields[18] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Recipe obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -77,7 +78,9 @@ class RecipeAdapter extends TypeAdapter<Recipe> {
       ..writeByte(16)
       ..write(obj.isNew)
       ..writeByte(17)
-      ..write(obj.recent);
+      ..write(obj.recent)
+      ..writeByte(18)
+      ..write(obj.sourceUrl);
   }
 
   @override

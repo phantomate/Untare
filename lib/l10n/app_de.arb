@@ -148,5 +148,6 @@
   "editTime": "Zeit ändern",
   "timeInMinutes": "Zeit in Minuten",
   "share": "Teilen",
-  "useFractions": "Brüche verwenden"
+  "useFractions": "Brüche verwenden",
+  "openInBrowser": "Im Browser öffnen"
 }

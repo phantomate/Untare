@@ -148,5 +148,6 @@
   "editTime": "Edit time",
   "timeInMinutes": "Time in minutes",
   "share": "Share",
-  "useFractions": "Use fractions"
+  "useFractions": "Use fractions",
+  "openInBrowser": "Open in Browser"
 }

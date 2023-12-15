@@ -249,5 +249,6 @@
   "timeInMinutes": "Tid i minutter",
   "share": "Del",
   "plural": "Flertal",
-  "useFractions": "Brug brøker"
+  "useFractions": "Brug brøker",
+  "openInBrowser": "Åbn i browser"
 }
