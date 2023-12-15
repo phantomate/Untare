@@ -23,7 +23,6 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
   List<FormBuilderChipOption> shareOptionList = [];
   List<User> userList = await getUsersFromApiCache();
   List<User> sharedUsers = [];
-  final SettingsCubit settingsCubit = context.read<SettingsCubit>();
   final locale = AppLocalizations.supportedLocales.where((element) =>
   element.toLanguageTag() == AppLocalizations.of(context)!.localeName
   );
@@ -38,6 +37,9 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
     }
   }
 
+  if (!context.mounted) return;
+
+  final SettingsCubit settingsCubit = context.read<SettingsCubit>();
   sharedUsers = settingsCubit.state.userServerSetting!.planShare;
   if (mealPlan != null) {
     sharedUsers.addAll(mealPlan.shared);
@@ -61,20 +63,38 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                             padding: const EdgeInsets.only(bottom: 20),
                             child: Text((mealPlan != null) ? AppLocalizations.of(context)!.mealPlanEntryEdit : AppLocalizations.of(context)!.mealPlanEntryAdd, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 15),
+                            child: FormBuilderDateRangePicker(
+                              name: 'date',
+                              initialValue: DateTimeRange(
+                                  start: (mealPlan != null && mealPlan.fromDate != null) ? DateTime.parse(mealPlan.fromDate!) : DateTime.now(),
+                                  end: (mealPlan != null && mealPlan.toDate != null) ? DateTime.parse(mealPlan.toDate!) : DateTime.now()
+                              ),
+                              firstDate: DateTime(2015),
+                              lastDate: DateTime(2040),
+                              format: DateFormat('dd.MM.yy'),
+                              enabled: (referer == 'recipe' || referer == 'edit' || referer == 'meal-plan'),
+                              locale: locale.isNotEmpty ? locale.first : const Locale('en'),
+                              decoration: InputDecoration(
+                                  labelText: AppLocalizations.of(context)!.date
+                              ),
+                              validator: FormBuilderValidators.compose([
+                                FormBuilderValidators.required()
+                              ]),
+                            ),
+                          ),
                           Row(
                             children: [
                               Flexible(
-                                  child: FormBuilderDateTimePicker(
-                                    name: 'date',
-                                    initialValue: (mealPlan != null) ? DateTime.parse(mealPlan.date) : date,
-                                    enabled: (referer == 'recipe' || referer == 'edit'),
-                                    inputType: InputType.date,
-                                    locale: locale.isNotEmpty ? locale.first : Locale('en'),
+                                  child:  FormBuilderTextField(
+                                    name: 'title',
+                                    initialValue: (mealPlan != null) ? mealPlan.title : null,
                                     decoration: InputDecoration(
-                                        labelText: AppLocalizations.of(context)!.date
+                                      labelText: AppLocalizations.of(context)!.alternativeTitle,
                                     ),
                                     validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.required()
+                                      FormBuilderValidators.max(64),
                                     ]),
                                   )
                               ),
@@ -101,17 +121,6 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                           mealTypeTypeAheadFieldForm((mealPlan != null) ? mealPlan.mealType : null, formBuilderKey, context),
                           const SizedBox(height: 15),
                           recipeTypeAheadFormField((mealPlan != null) ? mealPlan.recipe : recipe, formBuilderKey, context, referer: referer),
-                          const SizedBox(height: 15),
-                          FormBuilderTextField(
-                            name: 'title',
-                            initialValue: (mealPlan != null) ? mealPlan.title : null,
-                            decoration: InputDecoration(
-                              labelText: AppLocalizations.of(context)!.alternativeTitle,
-                            ),
-                            validator: FormBuilderValidators.compose([
-                              FormBuilderValidators.max(64),
-                            ]),
-                          ),
                           const SizedBox(height: 15),
                           FormBuilderFilterChip (
                             name: 'share',
@@ -155,30 +164,44 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                                           servings = int.parse(formBuilderKey.currentState!.value['servings']);
                                         }
 
-                                        String? date;
-                                        DateTime tmpDate = formBuilderKey.currentState!.value['date'];
-                                        DateTime mealPlanDate = DateTime.parse(mealPlan.date);
-                                        if (tmpDate.year != mealPlanDate.year || tmpDate.month != mealPlanDate.month || tmpDate.day != mealPlanDate.day) {
-                                          date = DateFormat('yyyy-MM-dd').format(tmpDate);
+                                        String? fromDate;
+                                        String? toDate;
+                                        DateTimeRange tmpDateTimeRange = formBuilderKey.currentState!.value['date'];
+                                        DateTime tmpFromDate = tmpDateTimeRange.start;
+                                        DateTime tmpToDate = tmpDateTimeRange.end;
+                                        DateTime mealPlanFromDate = DateTime.parse(mealPlan.fromDate!);
+                                        DateTime mealPlanToDate = DateTime.parse(mealPlan.toDate!);
+
+                                        if (tmpFromDate.year != mealPlanFromDate.year || tmpFromDate.month != mealPlanFromDate.month || tmpFromDate.day != mealPlanFromDate.day) {
+                                          fromDate = DateFormat('yyyy-MM-dd').format(tmpFromDate);
+                                        }
+                                        if (tmpToDate.year != mealPlanToDate.year || tmpToDate.month != mealPlanToDate.month || tmpToDate.day != mealPlanToDate.day) {
+                                          toDate = DateFormat('yyyy-MM-dd').format(tmpToDate);
                                         }
 
                                         MealPlanEntry newMealPlan = mealPlan.copyWith(
                                             title: (title != mealPlan.title) ? title : null,
                                             recipe: recipe,
                                             servings: servings,
-                                            date: date,
                                             mealType: (formBuilderKey.currentState!.value['mealType'].id != mealPlan.mealType) ?  formBuilderKey.currentState!.value['mealType'] : null,
-                                            shared: newUserList
+                                            shared: newUserList,
+                                            fromDate: fromDate,
+                                            toDate: toDate
                                         );
 
                                         mealPlanBloc.add(UpdateMealPlan(mealPlan: newMealPlan));
                                       } else {
+                                        DateTimeRange tmpDateTimeRange = formBuilderKey.currentState!.value['date'];
+                                        DateTime fromDate = tmpDateTimeRange.start;
+                                        DateTime toDate = tmpDateTimeRange.end;
+
                                         MealPlanEntry mealPlan = MealPlanEntry(
                                             title: title ?? '',
                                             recipe: formBuilderKey.currentState!.value['recipe'],
                                             servings: int.parse(formBuilderKey.currentState!.value['servings']),
                                             note: '',
-                                            date: DateFormat('yyyy-MM-dd').format(formBuilderKey.currentState!.value['date']),
+                                            fromDate: DateFormat('yyyy-MM-dd').format(fromDate),
+                                            toDate: DateFormat('yyyy-MM-dd').format(toDate),
                                             mealType: formBuilderKey.currentState!.value['mealType'],
                                             shared: newUserList
                                         );
