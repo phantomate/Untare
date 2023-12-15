@@ -88,9 +88,14 @@ Future addShoppingListEntryDialog(BuildContext context) {
                                   }
 
                                   // Set supermarket category on food
-                                  Food foodWithNewCategory = formBuilderData['food'].copyWith(supermarketCategory: formBuilderData['category']);
+                                  Food food;
+                                  if (formBuilderData['category'] != null) {
+                                    food = formBuilderData['food'].copyWith(supermarketCategory: formBuilderData['category']);
+                                  } else {
+                                    food = formBuilderData['food'];
+                                  }
 
-                                  ShoppingListEntry newShoppingListEntry =  ShoppingListEntry(food: foodWithNewCategory, unit: unit, amount: amount, checked: false);
+                                  ShoppingListEntry newShoppingListEntry =  ShoppingListEntry(food: food, unit: unit, amount: amount, checked: false);
 
                                   shoppingListBloc.add(CreateShoppingListEntry(shoppingListEntry: newShoppingListEntry));
                                   Navigator.pop(dContext);

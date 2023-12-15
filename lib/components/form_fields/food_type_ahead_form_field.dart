@@ -42,6 +42,7 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilde
     },
     onSuggestionSelected: (suggestion) {
       foodTextController.text = suggestion.name;
+      formBuilderKey.currentState?.fields['category']?.didChange(suggestion.supermarketCategory);
     },
     onSaved: (Food? formFood) {
       Food? newFood = food;
@@ -53,7 +54,15 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilde
         // Overwrite food, if changed in form
         if (food != null && formFood != null) {
           if (food.id != formFood.id || (food.id == null && formFood.id == null)) {
-            newFood = Food(id: formFood.id, name: formFood.name, description: formFood.description, onHand: formFood.onHand);
+            newFood = Food(
+                id: formFood.id,
+                name: formFood.name,
+                description: formFood.description,
+                onHand: formFood.onHand,
+                supermarketCategory: formFood.supermarketCategory,
+                recipeCount: formFood.recipeCount,
+                pluralName: formFood.pluralName
+            );
           }
         } else if (formFood == null) {
           if (foodTextController.text != '') {
@@ -63,7 +72,15 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilde
             foodTextController.text = '';
           }
         } else if (food == null) {
-          newFood = Food(id: formFood.id, name: formFood.name, description: formFood.description, onHand: formFood.onHand);
+          newFood = Food(
+              id: formFood.id,
+              name: formFood.name,
+              description: formFood.description,
+              onHand: formFood.onHand,
+              supermarketCategory: formFood.supermarketCategory,
+              recipeCount: formFood.recipeCount,
+              pluralName: formFood.pluralName
+          );
         }
 
         formBuilderKey.currentState!.fields[fieldName]!.didChange(newFood);
