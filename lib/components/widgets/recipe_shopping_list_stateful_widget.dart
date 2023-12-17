@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fraction/fraction.dart';
 import 'package:untare/blocs/recipe/recipe_bloc.dart';
 import 'package:untare/blocs/recipe/recipe_event.dart';
 import 'package:untare/blocs/recipe/recipe_state.dart';
 import 'package:untare/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:untare/components/loading_component.dart';
 import 'package:untare/cubits/settings_cubit.dart';
-import 'package:untare/extensions/double_extension.dart';
 import 'package:untare/models/food.dart';
 import 'package:untare/models/ingredient.dart';
 import 'package:untare/models/recipe.dart';
@@ -16,6 +14,8 @@ import 'package:untare/models/shopping_list_entry.dart';
 import 'package:untare/models/step.dart';
 import 'package:untare/services/api/api_food.dart';
 import 'package:untare/services/api/api_shopping_list.dart';
+
+import 'package:untare/utils.dart';
 
 class RecipeShoppingListWidget extends StatefulWidget {
   final Recipe recipe;
@@ -224,27 +224,6 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
     bool? useFractions = (settingsCubit.state.userServerSetting!.useFractions == true);
 
     double rawAmount = ingredient.amount * newServing / initServing;
-    String amount = (ingredient.amount > 0) ? ('${rawAmount.toFormattedString()} ') : '';
-    if (amount != '' && useFractions == true && (rawAmount % 1) != 0) {
-      // If we have a complex decimal we build a "simple" fraction. Otherwise we do the normal one
-      if ((((rawAmount - rawAmount.toInt()) * 100) % 5) != 0) {
-        // Use this crap because we can't change precision programmatically
-        if (rawAmount.toInt() < 1) {
-          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-1).reduce()} ';
-        } else if (rawAmount.toInt() < 10) {
-          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-2).reduce()} ';
-        } else if (rawAmount.toInt() < 100) {
-          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-3).reduce()} ';
-        } else if(rawAmount.toInt() < 1000) {
-          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-4).reduce()} ';
-        } else {
-          amount = '${MixedFraction.fromDouble(rawAmount, precision: 1.0e-5).reduce()} ';
-        }
-      } else {
-        amount = '${MixedFraction.fromDouble(rawAmount)} ';
-      }
-    }
-
     String unit = (ingredient.unit != null && ingredient.amount > 0) ? ('${ingredient.unit!.getUnitName(rawAmount)} ') : '';
     String food = (ingredient.food != null) ? ('${ingredient.food!.getFoodName(rawAmount)} ') : '';
     bool? checkBoxValue = !(ingredient.food != null && ingredient.food!.onHand!);
@@ -292,7 +271,7 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
             ),
             title: Wrap(
               children: [
-                Text(amount, style: const TextStyle(fontWeight: FontWeight.bold)),
+                amountWrap(rawAmount, useFractions),
                 Text(unit, style: const TextStyle(fontWeight: FontWeight.bold)),
                 Text(food),
               ],

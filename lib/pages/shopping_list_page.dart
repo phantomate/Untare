@@ -1,12 +1,14 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls
 
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:configurable_expansion_tile_null_safety/configurable_expansion_tile_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fraction/fraction.dart';
 import 'package:untare/blocs/recipe/recipe_bloc.dart';
 import 'package:untare/blocs/recipe/recipe_state.dart';
 import 'package:untare/blocs/shopping_list/shopping_list_bloc.dart';
@@ -416,6 +418,9 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
   }
 
   Widget buildShoppingListEntryWidget(ShoppingListEntry shoppingListEntry, {bool? grouped}) {
+    SettingsCubit settingsCubit = context.read<SettingsCubit>();
+    bool? useFractions = (settingsCubit.state.userServerSetting!.useFractions == true);
+
     String amount = (shoppingListEntry.amount > 0) ? ('${shoppingListEntry.amount.toFormattedString()} ') : '';
     String unit = (shoppingListEntry.amount > 0 && shoppingListEntry.unit != null) ? ('${shoppingListEntry.unit!.getUnitName(shoppingListEntry.amount)} ') : '';
     String food = (shoppingListEntry.food != null) ? (shoppingListEntry.food!.getFoodName(shoppingListEntry.amount)) : '';
@@ -475,7 +480,22 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                           RichText(
                               text: TextSpan(
                                   children: [
-                                    TextSpan(text: amount, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color, fontWeight: FontWeight.bold)),
+                                    TextSpan(
+                                        children: (useFractions == false || shoppingListEntry.amount % 1 == 0)
+                                            ? [TextSpan(text: amount)]
+                                            : [
+                                                TextSpan(
+                                                  text: '${shoppingListEntry.amount.toInt()} ',
+                                                ),
+                                                TextSpan(
+                                                    text:
+                                                        '${MixedFraction.fromDouble(shoppingListEntry.amount % 1).reduce()} ',
+                                                    style: const TextStyle(
+                                                        fontFeatures: <FontFeature>[FontFeature.fractions()]))
+                                              ],
+                                        style: TextStyle(
+                                            color: Theme.of(context).primaryTextTheme.bodyText1!.color,
+                                            fontWeight: FontWeight.bold)),
                                     TextSpan(text: unit, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color, fontWeight: FontWeight.bold)),
                                     TextSpan(text: food, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color)),
                                   ],
