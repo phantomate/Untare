@@ -5,26 +5,30 @@ import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:untare/futures/future_api_cache_supermarket_categories.dart';
 import 'package:untare/models/supermarket_category.dart';
 
-Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCategory, GlobalKey<FormBuilderState> formBuilderKey, BuildContext context) {
+Widget supermarketCategoryTypeAheadFormField(
+    SupermarketCategory? supermarketCategory,
+    GlobalKey<FormBuilderState> formBuilderKey,
+    BuildContext context) {
   final categoryTextController = TextEditingController();
 
   if (supermarketCategory != null) {
     categoryTextController.text = supermarketCategory.name;
   }
-  
+
   return FormBuilderTypeAhead<SupermarketCategory>(
+    ignoreAccessibleNavigation: true,
     name: 'category',
     controller: categoryTextController,
     initialValue: supermarketCategory,
     selectionToTextTransformer: (category) => category.name,
-    decoration: InputDecoration(
-      labelText: AppLocalizations.of(context)!.category
-    ),
+    decoration:
+        InputDecoration(labelText: AppLocalizations.of(context)!.category),
     itemBuilder: (context, category) {
       return ListTile(title: Text(category.name));
     },
     suggestionsCallback: (query) async {
-      List<SupermarketCategory> superMarketCategories = await getSupermarketCategoriesFromApiCache();
+      List<SupermarketCategory> superMarketCategories =
+          await getSupermarketCategoriesFromApiCache();
 
       List<SupermarketCategory> supermarketCategoriesByQuery = [];
       for (var element in superMarketCategories) {
@@ -35,10 +39,13 @@ Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCat
 
       bool hideOnEqual = false;
       for (var element in superMarketCategories) {
-        (element.name.toLowerCase() == query.toLowerCase()) ? hideOnEqual = true : null;
+        (element.name.toLowerCase() == query.toLowerCase())
+            ? hideOnEqual = true
+            : null;
       }
 
-      if (query != '' && (supermarketCategoriesByQuery.isEmpty || !hideOnEqual)) {
+      if (query != '' &&
+          (supermarketCategoriesByQuery.isEmpty || !hideOnEqual)) {
         supermarketCategoriesByQuery.add(SupermarketCategory(name: query));
       }
 
@@ -49,25 +56,33 @@ Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCat
     },
     onSaved: (SupermarketCategory? formCategory) {
       SupermarketCategory? newCategory = supermarketCategory;
-      
+
       // Invalidate empty string because type ahead field isn't aware
       if (categoryTextController.text.isEmpty) {
         formBuilderKey.currentState!.fields['category']!.didChange(null);
       } else {
         // Overwrite category, if changed in form
         if (supermarketCategory != null && formCategory != null) {
-          if (supermarketCategory.id != formCategory.id || (supermarketCategory.id == null && formCategory.id == null)) {
-            newCategory = SupermarketCategory(id: formCategory.id, name: formCategory.name, description: formCategory.description);
+          if (supermarketCategory.id != formCategory.id ||
+              (supermarketCategory.id == null && formCategory.id == null)) {
+            newCategory = SupermarketCategory(
+                id: formCategory.id,
+                name: formCategory.name,
+                description: formCategory.description);
           }
-        } else if (formCategory== null) {
+        } else if (formCategory == null) {
           if (categoryTextController.text != '') {
-            newCategory = SupermarketCategory(name: categoryTextController.text);
+            newCategory =
+                SupermarketCategory(name: categoryTextController.text);
           } else {
             newCategory = null;
             categoryTextController.text = '';
           }
         } else if (supermarketCategory == null) {
-          newCategory = SupermarketCategory(id: formCategory.id, name: formCategory.name, description: formCategory.description);
+          newCategory = SupermarketCategory(
+              id: formCategory.id,
+              name: formCategory.name,
+              description: formCategory.description);
         }
 
         formBuilderKey.currentState!.fields['category']!.didChange(newCategory);

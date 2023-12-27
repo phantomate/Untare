@@ -6,7 +6,8 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:untare/futures/future_api_cache_foods.dart';
 import 'package:untare/models/food.dart';
 
-Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilderKey, BuildContext context) {
+Widget foodTypeAheadFormField(Food? food,
+    GlobalKey<FormBuilderState> formBuilderKey, BuildContext context) {
   final foodTextController = TextEditingController();
   const fieldName = 'food';
 
@@ -16,6 +17,7 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilde
   }
 
   return FormBuilderTypeAhead<Food>(
+    ignoreAccessibleNavigation: true,
     name: fieldName,
     controller: foodTextController,
     initialValue: food,
@@ -23,9 +25,8 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilde
     decoration: InputDecoration(
       labelText: AppLocalizations.of(context)!.food,
     ),
-    validator: FormBuilderValidators.compose([
-      FormBuilderValidators.required()
-    ]),
+    validator:
+        FormBuilderValidators.compose([FormBuilderValidators.required()]),
     itemBuilder: (context, food) {
       return ListTile(title: Text(food.name));
     },
@@ -42,7 +43,8 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilde
     },
     onSuggestionSelected: (suggestion) {
       foodTextController.text = suggestion.name;
-      formBuilderKey.currentState?.fields['category']?.didChange(suggestion.supermarketCategory);
+      formBuilderKey.currentState?.fields['category']
+          ?.didChange(suggestion.supermarketCategory);
     },
     onSaved: (Food? formFood) {
       Food? newFood = food;
@@ -53,7 +55,8 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilde
       } else {
         // Overwrite food, if changed in form
         if (food != null && formFood != null) {
-          if (food.id != formFood.id || (food.id == null && formFood.id == null)) {
+          if (food.id != formFood.id ||
+              (food.id == null && formFood.id == null)) {
             newFood = Food(
                 id: formFood.id,
                 name: formFood.name,
@@ -61,8 +64,7 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilde
                 onHand: formFood.onHand,
                 supermarketCategory: formFood.supermarketCategory,
                 recipeCount: formFood.recipeCount,
-                pluralName: formFood.pluralName
-            );
+                pluralName: formFood.pluralName);
           }
         } else if (formFood == null) {
           if (foodTextController.text != '') {
@@ -79,8 +81,7 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilde
               onHand: formFood.onHand,
               supermarketCategory: formFood.supermarketCategory,
               recipeCount: formFood.recipeCount,
-              pluralName: formFood.pluralName
-          );
+              pluralName: formFood.pluralName);
         }
 
         formBuilderKey.currentState!.fields[fieldName]!.didChange(newFood);
