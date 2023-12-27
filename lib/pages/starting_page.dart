@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:untare/blocs/authentication/authentication_bloc.dart';
 import 'package:untare/blocs/authentication/authentication_event.dart';
 import 'package:untare/blocs/authentication/authentication_state.dart';
@@ -158,10 +159,12 @@ class __SignInFormState extends State<_SignInForm> {
                                         keyboardType: TextInputType.url,
                                         autocorrect: false,
                                         textInputAction: TextInputAction.next,
-                                        validator: (value) =>
-                                            value == null || value == ""
-                                                ? 'Server url is required'
-                                                : null),
+                                        validator:
+                                            FormBuilderValidators.compose([
+                                          FormBuilderValidators.required(
+                                              errorText:
+                                                  "Server url is required"),
+                                        ])),
                                   )),
                                   const SizedBox(width: 10),
                                   SizedBox(
@@ -195,10 +198,10 @@ class __SignInFormState extends State<_SignInForm> {
                                   ),
                                   controller: _usernameController,
                                   textInputAction: TextInputAction.next,
-                                  validator: (value) =>
-                                      value == null || value == ""
-                                          ? 'Username is required.'
-                                          : null,
+                                  validator: FormBuilderValidators.compose([
+                                    FormBuilderValidators.required(
+                                        errorText: "Username is required.")
+                                  ]),
                                   autofillHints: const {AutofillHints.username},
                                 ),
                               ),
@@ -213,10 +216,10 @@ class __SignInFormState extends State<_SignInForm> {
                                   obscureText: true,
                                   controller: _passwordController,
                                   textInputAction: TextInputAction.send,
-                                  validator: (value) =>
-                                      value == null || value == ""
-                                          ? 'Password is required.'
-                                          : null,
+                                  validator: FormBuilderValidators.compose([
+                                    FormBuilderValidators.required(
+                                        errorText: 'Password is required.')
+                                  ]),
                                   autofillHints: const {AutofillHints.password},
                                   onFieldSubmitted: (String _) =>
                                       onLoginButtonPressed(),
