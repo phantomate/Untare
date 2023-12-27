@@ -5,7 +5,8 @@ import 'package:form_builder_extra_fields/form_builder_extra_fields.dart';
 import 'package:untare/futures/future_api_cache_units.dart';
 import 'package:untare/models/unit.dart';
 
-Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> formBuilderKey, BuildContext context) {
+Widget unitTypeAheadFormField(Unit? unit,
+    GlobalKey<FormBuilderState> formBuilderKey, BuildContext context) {
   final unitTextController = TextEditingController();
   const fieldName = 'unit';
 
@@ -13,15 +14,14 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> formBuilde
   if (unit != null) {
     unitTextController.text = unit.name;
   }
-  
+
   return FormBuilderTypeAhead<Unit>(
+    ignoreAccessibleNavigation: true,
     name: fieldName,
     controller: unitTextController,
     initialValue: unit,
     selectionToTextTransformer: (unit) => unit.name,
-    decoration: InputDecoration(
-      labelText: AppLocalizations.of(context)!.unit
-    ),
+    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.unit),
     itemBuilder: (context, unit) {
       return ListTile(title: Text(unit.name));
     },
@@ -41,17 +41,21 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> formBuilde
     },
     onSaved: (Unit? formUnit) {
       Unit? newUnit = unit;
-      
+
       if (unitTextController.text.isEmpty) {
         // Invalidate empty string because type ahead field isn't aware
         formBuilderKey.currentState!.fields[fieldName]!.didChange(null);
       } else {
         // Overwrite unit, if changed in form
         if (unit != null && formUnit != null) {
-          if (unit.id != formUnit.id || (unit.id == null && formUnit.id == null)) {
-            newUnit = Unit(id: formUnit.id, name: formUnit.name, description: formUnit.description);
+          if (unit.id != formUnit.id ||
+              (unit.id == null && formUnit.id == null)) {
+            newUnit = Unit(
+                id: formUnit.id,
+                name: formUnit.name,
+                description: formUnit.description);
           }
-        } else if (formUnit== null) {
+        } else if (formUnit == null) {
           if (unitTextController.text != '') {
             newUnit = Unit(name: unitTextController.text);
           } else {
@@ -59,7 +63,10 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> formBuilde
             unitTextController.text = '';
           }
         } else if (unit == null) {
-          newUnit = Unit(id: formUnit.id, name: formUnit.name, description: formUnit.description);
+          newUnit = Unit(
+              id: formUnit.id,
+              name: formUnit.name,
+              description: formUnit.description);
         }
 
         formBuilderKey.currentState!.fields[fieldName]!.didChange(newUnit);

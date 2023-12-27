@@ -9,7 +9,9 @@ import 'package:untare/components/recipes/recipe_time_component.dart';
 import 'package:untare/futures/future_api_cache_recipes.dart';
 import 'package:untare/models/recipe.dart';
 
-Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> formBuilderKey, BuildContext context, {String? referer}) {
+Widget recipeTypeAheadFormField(Recipe? recipe,
+    GlobalKey<FormBuilderState> formBuilderKey, BuildContext context,
+    {String? referer}) {
   final recipeTextController = TextEditingController();
 
   if (recipe != null) {
@@ -17,14 +19,14 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> form
   }
 
   return FormBuilderTypeAhead<Recipe>(
+    ignoreAccessibleNavigation: true,
     name: 'recipe',
     controller: recipeTextController,
     initialValue: recipe,
     enabled: (referer == 'meal-plan' || referer == 'edit'),
     selectionToTextTransformer: (recipe) => recipe.name,
-    decoration: InputDecoration(
-      labelText: AppLocalizations.of(context)!.recipe
-    ),
+    decoration:
+        InputDecoration(labelText: AppLocalizations.of(context)!.recipe),
     validator: FormBuilderValidators.compose([
       if (referer != 'meal-plan' && referer != 'edit')
         FormBuilderValidators.required()
@@ -46,7 +48,8 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> form
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(recipe.name),
-              if (recipe.lastCooked != null || (recipe.rating != null && recipe.rating! > 0))
+              if (recipe.lastCooked != null ||
+                  (recipe.rating != null && recipe.rating! > 0))
                 Row(
                   children: [
                     Row(
@@ -59,8 +62,7 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> form
                 )
             ],
           ),
-          trailing: buildRecipeTime(recipe)
-      );
+          trailing: buildRecipeTime(recipe));
     },
     suggestionsCallback: (query) async {
       return await getRecipesFromApiCache(query);
@@ -69,8 +71,10 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> form
       recipeTextController.text = suggestion.name;
     },
     onChanged: (Recipe? recipe) {
-      if (formBuilderKey.currentState!.fields['servings'] != null && recipe != null) {
-        formBuilderKey.currentState!.fields['servings']!.didChange(recipe.servings.toString());
+      if (formBuilderKey.currentState!.fields['servings'] != null &&
+          recipe != null) {
+        formBuilderKey.currentState!.fields['servings']!
+            .didChange(recipe.servings.toString());
       }
     },
     onSaved: (Recipe? formRecipe) {
