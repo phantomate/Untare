@@ -25,13 +25,14 @@ class FoodAdapter extends TypeAdapter<Food> {
       ignoreShopping: fields[5] as bool?,
       recipeCount: fields[6] as int?,
       pluralName: fields[7] as String?,
+      recipe: fields[8] as Recipe?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Food obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class FoodAdapter extends TypeAdapter<Food> {
       ..writeByte(6)
       ..write(obj.recipeCount)
       ..writeByte(7)
-      ..write(obj.pluralName);
+      ..write(obj.pluralName)
+      ..writeByte(8)
+      ..write(obj.recipe);
   }
 
   @override

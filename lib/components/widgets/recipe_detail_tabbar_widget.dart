@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:collapsible/collapsible.dart';
 import 'package:fraction/fraction.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:untare/pages/recipe_detail_page.dart';
 
 class RecipeDetailTabBarWidget extends StatefulWidget {
   final Recipe recipe;
@@ -25,7 +26,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
   @override
   void initState() {
     super.initState();
-    servings = widget.recipe.servings ?? 0;
+    servings = widget.recipe.servings ?? 1;
     newServings = servings;
   }
 
@@ -123,14 +124,40 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
         for (int i = 0; i < recipe.steps.length; i++) {
           List<Widget> stepList = [];
 
-          stepList.addAll(recipe.steps[i].ingredients.map((item) => ingredientComponent(item, servings, newServings, true, context)).toList());
+          if (recipe.steps[i].ingredients.isNotEmpty) {
+            stepList.addAll(recipe.steps[i].ingredients.map((item) => ingredientComponent(item, servings, newServings, true, context)).toList());
+          }
 
-          stepList.add(Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 15, 10),
-              child: MarkdownBody(
-                  data: recipe.steps[i].instruction ?? '',
-                  styleSheet:
-                      MarkdownStyleSheet(p: const TextStyle(fontSize: 15)))));
+          if (recipe.steps[i].instruction != null && recipe.steps[i].instruction!.isNotEmpty) {
+            stepList.add(
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 15, 10),
+                child: MarkdownBody(
+                    data: recipe.steps[i].instruction ?? '',
+                    styleSheet:
+                    MarkdownStyleSheet(p: const TextStyle(fontSize: 15)))
+              )
+            );
+          }
+
+          if (recipe.steps[i].stepRecipe != null) {
+            stepList.add(
+              Padding(
+                padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                child: ListTile(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: (recipe.steps[i].stepRecipeData!)))
+                  ),
+                  title: Text(
+                    recipe.steps[i].stepRecipeData!.name,
+                    style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w600),
+                  ),
+                  trailing: Icon(Icons.arrow_forward_outlined, color: Theme.of(context).primaryColor),
+                ),
+              )
+            );
+          }
 
           directionsSteps.add(directionStepLayout(context, Column(crossAxisAlignment: CrossAxisAlignment.start, children: stepList), i+1, recipe.steps[i].time, recipe.steps[i].name));
         }
@@ -298,6 +325,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
     String unit = (ingredient.amount > 0 && ingredient.unit != null) ? ('${ingredient.unit!.getUnitName(rawAmount)} ') : '';
     String food = (ingredient.food != null) ? ('${ingredient.food!.getFoodName(rawAmount)} ') : '';
     String note = (ingredient.note != null && ingredient.note != '') ? ('(${ingredient.note!})') : '';
+    Recipe? recipe = (ingredient.food != null && ingredient.food!.recipe != null) ? ingredient.food!.recipe : null;
 
     return Container(
         margin: const EdgeInsets.only(left: 20, right: 20),
@@ -317,7 +345,19 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
               children: [
                 Text(amount, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                 Text(unit, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                Text(food, style: const TextStyle(fontSize: 15)),
+                if (recipe != null)
+                  InkWell(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: recipe)),
+                    ),
+                    child: Text(
+                      food,
+                      style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                if (recipe == null)
+                  Text(food, style: const TextStyle(fontSize: 15)),
                 Text(
                     note,
                     style: TextStyle(

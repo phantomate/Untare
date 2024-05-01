@@ -17,7 +17,7 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> form
   }
 
   return FormBuilderTypeAhead<Recipe>(
-    name: 'recipe',
+    name: 'recipe${context.hashCode}',
     controller: recipeTextController,
     initialValue: recipe,
     enabled: (referer == 'meal-plan' || referer == 'edit'),
@@ -76,7 +76,7 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> form
     onSaved: (Recipe? formRecipe) {
       // Invalidate empty string because type ahead field isn't aware
       if (recipeTextController.text.isEmpty) {
-        formBuilderKey.currentState!.fields['recipe']!.didChange(null);
+        formBuilderKey.currentState!.fields['recipe${context.hashCode}']!.didChange(null);
       }
 
       if (formRecipe == null) {

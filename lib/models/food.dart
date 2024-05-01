@@ -1,3 +1,4 @@
+import 'package:untare/models/recipe.dart';
 import 'package:untare/models/supermarket_category.dart';
 import 'package:hive/hive.dart';
 
@@ -22,6 +23,8 @@ class Food {
   final int? recipeCount;
   @HiveField(7)
   final String? pluralName;
+  @HiveField(8)
+  final Recipe? recipe;
 
   Food({
     this.id,
@@ -31,7 +34,8 @@ class Food {
     this.supermarketCategory,
     this.ignoreShopping,
     this.recipeCount,
-    this.pluralName
+    this.pluralName,
+    this.recipe
   });
 
   Food copyWith({
@@ -42,7 +46,8 @@ class Food {
     SupermarketCategory? supermarketCategory,
     bool? ignoreShopping,
     int? recipeCount,
-    String? pluralName
+    String? pluralName,
+    Recipe? recipe
   }) {
     return Food(
       id: id ?? this.id,
@@ -52,7 +57,8 @@ class Food {
       supermarketCategory: supermarketCategory ?? this.supermarketCategory,
       ignoreShopping: ignoreShopping ?? this.ignoreShopping,
       recipeCount: recipeCount ?? this.recipeCount,
-      pluralName: pluralName ?? this.pluralName
+      pluralName: pluralName ?? this.pluralName,
+      recipe: recipe ?? this.recipe
     );
   }
 
@@ -67,7 +73,8 @@ class Food {
             : null,
         ignoreShopping: json['ignore_shopping'] as bool?,
         recipeCount: json['numrecipe'] as int?,
-        pluralName: json['plural_name'] as String?
+        pluralName: json['plural_name'] as String?,
+        recipe: (json['recipe'] != null) ? Recipe.fromJson(json['recipe']) : null
     );
   }
 
@@ -82,7 +89,8 @@ class Food {
       'supermarket_category': supermarketCategory,
       'ignore_shopping': ignoreShopping ?? false,
       'numrecipe': recipeCount,
-      'plural_name': pluralName
+      'plural_name': pluralName,
+      'recipe': recipe
     };
   }
 
