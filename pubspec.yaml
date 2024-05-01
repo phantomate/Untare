@@ -40,7 +40,7 @@ dependencies:
   sliver_tools: ^0.2.5
   hive: ^2.2.2
   hive_flutter: ^1.1.0
-  flutter_form_builder: ^9.1.0
+  flutter_form_builder: 9.1.1
   form_builder_validators: ^9.1.0
   form_builder_extra_fields: ^10.1.0
   form_builder_image_picker: ^4.0.0
