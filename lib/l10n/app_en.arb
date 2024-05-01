@@ -149,5 +149,9 @@
   "timeInMinutes": "Time in minutes",
   "share": "Share",
   "useFractions": "Use fractions",
-  "openInBrowser": "Open in Browser"
+  "openInBrowser": "Open in Browser",
+
+  "nutritionalValues": "Nutrition Facts",
+  "nutritionalValuesPerServing": "per serving",
+  "nutritionalValuesTotal": "total"
 }

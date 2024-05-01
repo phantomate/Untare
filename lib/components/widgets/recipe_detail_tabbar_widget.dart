@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:untare/cubits/settings_cubit.dart';
 import 'package:untare/models/ingredient.dart';
+import 'package:untare/models/nutritional_value.dart';
 import 'package:untare/models/recipe.dart';
 import 'package:untare/extensions/double_extension.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
@@ -50,7 +51,9 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
     return TabBarView(
       children: [
         ingredientTabView(),
-        directionsTabView(widget.recipe)
+        directionsTabView(widget.recipe),
+        if (widget.recipe.hasNutritionalValues())
+          nutritionalValuesTabView(widget.recipe)
       ],
     );
   }
@@ -73,7 +76,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
 
     if (ingredientsList.isNotEmpty) {
       return ListView(
-        padding: const EdgeInsets.only(top: 160),
+        padding: const EdgeInsets.only(top: 165),
         physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         children: [
           Container(
@@ -367,6 +370,79 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                     )
                 )
               ],
+            )
+        )
+    );
+  }
+
+  Widget nutritionalValuesTabView(Recipe recipe) {
+    List<Widget> nutritionalValuesList = [];
+
+    nutritionalValuesList.add(
+        Container(
+            margin: const EdgeInsets.only(left: 0, right: 20),
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(
+                        color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                        width: 0.8
+                    )
+                )
+            ),
+            child: ListTile(
+                dense: false,
+                visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+                contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                title: Text(AppLocalizations.of(context)!.nutritionalValuesPerServing,textAlign: TextAlign.right, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),),
+                trailing: SizedBox(
+                  width: 100,
+                  child: Text(AppLocalizations.of(context)!.nutritionalValuesTotal, textAlign: TextAlign.right, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
+                )
+            )
+        )
+    );
+
+    nutritionalValuesList.addAll(recipe.nutritionalValues!.map((item) => nutritionalValueComponent(item)).toList());
+
+    return ListView(
+        padding: const EdgeInsets.only(top: 165),
+        physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+        children: [
+          Container(
+            padding: const EdgeInsets.only(left: 20),
+            child: Column(
+              children: nutritionalValuesList,
+            ),
+          )
+        ]
+    );
+  }
+
+  Widget nutritionalValueComponent(NutritionalValue nutritionalValue) {
+    double nutritionalPortionValue = (nutritionalValue.totalValue ?? 0)/newServings;
+
+    return Container(
+        margin: const EdgeInsets.only(left: 0, right: 20),
+        decoration: BoxDecoration(
+            border: Border(
+                bottom: BorderSide(
+                    color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                    width: 0.8
+                )
+            )
+        ),
+        child: ListTile(
+            dense: false,
+            visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
+            contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+            leading: SizedBox(
+              width: 120,
+              child: Text(nutritionalValue.name ?? '', style: const TextStyle(fontSize: 15)),
+            ),
+            title: Text(nutritionalPortionValue.toFormattedString(precision: 1), textAlign: TextAlign.right, style: const TextStyle(fontSize: 15),),
+            trailing: SizedBox(
+              width: 100,
+              child: Text('${(nutritionalValue.totalValue ?? 0).toFormattedString(precision: 1)} ${nutritionalValue.unit ?? ''}', textAlign: TextAlign.right, style: const TextStyle(fontSize: 15)),
             )
         )
     );

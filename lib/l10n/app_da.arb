@@ -250,5 +250,8 @@
   "share": "Del",
   "plural": "Flertal",
   "useFractions": "Brug brøker",
-  "openInBrowser": "Åbn i browser"
+  "openInBrowser": "Åbn i browser",
+  "nutritionalValues": "Næringsindhold",
+  "nutritionalValuesPerServing": "pr. portion",
+  "nutritionalValuesTotal": "total"
 }
