@@ -184,6 +184,7 @@ class __SignInFormState extends State<_SignInForm> {
                               isDense: true,
                             ),
                             controller: _usernameController,
+                            autofillHints: const [AutofillHints.username, AutofillHints.newUsername],
                             validator: (value) {
                               if (value == null){
                                 return 'Username is required.';
@@ -199,6 +200,7 @@ class __SignInFormState extends State<_SignInForm> {
                             ),
                             obscureText: true,
                             controller: _passwordController,
+                            autofillHints: const [AutofillHints.password, AutofillHints.newPassword],
                             validator: (value) {
                               if (value == null){
                                 return 'Password is required.';
