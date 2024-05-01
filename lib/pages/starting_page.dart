@@ -235,7 +235,6 @@ class __SignInFormState extends State<_SignInForm> {
                               ),
                             ],
                           ),
-                        ),
                       ),
                     ),
                   ),

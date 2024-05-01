@@ -22,6 +22,7 @@ import 'package:untare/models/ingredient.dart';
 import 'package:untare/models/keyword.dart';
 import 'package:untare/models/meal_plan_entry.dart';
 import 'package:untare/models/meal_type.dart';
+import 'package:untare/models/nutritional_value.dart';
 import 'package:untare/models/recipe.dart';
 import 'package:untare/models/recipe_meal_plan.dart';
 import 'package:untare/models/shopping_list_entry.dart';
@@ -86,6 +87,7 @@ Future _initHive() async {
   Hive.registerAdapter(UserSettingAdapter());
   Hive.registerAdapter(KeywordAdapter());
   Hive.registerAdapter(SpaceAdapter());
+  Hive.registerAdapter(NutritionalValueAdapter());
   await Hive.openBox('unTaReBox');
 }
 

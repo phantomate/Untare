@@ -68,8 +68,8 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                             child: FormBuilderDateRangePicker(
                               name: 'date',
                               initialValue: DateTimeRange(
-                                  start: (mealPlan != null && mealPlan.fromDate != null) ? DateTime.parse(mealPlan.fromDate!) : DateTime.now(),
-                                  end: (mealPlan != null && mealPlan.toDate != null) ? DateTime.parse(mealPlan.toDate!) : DateTime.now()
+                                  start: (date != null) ? date : ((mealPlan != null && mealPlan.fromDate != null) ? DateTime.parse(mealPlan.fromDate!) : DateTime.now()),
+                                  end: (date != null) ? date : ((mealPlan != null && mealPlan.toDate != null) ? DateTime.parse(mealPlan.toDate!) : DateTime.now())
                               ),
                               firstDate: DateTime(2015),
                               lastDate: DateTime(2040),
@@ -153,10 +153,10 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
 
                                       if (mealPlan != null) {
                                         Recipe? recipe;
-                                        if (mealPlan.recipe != null && formBuilderKey.currentState!.value['recipe'].id != mealPlan.recipe!.id) {
-                                          recipe = formBuilderKey.currentState!.value['recipe'];
+                                        if (mealPlan.recipe != null && formBuilderKey.currentState!.value['recipe${context.hashCode}'].id != mealPlan.recipe!.id) {
+                                          recipe = formBuilderKey.currentState!.value['recipe${context.hashCode}'];
                                         } else if (mealPlan.recipe == null) {
-                                          recipe = formBuilderKey.currentState!.value['recipe'];
+                                          recipe = formBuilderKey.currentState!.value['recipe${context.hashCode}'];
                                         }
 
                                         int? servings;
@@ -197,7 +197,7 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
 
                                         MealPlanEntry mealPlan = MealPlanEntry(
                                             title: title ?? '',
-                                            recipe: formBuilderKey.currentState!.value['recipe'],
+                                            recipe: formBuilderKey.currentState!.value['recipe${context.hashCode}'],
                                             servings: int.parse(formBuilderKey.currentState!.value['servings']),
                                             note: '',
                                             fromDate: DateFormat('yyyy-MM-dd').format(fromDate),

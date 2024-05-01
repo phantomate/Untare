@@ -250,5 +250,8 @@
   "share": "Deel",
   "plural": "Meervoud",
   "useFractions": "Gebruik fracties",
-  "openInBrowser": "Openen in browser"
+  "openInBrowser": "Openen in browser",
+  "nutritionalValues": "Voedingswaarde",
+  "nutritionalValuesPerServing": "per portie",
+  "nutritionalValuesTotal": "totaal"
 }

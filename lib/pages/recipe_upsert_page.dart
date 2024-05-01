@@ -15,6 +15,7 @@ import 'package:untare/blocs/recipe/recipe_bloc.dart';
 import 'package:untare/blocs/recipe/recipe_event.dart';
 import 'package:untare/blocs/recipe/recipe_state.dart';
 import 'package:untare/components/dialogs/upsert_recipe_ingredient_dialog.dart';
+import 'package:untare/components/form_fields/recipe_type_ahead_form_field.dart';
 import 'package:untare/components/loading_component.dart';
 import 'package:untare/components/recipes/recipe_image_component.dart';
 import 'package:untare/extensions/double_extension.dart';
@@ -216,6 +217,15 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
   void _upsertTimeToStep(Map<String, dynamic> map) {
     List<StepModel> newStepList = (recipe != null && recipe!.steps.isNotEmpty) ? recipe!.steps : [];
     newStepList[map['stepIndex']] = recipe!.steps[map['stepIndex']].copyWith(time: int.parse(map['stepTime']));
+
+    setState(() {
+      recipe = rebuildRecipe(steps: newStepList);
+    });
+  }
+
+  void _upsertRecipeToStep(int stepIndex, Recipe? stepRecipe) {
+    List<StepModel> newStepList = (recipe != null && recipe!.steps.isNotEmpty) ? recipe!.steps : [];
+    newStepList[stepIndex] = recipe!.steps[stepIndex].copyWith(stepRecipe: stepRecipe?.id, stepRecipeData: stepRecipe);
 
     setState(() {
       recipe = rebuildRecipe(steps: newStepList);
@@ -705,10 +715,21 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                             Text(' ${(step.time == null || step.time == 0) ? AppLocalizations.of(context)!.addTime : AppLocalizations.of(context)!.editTime}')
                           ]),
                     ),
+                    if (step.stepRecipeData == null)
+                      PopupMenuItem(
+                        padding: const EdgeInsets.fromLTRB(15, 5 ,15, 10),
+                        height: 18,
+                        value: 2,
+                        child: Row(
+                            children: [
+                              const Icon(Icons.restaurant_menu_outlined),
+                              Text(' ${AppLocalizations.of(context)!.recipesTooltipAddRecipe}')
+                            ]),
+                      ),
                     PopupMenuItem(
                       padding: const EdgeInsets.fromLTRB(15, 5 ,15, 5),
                       height: 18,
-                      value: 2,
+                      value: 3,
                       child: Row(
                         children: [
                           const Icon(Icons.delete_outline, color: Colors.redAccent),
@@ -723,6 +744,8 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                     if (value == 1) {
                       upsertRecipeStepTimeDialog(context, stepIndex, _upsertTimeToStep, stepTime: step.time);
                     } else if (value == 2) {
+                      _upsertRecipeToStep(stepIndex, Recipe(name: '', keywords: [], steps: []));
+                    } else if (value == 3) {
                       _removeStep(stepIndex);
                     }
                   },
@@ -759,7 +782,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
           ],
         ),
       ),
-      lastTarget: buildDirections(recipe!.steps[stepIndex], stepIndex),
+      lastTarget: buildDirectionsAndStepRecipe(recipe!.steps[stepIndex], stepIndex),
       leftSide: Container(
         margin: const EdgeInsets.only(left: 30),
         decoration: BoxDecoration(
@@ -829,7 +852,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                 children: [
                   Text(amount, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                   Text(unit, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                  Text(food, style: const TextStyle(fontSize: 15)),
+                  Text(food, style: TextStyle(fontSize: 15, fontWeight: (ingredient.food != null && ingredient.food!.recipe != null) ? FontWeight.bold : FontWeight.w400)),
                   Text(
                       note,
                       style: TextStyle(
@@ -846,25 +869,49 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
     );
   }
 
-  Widget buildDirections(StepModel step, int stepIndex) {
-    return Container(
-      padding: const EdgeInsets.only(top: 25, right: 20, bottom: 10, left: 15),
-      child: TextFormField(
-        key: ObjectKey(step.id ?? UniqueKey()),
-        initialValue: step.instruction,
-        decoration: InputDecoration(
-          labelText: AppLocalizations.of(context)!.directions,
-          contentPadding: const EdgeInsets.all(10),
-          border: const OutlineInputBorder(),
+  Widget buildDirectionsAndStepRecipe(StepModel step, int stepIndex) {
+    final formBuilderKey = GlobalKey<FormBuilderState>();
+
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.only(top: 25, right: 20, bottom: 10, left: 15),
+          child: TextFormField(
+            key: ObjectKey(step.id ?? UniqueKey()),
+            initialValue: step.instruction,
+            decoration: InputDecoration(
+              labelText: AppLocalizations.of(context)!.directions,
+              contentPadding: const EdgeInsets.all(10),
+              border: const OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+            minLines: null,
+            onChanged: (String? text) => _editDirections(text, stepIndex),
+            style: const TextStyle(
+                fontSize: 15
+            ),
+          ),
         ),
-        keyboardType: TextInputType.multiline,
-        maxLines: null,
-        minLines: null,
-        onChanged: (String? text) => _editDirections(text, stepIndex),
-        style: const TextStyle(
-            fontSize: 15
-        ),
-      ),
+        if (step.stepRecipeData != null)
+          Builder(
+            builder: (BuildContext context) {
+              return FormBuilder(
+                key: formBuilderKey,
+                onChanged: () {
+                  formBuilderKey.currentState!.save;
+                  if (formBuilderKey.currentState!.validate()) {
+                    _upsertRecipeToStep(stepIndex, formBuilderKey.currentState!.fields['recipe${context.hashCode}']!.value);
+                  }
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(top: 15, right: 20, bottom: 10, left: 15),
+                  child: recipeTypeAheadFormField(step.stepRecipeData, formBuilderKey, context, referer: 'edit'),
+                )
+              );
+            },
+          )
+      ],
     );
   }
 }

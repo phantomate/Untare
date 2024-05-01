@@ -149,5 +149,9 @@
   "timeInMinutes": "Zeit in Minuten",
   "share": "Teilen",
   "useFractions": "Brüche verwenden",
-  "openInBrowser": "Im Browser öffnen"
+  "openInBrowser": "Im Browser öffnen",
+
+  "nutritionalValues": "Nährwerte",
+  "nutritionalValuesPerServing": "pro Portion",
+  "nutritionalValuesTotal": "gesamt"
 }

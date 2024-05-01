@@ -17,6 +17,7 @@ Widget foodTypeAheadFormField(Food? food, GlobalKey<FormBuilderState> formBuilde
 
   return FormBuilderTypeAhead<Food>(
     name: fieldName,
+    ignoreAccessibleNavigation: true,
     controller: foodTextController,
     initialValue: food,
     selectionToTextTransformer: (food) => food.name,

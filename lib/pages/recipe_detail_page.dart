@@ -67,31 +67,32 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
           return true;
         },
         child: Scaffold(
-            body: DefaultTabController(
-                length: 2,
-                child: BlocConsumer<RecipeBloc, RecipeState>(
-                    listener: (context, state) {
-                      if (state is RecipeDeleted) {
-                        Navigator.pop(context);
-                      } else if (state is RecipeUpdated) {
-                        recipe = state.recipe;
-                      }
-                    },
-                    builder: (context, state) {
-                      if (state is RecipeFetched) {
-                        if (widget.recipe.id == state.recipe.id) {
-                          recipe = state.recipe;
-                        }
-                      } else if (state is RecipeFetchedFromCache) {
-                        if (widget.recipe.id == state.recipe.id && state.recipe.steps.isNotEmpty) {
-                          recipe = state.recipe;
-                        }
-                      }
+            body: BlocConsumer<RecipeBloc, RecipeState>(
+                listener: (context, state) {
+                  if (state is RecipeDeleted) {
+                    Navigator.pop(context);
+                  } else if (state is RecipeUpdated) {
+                    recipe = state.recipe;
+                  }
+                },
+                builder: (context, state) {
+                  if (state is RecipeFetched) {
+                    if (widget.recipe.id == state.recipe.id) {
+                      recipe = state.recipe;
+                    }
+                  } else if (state is RecipeFetchedFromCache) {
+                    if (widget.recipe.id == state.recipe.id && state.recipe.steps.isNotEmpty) {
+                      recipe = state.recipe;
+                    }
+                  }
 
-                      return NestedScrollView(
+                  return
+                    DefaultTabController(
+                      length: (recipe.hasNutritionalValues()) ? 3 : 2,
+                      child: NestedScrollView(
                         headerSliverBuilder: (BuildContext hsbContext, bool innerBoxIsScrolled) {
                           return <Widget>[
-                            sliverWidget(context, hsbContext, referer: widget.referer)
+                            sliverWidget(context, hsbContext, recipe, referer: widget.referer)
                           ];
                         },
                         body: Container(
@@ -100,15 +101,15 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                                 ? buildLoading()
                                 : RecipeDetailTabBarWidget(recipe: recipe)
                         ),
-                      );
-                    }
-                )
+                      ),
+                    );
+                }
             )
-        ),
+            )
     );
   }
 
-  Widget sliverWidget(BuildContext context, BuildContext hsbContext, {String? referer}) {
+  Widget sliverWidget(BuildContext context, BuildContext hsbContext, Recipe recipe, {String? referer}) {
     String? lastCooked;
     List<Widget> keywordsWidget = [];
 
@@ -340,6 +341,8 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                 tabs: [
                   Tab(text: AppLocalizations.of(context)!.ingredients),
                   Tab(text: AppLocalizations.of(context)!.directions),
+                  if (recipe.hasNutritionalValues())
+                    Tab(text: AppLocalizations.of(context)!.nutritionalValues),
                 ],
               ),
             ),
@@ -383,7 +386,7 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
+    return true;
   }
 }
 

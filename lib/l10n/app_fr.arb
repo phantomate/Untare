@@ -148,5 +148,9 @@
   "share": "Partager",
   "plural": "Pluriel",
   "useFractions": "Utiliser des fractions",
-  "openInBrowser": "Ouvrir dans le navigateur"
+  "openInBrowser": "Ouvrir dans le navigateur",
+
+  "nutritionalValues": "Valeurs nutritives",
+  "nutritionalValuesPerServing": "par portion",
+  "nutritionalValuesTotal": "total"
 }

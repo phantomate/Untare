@@ -15,6 +15,7 @@ Widget supermarketCategoryTypeAheadFormField(SupermarketCategory? supermarketCat
   return FormBuilderTypeAhead<SupermarketCategory>(
     name: 'category',
     controller: categoryTextController,
+    ignoreAccessibleNavigation: true,
     initialValue: supermarketCategory,
     selectionToTextTransformer: (category) => category.name,
     decoration: InputDecoration(

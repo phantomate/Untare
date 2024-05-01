@@ -62,7 +62,8 @@ class StepModel {
       ingredientsVue: ingredientsVue ?? this.ingredientsVue,
       time: time ?? this.time,
       order: order ?? this.order,
-      stepRecipe: stepRecipe ?? this.stepRecipe
+      stepRecipe: stepRecipe ?? this.stepRecipe,
+      stepRecipeData: stepRecipeData ?? this.stepRecipeData
     );
   }
 

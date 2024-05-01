@@ -17,6 +17,7 @@ Widget unitTypeAheadFormField(Unit? unit, GlobalKey<FormBuilderState> formBuilde
   return FormBuilderTypeAhead<Unit>(
     name: fieldName,
     controller: unitTextController,
+    ignoreAccessibleNavigation: true,
     initialValue: unit,
     selectionToTextTransformer: (unit) => unit.name,
     decoration: InputDecoration(

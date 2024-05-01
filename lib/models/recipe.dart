@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:untare/models/keyword.dart';
+import 'package:untare/models/nutritional_value.dart';
 import 'package:untare/models/step.dart';
 import 'package:hive/hive.dart';
 
@@ -45,6 +48,8 @@ class Recipe {
   final int? recent;
   @HiveField(18)
   final String? sourceUrl;
+  @HiveField(19)
+  final List<NutritionalValue>? nutritionalValues;
 
   Recipe({
     this.id,
@@ -65,7 +70,8 @@ class Recipe {
     this.lastCooked,
     this.isNew,
     this.recent,
-    this.sourceUrl
+    this.sourceUrl,
+    this.nutritionalValues = const []
   });
 
   Recipe copyWith({
@@ -87,7 +93,8 @@ class Recipe {
     String? lastCooked,
     bool? isNew,
     int? recent,
-    String? sourceUrl
+    String? sourceUrl,
+    List<NutritionalValue> nutritionalValues = const []
   }) {
     return Recipe(
       id: id ?? this.id,
@@ -108,7 +115,8 @@ class Recipe {
       lastCooked: lastCooked ?? this.lastCooked,
       isNew: isNew ?? this.isNew,
       recent: recent ?? this.recent,
-      sourceUrl: sourceUrl ?? this.sourceUrl
+      sourceUrl: sourceUrl ?? this.sourceUrl,
+      nutritionalValues: nutritionalValues.isNotEmpty ? nutritionalValues : this.nutritionalValues
     );
   }
 
@@ -152,6 +160,12 @@ class Recipe {
   }
 
   factory Recipe.fromJson(Map<String, dynamic> json) {
+    List nutritionalValues = [];
+    if (json['food_properties'] != null && json['food_properties'].isNotEmpty) {
+      json['food_properties'].forEach((key, value) {
+        nutritionalValues.add(value);
+      });
+    }
     return Recipe(
       id: json['id'] as int?,
       name: json['name'] as String,
@@ -172,6 +186,22 @@ class Recipe {
       isNew: json['new'] as bool?,
       recent: json['recent'] as int?,
       sourceUrl: json['source_url'] as String?,
+      nutritionalValues: nutritionalValues.isNotEmpty ? nutritionalValues.map((item) => NutritionalValue.fromJson(item)).toList().cast<NutritionalValue>() : [],
     );
+  }
+
+  bool hasNutritionalValues() {
+    bool hasNutritionalValues = false;
+
+    if (nutritionalValues != null) {
+      for(NutritionalValue nutritionalValue in nutritionalValues!) {
+        if (nutritionalValue.totalValue! > 0) {
+          hasNutritionalValues = true;
+          break;
+        }
+      };
+    }
+
+    return hasNutritionalValues;
   }
 }
