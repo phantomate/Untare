@@ -237,6 +237,7 @@ class __SignInFormState extends State<_SignInForm> {
                           ),
                       ),
                     ),
+                  )
                   ),
                   const SizedBox(height: 100),
                   const Text(
