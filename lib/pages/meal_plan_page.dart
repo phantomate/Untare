@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -124,7 +126,7 @@ class MealPlanPageState extends State<MealPlanPage> with WidgetsBindingObserver 
       return AppLocalizations.of(context)!.mealPlanLastWeek;
     }
 
-    return '${DateFormat('d. MMM').format(findFirstDateOfTheWeek(dateTime))} - ${DateFormat('d. MMM').format(findLastDateOfTheWeek(dateTime))}';
+    return '${DateFormat('d. MMM', Platform.localeName).format(findFirstDateOfTheWeek(dateTime))} - ${DateFormat('d. MMM', Platform.localeName).format(findLastDateOfTheWeek(dateTime))}';
   }
 
   @override
@@ -318,7 +320,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
           title: Row(
             children: [
               Text(
-                  DateFormat('EEEE').format(day),
+                  DateFormat('EEEE', Platform.localeName).format(day),
                   style: TextStyle(
                       fontWeight: (dailyMealPlanList.isNotEmpty) ? FontWeight.bold : FontWeight.normal,
                       color: (dailyMealPlanList.isNotEmpty) ? Theme.of(context).primaryTextTheme.bodyText1!.color : Theme.of(context).primaryTextTheme.bodyText2!.color
@@ -327,7 +329,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
               const SizedBox(width: 8),
               (isToday)
                   ? Text(AppLocalizations.of(context)!.mealPlanToday.toLowerCase(), style: TextStyle(color: Theme.of(context).primaryColor))
-                  : Text(DateFormat('d. MMM').format(day), style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText2!.color))
+                  : Text(DateFormat('d. MMM', Platform.localeName).format(day), style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText2!.color))
             ],
           ),
           trailing: IconButton(
