@@ -294,7 +294,7 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
               children: [
                 Text(amount, style: const TextStyle(fontWeight: FontWeight.bold)),
                 Text(unit, style: const TextStyle(fontWeight: FontWeight.bold)),
-                Text(food),
+                Text(food, style: TextStyle(fontWeight: (ingredient.food != null && ingredient.food!.recipe != null) ? FontWeight.bold : FontWeight.w400)),
               ],
             ),
             trailing: Row(
