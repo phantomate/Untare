@@ -1,0 +1,1 @@
+<p><i>Untare</i> ist eine inoffizielle App für <a href='https://docs.tandoor.dev/'>Tandoor Recipes</a>. Logge dich in deinen Tandoor Recipes Account ein und erlebe deine Rezepte, Pläne und Listen in neuer Art und Weise.</p>
