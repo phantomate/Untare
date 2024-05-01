@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_locales.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:hive/hive.dart';
 import 'package:lazy_load_scrollview/lazy_load_scrollview.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:untare/blocs/recipe/recipe_bloc.dart';
 import 'package:untare/blocs/recipe/recipe_event.dart';
 import 'package:untare/blocs/recipe/recipe_state.dart';
@@ -13,7 +17,9 @@ import 'package:untare/components/recipes/recipes_view_component.dart';
 import 'package:untare/components/widgets/hide_bottom_nav_bar_stateful_widget.dart';
 import 'package:untare/components/loading_component.dart';
 import 'package:untare/models/recipe.dart';
+import 'package:untare/pages/recipe_detail_page.dart';
 import 'package:untare/pages/recipe_upsert_page.dart';
+import 'package:untare/services/cache/cache_recipe_service.dart';
 
 
 class RecipesPage extends HideBottomNavBarStatefulWidget {
@@ -26,6 +32,7 @@ class RecipesPage extends HideBottomNavBarStatefulWidget {
 class RecipesPageState extends State<RecipesPage> {
   int pageSize = 30;
   final searchTextController = TextEditingController();
+  late StreamSubscription _intentSub;
   late RecipeBloc recipeBloc;
   bool showSearchClear = false;
   List<Recipe> recipes = [];
@@ -45,6 +52,7 @@ class RecipesPageState extends State<RecipesPage> {
     'created_at': true
   };
   bool isLoading = false;
+  var box = Hive.box('unTaReBox');
 
   @override
   void initState() {
@@ -54,6 +62,51 @@ class RecipesPageState extends State<RecipesPage> {
     recipeBloc = BlocProvider.of<RecipeBloc>(context);
     isLoading = true;
     recipeBloc.add(FetchRecipeList(query: query, random: random, page: page, pageSize: pageSize, sortOrder: sortOrder));
+
+    // Listen to media sharing coming from outside the app while the app is in the memory.
+    _intentSub = ReceiveSharingIntent.instance.getMediaStream().listen((value) {
+      setState(() {
+        openOrImportRecipeIntend(value);
+      });
+    }, onError: (err) {
+
+    });
+
+    // Get the media sharing coming from outside the app while the app is closed.
+    ReceiveSharingIntent.instance.getInitialMedia().then((value) {
+      setState(() {
+        openOrImportRecipeIntend(value);
+        // Tell the library that we are done processing the intent.
+        ReceiveSharingIntent.instance.reset();
+      });
+    });
+  }
+
+  void openOrImportRecipeIntend(List<SharedMediaFile> value) {
+    // If it's a link from tandoor recipes, try to open the recipe. Otherwise import it
+    if (value.isNotEmpty) {
+      if (value.first.path.contains(box.get('url'))) {
+        if (value.first.path.contains('/recipe/')) {
+          String recipeId = value.first.path.substring(value.first.path.indexOf('/recipe/')+8, value.first.path.length);
+          final CacheRecipeService cacheRecipeService = CacheRecipeService();
+          Recipe? cacheRecipe = cacheRecipeService.getRecipe(int.parse(recipeId));
+
+          if (cacheRecipe != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RecipeDetailPage(recipe: cacheRecipe)),
+            );
+          }
+        }
+      } else {
+        recipeBloc.add(
+            ImportRecipe(
+                url: value.first.path,
+                splitDirections: true
+            )
+        );
+      }
+    }
   }
 
   void fetchMoreRecipes() {
@@ -104,6 +157,7 @@ class RecipesPageState extends State<RecipesPage> {
   @override
   void dispose() {
     searchTextController.dispose();
+    _intentSub.cancel();
     super.dispose();
   }
 

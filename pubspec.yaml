@@ -59,6 +59,7 @@ dependencies:
   fraction: ^5.0.2
   flutter_markdown: ^0.6.15
   url_launcher: ^6.2.2
+  receive_sharing_intent: ^1.7.0
 
 dependency_overrides:
   flutter_chips_input:
