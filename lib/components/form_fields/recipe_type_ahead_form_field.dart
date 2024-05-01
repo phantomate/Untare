@@ -19,6 +19,7 @@ Widget recipeTypeAheadFormField(Recipe? recipe, GlobalKey<FormBuilderState> form
   return FormBuilderTypeAhead<Recipe>(
     name: 'recipe${context.hashCode}',
     controller: recipeTextController,
+    ignoreAccessibleNavigation: true,
     initialValue: recipe,
     enabled: (referer == 'meal-plan' || referer == 'edit'),
     selectionToTextTransformer: (recipe) => recipe.name,
