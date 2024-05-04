@@ -140,7 +140,7 @@
 
   "officialServer": "Official server",
   "username": "Username",
-  "password": "Password",
+  "password": "Password / API Token",
 
   "spaces": "Spaces",
 
