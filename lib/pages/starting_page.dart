@@ -103,18 +103,6 @@ class __SignInFormState extends State<_SignInForm> {
         });
       }
     }
-    onApiTokenLoginButtonPressed() {
-      if (_key.currentState!.validate()) {
-        loginBloc.add(LoginWithApiToken(
-            url: _urlController.text,
-            username: _usernameController.text,
-            apiToken: _passwordController.text));
-      } else {
-        setState(() {
-          _autoValidation = AutovalidateMode.always;
-        });
-      }
-    }
 
     return BlocListener<LoginBloc, LoginState>(
       listener: (context, state) {
@@ -244,14 +232,6 @@ class __SignInFormState extends State<_SignInForm> {
                                 padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
                                 onPressed: onLoginButtonPressed,
                                 child: const Text('LOGIN'),
-                              ),
-                              const SizedBox(height: 15),
-                              MaterialButton(
-                                color: Theme.of(context).primaryColor,
-                                minWidth: double.maxFinite,
-                                padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
-                                onPressed: onApiTokenLoginButtonPressed,
-                                child: const Text('API TOKEN LOGIN'),
                               ),
                             ],
                           ),

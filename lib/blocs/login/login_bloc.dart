@@ -20,7 +20,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc({required this.authenticationBloc}): super(LoginInitial()) {
     on<LoginWithUsernameAndPassword>(_onLoginWithToken);
-    on<LoginWithApiToken>(_onLoginWithTokenDirect);
   }
 
   Future<void> _onLoginWithToken(LoginWithUsernameAndPassword event, Emitter<LoginState> emit) async {
@@ -34,43 +33,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       box.put('url', url);
 
       final apiUser = ApiUser();
-      final UserToken userToken = await apiUser.createAuthToken(event.username, event.password);
-
-      box.put('token', userToken.token);
-
-      final response = await apiUser.getUsers();
-      User loggedInUser = response.firstWhere((element) => element.id == userToken.userId);
-
-      box.put('user', loggedInUser);
-      box.put('users', response);
-
-      authenticationBloc.add(UserLoggedIn(token: userToken.token, url: url));
-      emit(LoginSuccess());
-    } on ApiException catch(e) {
-      if (e.statusCode == 400) {
-        emit(LoginFailure(error: 'Unable to log in with provided credentials'));
-      } else {
-        emit(LoginFailure(error: e.message ?? e.toString()));
+      try {
+        final UserToken userToken = await apiUser.createAuthToken(event.username, event.password);
+        box.put('token', userToken.token);
+      } on ApiException catch(e) {
+        // User/pass don't work, is the password an API Token, will fail at next step if wrong anyway
+        box.put('token', event.password);
       }
-    } on ApiConnectionException catch(e) {
-      emit(LoginFailure(error: e.message));
-    } catch (err) {
-      emit(LoginFailure(error: err.toString()));
-    }
-  }
-
-  Future<void> _onLoginWithTokenDirect(LoginWithApiToken event, Emitter<LoginState> emit) async {
-    emit(LoginLoading());
-    try {
-      String url = event.url.trim();
-      if (url.endsWith('/')) {
-        url = url.substring(0, url.length - 1);
-      }
-
-      box.put('url', url);
-
-      final apiUser = ApiUser();
-      box.put('token', event.apiToken);
 
       final response = await apiUser.getUsers();
       User loggedInUser = response.firstWhere((element) => element.username == event.username);

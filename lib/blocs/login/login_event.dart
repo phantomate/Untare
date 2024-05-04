@@ -12,13 +12,3 @@ class LoginWithUsernameAndPassword extends LoginEvent {
   @override
   List<Object> get props => [url, username, password];
 }
-
-class LoginWithApiToken extends LoginEvent {
-  final String url;
-  final String apiToken;
-
-  LoginWithApiToken({required this.url, required this.username, required this.apiToken});
-
-  @override
-  List<Object> get props => [url, username, apiToken];
-}
