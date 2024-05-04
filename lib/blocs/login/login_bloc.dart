@@ -37,7 +37,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         final UserToken userToken = await apiUser.createAuthToken(event.username, event.password);
         box.put('token', userToken.token);
       } on ApiException catch(e) {
-        // User/pass don't work, is the password an API Token, will fail at next step if wrong anyway
+        // User/pass don't work, is the password an API Token? If it's not it'll fail at next step anyway.
         box.put('token', event.password);
       }
 
