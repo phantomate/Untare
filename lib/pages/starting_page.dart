@@ -154,7 +154,7 @@ class __SignInFormState extends State<_SignInForm> {
                                         decoration: const InputDecoration(
                                             isDense: true,
                                             hintText:
-                                                'https://recipes.excample.com'),
+                                                'https://recipes.example.com'),
                                         controller: _urlController,
                                         keyboardType: TextInputType.url,
                                         autocorrect: false,
