@@ -475,9 +475,9 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                           RichText(
                               text: TextSpan(
                                   children: [
-                                    TextSpan(text: amount, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color, fontWeight: FontWeight.bold)),
-                                    TextSpan(text: unit, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color, fontWeight: FontWeight.bold)),
-                                    TextSpan(text: food, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText1!.color, fontWeight: (shoppingListEntry.food != null && shoppingListEntry.food!.recipe != null) ? FontWeight.bold : FontWeight.w400)),
+                                    TextSpan(text: amount, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyMedium!.color, fontWeight: FontWeight.bold)),
+                                    TextSpan(text: unit, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyMedium!.color, fontWeight: FontWeight.bold)),
+                                    TextSpan(text: food, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyMedium!.color, fontWeight: (shoppingListEntry.food != null && shoppingListEntry.food!.recipe != null) ? FontWeight.bold : FontWeight.w400)),
                                   ],
                                   style: (checkBoxValue)
                                       ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, decoration: TextDecoration.lineThrough)

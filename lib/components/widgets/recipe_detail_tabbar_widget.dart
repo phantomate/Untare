@@ -419,7 +419,8 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
   }
 
   Widget nutritionalValueComponent(NutritionalValue nutritionalValue) {
-    double nutritionalPortionValue = (nutritionalValue.totalValue ?? 0)/newServings;
+    double nutritionalPortionValue = (nutritionalValue.totalValue ?? 1)/servings;
+    double nutritionalTotalValue = (nutritionalValue.totalValue ?? 1) * newServings / servings ;
 
     return Container(
         margin: const EdgeInsets.only(left: 0, right: 20),
@@ -442,7 +443,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
             title: Text(nutritionalPortionValue.toFormattedString(precision: 1), textAlign: TextAlign.right, style: const TextStyle(fontSize: 15),),
             trailing: SizedBox(
               width: 100,
-              child: Text('${(nutritionalValue.totalValue ?? 0).toFormattedString(precision: 1)} ${nutritionalValue.unit ?? ''}', textAlign: TextAlign.right, style: const TextStyle(fontSize: 15)),
+              child: Text('${nutritionalTotalValue.toFormattedString(precision: 1)} ${nutritionalValue.unit ?? ''}', textAlign: TextAlign.right, style: const TextStyle(fontSize: 15)),
             )
         )
     );

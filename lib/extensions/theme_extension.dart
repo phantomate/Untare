@@ -39,22 +39,22 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          primary: Colors.black87
+          foregroundColor: Colors.black87
         )
       ),
       buttonTheme: const ButtonThemeData(
         textTheme: ButtonTextTheme.primary
       ),
       primaryTextTheme: TextTheme(
-        bodyText1: const TextStyle(
+        bodyMedium: const TextStyle(
           color: Colors.black87
         ),
-        bodyText2: TextStyle(
+        bodySmall: TextStyle(
             color: Colors.grey[600]
         ),
-        overline: TextStyle(
+        labelMedium: TextStyle(
             color: Colors.grey[300]
-        )
+        ),
       ),
       snackBarTheme: const SnackBarThemeData(
         behavior: SnackBarBehavior.floating
@@ -94,17 +94,17 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
-              primary: Colors.white
+              foregroundColor: Colors.white
           )
       ),
       buttonTheme: const ButtonThemeData(
           textTheme: ButtonTextTheme.primary
       ),
       primaryTextTheme: TextTheme(
-        bodyText2: TextStyle(
+        bodySmall: TextStyle(
           color: Colors.grey[300]
         ),
-        overline: TextStyle(
+        labelMedium: TextStyle(
           color: Colors.grey[600]
         )
       ),
