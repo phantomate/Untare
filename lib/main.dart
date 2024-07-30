@@ -173,7 +173,8 @@ class Tare extends StatelessWidget {
                   Locale('de'),
                   Locale('fr'),
                   Locale('nl'),
-                  Locale('da')
+                  Locale('da'),
+                  Locale('ru')
                 ],
                 debugShowCheckedModeBanner: false,
                 title: 'UnTaRe App',
