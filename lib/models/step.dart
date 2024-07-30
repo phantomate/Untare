@@ -15,10 +15,6 @@ class StepModel {
   final String? instruction;
   @HiveField(3)
   final List<Ingredient> ingredients;
-  @HiveField(4)
-  final String? ingredientsMarkdown;
-  @HiveField(5)
-  final String? ingredientsVue;
   @HiveField(6)
   final int? time;
   @HiveField(7)
@@ -27,14 +23,15 @@ class StepModel {
   final int? stepRecipe;
   @HiveField(9)
   final Recipe? stepRecipeData;
+  @HiveField(10)
+  final String? instructionsMarkdown;
 
   StepModel({
     this.id,
     this.name,
     this.instruction,
     required this.ingredients,
-    this.ingredientsMarkdown,
-    this.ingredientsVue,
+    this.instructionsMarkdown,
     this.time,
     this.order,
     this.stepRecipe,
@@ -46,8 +43,7 @@ class StepModel {
     String? name,
     String? instruction,
     List<Ingredient>? ingredients,
-    String? ingredientsMarkdown,
-    String? ingredientsVue,
+    String? instructionsMarkdown,
     int? time,
     int? order,
     int? stepRecipe,
@@ -58,8 +54,7 @@ class StepModel {
       name: name ?? this.name,
       instruction: instruction ?? this.instruction,
       ingredients: ingredients ?? this.ingredients,
-      ingredientsMarkdown: ingredientsMarkdown ?? this.ingredientsMarkdown,
-      ingredientsVue: ingredientsVue ?? this.ingredientsVue,
+      instructionsMarkdown: instructionsMarkdown ?? this.instructionsMarkdown,
       time: time ?? this.time,
       order: order ?? this.order,
       stepRecipe: stepRecipe ?? this.stepRecipe,
@@ -93,8 +88,7 @@ class StepModel {
       name: json['name'] as String?,
       instruction: json['instruction'] as String?,
       ingredients: json['ingredients'].map((item) => Ingredient.fromJson(item)).toList().cast<Ingredient>(),
-      ingredientsMarkdown: json['ingredients_markdown'] as String?,
-      ingredientsVue: json['ingredients_vue'] as String?,
+      instructionsMarkdown: json['instructions_markdown'] as String?,
       time: json['time'] as int?,
       order: json['order'] as int?,
       stepRecipe: json['step_recipe'] as int?,
