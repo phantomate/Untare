@@ -114,7 +114,7 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
     List<Widget> keywordsWidget = [];
 
     if (recipe.lastCooked != null) {
-      DateTime tempDate = DateTime.parse(recipe.lastCooked!);
+      DateTime tempDate = DateTime.parse(recipe.lastCooked!).toLocal();
       lastCooked = DateFormat("dd.MM.yy").format(tempDate);
     }
 
@@ -338,6 +338,7 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
               TabBar(
                 indicatorColor: Theme.of(context).primaryColor,
                 unselectedLabelColor: Colors.grey,
+                labelColor: (Theme.of(context).brightness.name == 'dark') ? Colors.white : Colors.black,
                 tabs: [
                   Tab(text: AppLocalizations.of(context)!.ingredients),
                   Tab(text: AppLocalizations.of(context)!.directions),

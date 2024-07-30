@@ -41,8 +41,8 @@ class CacheShoppingListService extends CacheService {
             }
 
             if (entry.completedAt != null) {
-              DateTime completedAtDate = DateTime.parse(entry.completedAt!);
-              DateTime todayMinusRecentDays = DateTime.now().subtract(Duration(days: recentDays));
+              DateTime completedAtDate = DateTime.parse(entry.completedAt!).toLocal();
+              DateTime todayMinusRecentDays = DateTime.now().toLocal().subtract(Duration(days: recentDays));
 
               if (completedAtDate.year >= todayMinusRecentDays.year
                   && completedAtDate.month >= todayMinusRecentDays.month

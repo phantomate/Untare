@@ -68,8 +68,8 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                             child: FormBuilderDateRangePicker(
                               name: 'date',
                               initialValue: DateTimeRange(
-                                  start: (date != null) ? date : ((mealPlan != null && mealPlan.fromDate != null) ? DateTime.parse(mealPlan.fromDate!) : DateTime.now()),
-                                  end: (date != null) ? date : ((mealPlan != null && mealPlan.toDate != null) ? DateTime.parse(mealPlan.toDate!) : DateTime.now())
+                                  start: (date != null) ? date : ((mealPlan != null && mealPlan.fromDate != null) ? DateTime.parse(mealPlan.fromDate!).toLocal() : DateTime.now().toLocal()),
+                                  end: (date != null) ? date : ((mealPlan != null && mealPlan.toDate != null) ? DateTime.parse(mealPlan.toDate!).toLocal() : DateTime.now().toLocal())
                               ),
                               firstDate: DateTime(2015),
                               lastDate: DateTime(2040),
@@ -93,9 +93,6 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                                     decoration: InputDecoration(
                                       labelText: AppLocalizations.of(context)!.alternativeTitle,
                                     ),
-                                    validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.max(64),
-                                    ]),
                                   )
                               ),
                               const SizedBox(width: 15),
@@ -169,8 +166,8 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                                         DateTimeRange tmpDateTimeRange = formBuilderKey.currentState!.value['date'];
                                         DateTime tmpFromDate = tmpDateTimeRange.start;
                                         DateTime tmpToDate = tmpDateTimeRange.end;
-                                        DateTime mealPlanFromDate = DateTime.parse(mealPlan.fromDate!);
-                                        DateTime mealPlanToDate = DateTime.parse(mealPlan.toDate!);
+                                        DateTime mealPlanFromDate = DateTime.parse(mealPlan.fromDate!).toLocal();
+                                        DateTime mealPlanToDate = DateTime.parse(mealPlan.toDate!).toLocal();
 
                                         if (tmpFromDate.year != mealPlanFromDate.year || tmpFromDate.month != mealPlanFromDate.month || tmpFromDate.day != mealPlanFromDate.day) {
                                           fromDate = DateFormat('yyyy-MM-dd').format(tmpFromDate);

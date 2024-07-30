@@ -29,7 +29,7 @@ class MealPlanPage extends HideBottomNavBarStatefulWidget {
 }
 
 class MealPlanPageState extends State<MealPlanPage> with WidgetsBindingObserver {
-  DateTime dateTime = DateTime.now();
+  DateTime dateTime = DateTime.now().toLocal();
   late String rangeTitleText;
   late MealPlanBloc _mealPlanBloc;
   List<MealPlanEntry> mealPlanList = [];
@@ -110,7 +110,7 @@ class MealPlanPageState extends State<MealPlanPage> with WidgetsBindingObserver 
   }
 
   String getTitleText() {
-    DateTime today = DateTime.now();
+    DateTime today = DateTime.now().toLocal();
     DateTime todayNextWeek = today.add(const Duration(days: 7));
     DateTime todayLastWeek = today.subtract(const Duration(days: 7));
 
@@ -166,7 +166,7 @@ class MealPlanPageState extends State<MealPlanPage> with WidgetsBindingObserver 
                       },
                       icon: Icon(
                         Icons.more_vert_outlined,
-                        color: Theme.of(context).primaryTextTheme.bodyText1!.color,
+                        color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
                       )
                   )
                 ],
@@ -198,7 +198,7 @@ class MealPlanPageState extends State<MealPlanPage> with WidgetsBindingObserver 
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 18,
-                              color: Theme.of(context).primaryTextTheme.bodyText1!.color,
+                              color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
                             ),
                           ),
                         ),
@@ -291,8 +291,8 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
   List<Widget> dailyMealPlanWidgetList = [];
 
   for (var mealPlan in mealPlanList) {
-    DateTime tempFromDate = DateTime.parse(mealPlan.fromDate!);
-    DateTime tempToDate = DateTime.parse(mealPlan.toDate!);
+    DateTime tempFromDate = DateTime.parse(mealPlan.fromDate!).toLocal();
+    DateTime tempToDate = DateTime.parse(mealPlan.toDate!).toLocal();
 
     if (day.year == tempFromDate.year && day.month == tempFromDate.month && day.day == tempFromDate.day) {
       dailyMealPlanList.add(mealPlan);
@@ -308,7 +308,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
     decoration: BoxDecoration(
         border: Border(
             bottom: BorderSide(
-                color: Theme.of(context).primaryTextTheme.overline!.color!,
+                color: Theme.of(context).primaryTextTheme.labelMedium!.color!,
                 width: 0.8
             )
         )
@@ -323,13 +323,13 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                   DateFormat('EEEE', Platform.localeName).format(day),
                   style: TextStyle(
                       fontWeight: (dailyMealPlanList.isNotEmpty) ? FontWeight.bold : FontWeight.normal,
-                      color: (dailyMealPlanList.isNotEmpty) ? Theme.of(context).primaryTextTheme.bodyText1!.color : Theme.of(context).primaryTextTheme.bodyText2!.color
+                      color: (dailyMealPlanList.isNotEmpty) ? Theme.of(context).primaryTextTheme.bodyMedium!.color : Theme.of(context).primaryTextTheme.bodySmall!.color
                   )
               ),
               const SizedBox(width: 8),
               (isToday)
                   ? Text(AppLocalizations.of(context)!.mealPlanToday.toLowerCase(), style: TextStyle(color: Theme.of(context).primaryColor))
-                  : Text(DateFormat('d. MMM', Platform.localeName).format(day), style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyText2!.color))
+                  : Text(DateFormat('d. MMM', Platform.localeName).format(day), style: TextStyle(color: Theme.of(context).primaryTextTheme.bodySmall!.color))
             ],
           ),
           trailing: IconButton(
@@ -344,7 +344,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
             builder: (context, setting) {
               dailyMealPlanWidgetList.clear();
               for (var mealPlan in dailyMealPlanList) {
-                DateTime tempFromDate = DateTime.parse(mealPlan.fromDate!);
+                DateTime tempFromDate = DateTime.parse(mealPlan.fromDate!).toLocal();
                 bool disabled = (day.year != tempFromDate.year || day.month != tempFromDate.month || day.day != tempFromDate.day);
 
                 if (mealPlan.recipe != null) {

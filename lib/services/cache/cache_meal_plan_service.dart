@@ -16,11 +16,11 @@ class CacheMealPlanService extends CacheService{
     mealPLanEntries = cacheMealPlanEntries;
     if (cacheMealPlanEntries != null && cacheMealPlanEntries.isNotEmpty) {
       mealPLanEntries = [];
-      DateTime fromDate = DateTime.parse(from);
-      DateTime toDate = DateTime.parse(to);
+      DateTime fromDate = DateTime.parse(from).toLocal();
+      DateTime toDate = DateTime.parse(to).toLocal();
 
       for (var entry in cacheMealPlanEntries) {
-        DateTime entryDate = DateTime.parse(entry.fromDate!);
+        DateTime entryDate = DateTime.parse(entry.fromDate!).toLocal();
 
         if ((fromDate.isBefore(entryDate) || fromDate.isAtSameMomentAs(entryDate)) && (toDate.isAfter(entryDate) || toDate.isAtSameMomentAs(entryDate))) {
           mealPLanEntries.add(entry);

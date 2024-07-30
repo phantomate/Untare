@@ -69,7 +69,7 @@ Widget lastCooked(Recipe recipe, BuildContext context) {
         ),
         const SizedBox(width: 2),
         Text(
-            DateFormat('dd.MM.yy').format(DateTime.parse(recipe.lastCooked!)),
+            DateFormat('dd.MM.yy').format(DateTime.parse(recipe.lastCooked!).toLocal()),
             style: TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey, fontSize: 12)
         ),
         const SizedBox(width: 8)
