@@ -288,6 +288,6 @@
   "@nutritionalValues": {},
   "nutritionalValuesPerServing": "par portion",
   "@nutritionalValuesPerServing": {},
-  "nutritionalValuesTotal": "totales"
-  "@nutritionalValuesTotal": {},
+  "nutritionalValuesTotal": "totales",
+  "@nutritionalValuesTotal": {}
 }
