@@ -67,7 +67,7 @@ Future editMealTypeDialog(BuildContext context) async {
                                     ),
                                     validator: FormBuilderValidators.compose([
                                       FormBuilderValidators.required(),
-                                      FormBuilderValidators.max(128),
+                                      FormBuilderValidators.maxLength(128),
                                     ]),
                                   )
                                 ],
