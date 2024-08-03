@@ -61,7 +61,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
       recipe = widget.recipe;
     }
 
-    keywords = [];
+    keywords = (recipe != null) ? recipe!.keywords: [];
   }
 
   void splitDirections() {
@@ -444,7 +444,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                         ),
                         validator: FormBuilderValidators.compose([
                           FormBuilderValidators.required(),
-                          FormBuilderValidators.max(128),
+                          FormBuilderValidators.maxLength(128),
                         ]),
                         style: const TextStyle(
                             fontSize: 15
@@ -848,20 +848,23 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
             child: ListTile(
               visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
               contentPadding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-              title: Wrap(
-                children: [
-                  Text(amount, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                  Text(unit, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-                  Text(food, style: TextStyle(fontSize: 15, fontWeight: (ingredient.food != null && ingredient.food!.recipe != null) ? FontWeight.bold : FontWeight.w400)),
-                  Text(
-                      note,
+              title: RichText(
+                overflow: TextOverflow.ellipsis,
+                text: TextSpan(
+                  style: TextStyle(fontSize: 15, color: Theme.of(context).primaryTextTheme.bodyMedium!.color),
+                  children: [
+                    TextSpan(text: amount, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    TextSpan(text: unit, style: const TextStyle(fontWeight: FontWeight.bold)),
+                    TextSpan(text: food, style: TextStyle(fontWeight: (ingredient.food != null && ingredient.food!.recipe != null) ? FontWeight.bold : FontWeight.w400)),
+                    TextSpan(
+                      text: note,
                       style: TextStyle(
                           color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
-                          fontStyle: FontStyle.italic,
-                          fontSize: 15
+                          fontStyle: FontStyle.italic
                       )
-                  )
-                ],
+                    )
+                  ]
+                )
               ),
               trailing: const Icon(Icons.drag_handle_outlined),
             )
@@ -875,6 +878,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
     return Column(
       children: [
         Container(
+          constraints: BoxConstraints(maxHeight: 250),
           padding: const EdgeInsets.only(top: 25, right: 20, bottom: 10, left: 15),
           child: TextFormField(
             key: ObjectKey(step.id ?? UniqueKey()),
@@ -884,9 +888,9 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
               contentPadding: const EdgeInsets.all(10),
               border: const OutlineInputBorder(),
             ),
-            keyboardType: TextInputType.multiline,
             maxLines: null,
-            minLines: null,
+            keyboardType: TextInputType.multiline,
+            textCapitalization: TextCapitalization.sentences,
             onChanged: (String? text) => _editDirections(text, stepIndex),
             style: const TextStyle(
                 fontSize: 15
