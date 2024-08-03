@@ -73,7 +73,7 @@ Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer
             children: [
               Stack(
                 children: [
-                  buildRecipeImage(recipe, const BorderRadius.vertical(top: Radius.circular(10)), 140, referer: referer),
+                  buildRecipeImage(recipe, const BorderRadius.vertical(top: Radius.circular(10)), 133, referer: referer),
                   Container(
                     padding: const EdgeInsets.all(5),
                     alignment: Alignment.topRight,
@@ -81,7 +81,7 @@ Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer
                   ),
                   if (recipe.lastCooked != null || (recipe.rating != null && recipe.rating! > 0) || mealPlan != null)
                     Container(
-                      height: 140,
+                      height: 133,
                       width: double.maxFinite,
                       alignment: Alignment.bottomLeft,
                       child: Container(
@@ -102,7 +102,7 @@ Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer
                 ],
               ),
               Container(
-                height: 48,
+                height: 55,
                 alignment: Alignment.centerLeft,
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
