@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  static ThemeData get lightTheme {
+  static ThemeData lightTheme(Color color) {
     return ThemeData(
       brightness: Brightness.light,
       fontFamily: 'Montserrat',
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey),
+      colorScheme: ColorScheme.fromSeed(seedColor: color),
     );
   }
 
-  static ThemeData get darkTheme {
+  static ThemeData darkTheme(Color color) {
     return ThemeData(
       brightness: Brightness.dark,
       fontFamily: 'Montserrat',
-      colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey, brightness: Brightness.dark),
+      colorScheme: ColorScheme.fromSeed(seedColor: color, brightness: Brightness.dark),
     );
   }
 }
