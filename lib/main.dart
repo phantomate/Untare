@@ -178,8 +178,8 @@ class Tare extends StatelessWidget {
                 ],
                 debugShowCheckedModeBanner: false,
                 title: 'UnTaRe App',
-                theme: AppTheme.lightTheme.copyWith(primaryColor: Color(settingsCubit.state.materialHexColor), useMaterial3: false),
-                darkTheme: AppTheme.darkTheme.copyWith(primaryColor: Color(settingsCubit.state.materialHexColor), useMaterial3: false),
+                theme: AppTheme.lightTheme.copyWith(primaryColor: Color(settingsCubit.state.materialHexColor)),
+                darkTheme: AppTheme.darkTheme.copyWith(primaryColor: Color(settingsCubit.state.materialHexColor)),
                 themeMode: themeMode,
                 home: (state is AuthenticationAuthenticated)
                     ? const TarePage()
