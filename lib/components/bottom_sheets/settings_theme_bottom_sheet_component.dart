@@ -13,7 +13,6 @@ Future settingsThemeBottomSheet(BuildContext context) {
             color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: const BorderRadius.all(Radius.circular(10))
         ),
-        margin: const EdgeInsets.all(12),
         child: Wrap(
           children: [
             Container(
@@ -21,7 +20,6 @@ Future settingsThemeBottomSheet(BuildContext context) {
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-                  color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300] : Colors.grey[700]
               ),
               child: Text(
                 AppLocalizations.of(context)!.settingsThemeMode,

@@ -20,7 +20,6 @@ Future mealPlanEntryMoreBottomSheet(BuildContext context, MealPlanEntry mealPlan
             color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: const BorderRadius.all(Radius.circular(10))
         ),
-        margin: const EdgeInsets.all(12),
         child: Wrap(
           children: [
             Container(
@@ -28,7 +27,6 @@ Future mealPlanEntryMoreBottomSheet(BuildContext context, MealPlanEntry mealPlan
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-                  color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300] : Colors.grey[700]
               ),
               child: Text(
                  (mealPlan.recipe != null) ? mealPlan.recipe!.name : mealPlan.title,
