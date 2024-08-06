@@ -277,13 +277,13 @@ class SettingsPageState extends State<SettingsPage> {
                   ],
                   physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                   lightTheme: SettingsThemeData(
-                      tileHighlightColor: Theme.of(context).primaryColor,
-                      titleTextColor: Theme.of(context).primaryColor,
+                      tileHighlightColor: Theme.of(context).colorScheme.primary,
+                      titleTextColor: Theme.of(context).colorScheme.primary,
                       settingsListBackground: Theme.of(context).scaffoldBackgroundColor
                   ),
                   darkTheme: SettingsThemeData(
-                      tileHighlightColor: Theme.of(context).primaryColor,
-                      titleTextColor: Theme.of(context).primaryColor,
+                      tileHighlightColor: Theme.of(context).colorScheme.primary,
+                      titleTextColor: Theme.of(context).colorScheme.primary,
                       settingsListBackground: Theme.of(context).scaffoldBackgroundColor
                   ),
                 );

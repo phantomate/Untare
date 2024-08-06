@@ -599,7 +599,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+                    border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2),
                   ),
                   child: IconButton(
                     padding: const EdgeInsets.all(0),
@@ -607,7 +607,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                     visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                     icon: Icon(
                       Icons.add,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     onPressed: () {
                       FocusManager.instance.primaryFocus?.unfocus();
@@ -665,9 +665,9 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+                            border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2),
                           ),
-                          child: Text((stepIndex+1).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+                          child: Text((stepIndex+1).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary)),
                         )
                     ),
                     if (step.name != null && step.name != '')
@@ -757,7 +757,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
               decoration: BoxDecoration(
                   border: Border(
                       left: BorderSide(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                           width: 1
                       )
                   )
@@ -770,7 +770,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                   splashRadius: 20,
                   icon: Icon(
                     Icons.add,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   onPressed: () {
                     FocusManager.instance.primaryFocus?.unfocus();
@@ -788,7 +788,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
         decoration: BoxDecoration(
             border: Border(
                 left: BorderSide(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                     width: 1
                 )
             )

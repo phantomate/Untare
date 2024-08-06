@@ -49,7 +49,7 @@ class StartingPage extends StatelessWidget {
               return Center(
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               );
             },
@@ -116,7 +116,7 @@ class __SignInFormState extends State<_SignInForm> {
             return Center(
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
             );
           }

@@ -327,7 +327,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
               ),
               const SizedBox(width: 8),
               (isToday)
-                  ? Text(AppLocalizations.of(context)!.mealPlanToday.toLowerCase(), style: TextStyle(color: Theme.of(context).primaryColor))
+                  ? Text(AppLocalizations.of(context)!.mealPlanToday.toLowerCase(), style: TextStyle(color: Theme.of(context).colorScheme.primary))
                   : Text(DateFormat('d. MMM', Platform.localeName).format(day), style: TextStyle(color: Theme.of(context).textTheme.bodySmall!.color))
             ],
           ),
