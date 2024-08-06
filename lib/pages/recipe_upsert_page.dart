@@ -851,7 +851,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
               title: RichText(
                 overflow: TextOverflow.ellipsis,
                 text: TextSpan(
-                  style: TextStyle(fontSize: 15, color: Theme.of(context).primaryTextTheme.bodyMedium!.color),
+                  style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodyMedium!.color),
                   children: [
                     TextSpan(text: amount, style: const TextStyle(fontWeight: FontWeight.bold)),
                     TextSpan(text: unit, style: const TextStyle(fontWeight: FontWeight.bold)),
