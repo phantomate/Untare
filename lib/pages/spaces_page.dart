@@ -41,7 +41,7 @@ class SpacesPageState extends State<SpacesPage> {
                   onChanged: (bool? changed) {
 
                   },
-                  activeColor: Theme.of(context).primaryColor,
+                  activeColor: Theme.of(context).colorScheme.secondary,
                   title: Wrap(children: [Text(spaces[index].name)]),
                   subtitle: Wrap(direction: Axis.horizontal,children: [
                     Icon(Icons.restaurant_menu_outlined, size: 15, color: Theme.of(context).inputDecorationTheme.prefixIconColor),
@@ -58,7 +58,7 @@ class SpacesPageState extends State<SpacesPage> {
                   ],),
                 ),
                 separatorBuilder: (context, index) => Divider(
-                  color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                 ),
                 itemCount: context.watch<SpacesCubit>().state.length
             ),
