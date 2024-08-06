@@ -55,8 +55,7 @@ Future importRecipeWebsiteDialog(BuildContext context) {
                   ),
                   Container(
                       alignment: Alignment.bottomRight,
-                      child: MaterialButton(
-                          color: Theme.of(context).primaryColor,
+                      child: ElevatedButton(
                           onPressed: () {
                             formBuilderKey.currentState!.save();
 

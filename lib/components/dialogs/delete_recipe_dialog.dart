@@ -24,16 +24,15 @@ Future deleteRecipeDialog(BuildContext context, Recipe recipe) async {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    MaterialButton(
-                        color: Colors.redAccent,
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent, foregroundColor: Colors.white),
                         onPressed: () {
                             recipeBloc.add(DeleteRecipe(recipe: recipe));
                             Navigator.pop(dContext);
                         },
                         child: Text(AppLocalizations.of(context)!.remove)
                     ),
-                    MaterialButton(
-                        color: Theme.of(context).primaryColor,
+                    ElevatedButton(
                         onPressed: () {
                           Navigator.pop(dContext);
                         },

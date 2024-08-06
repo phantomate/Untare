@@ -193,9 +193,7 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                                 )
                             )
                         ),
-                        child: MaterialButton(
-                          color: Theme.of(context).primaryColor,
-                          minWidth: double.maxFinite,
+                        child: ElevatedButton(
                           child: Text(AppLocalizations.of(context)!.add),
                           onPressed: () {
                             recipeBloc.add(AddIngredientsToShoppingList(
