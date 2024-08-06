@@ -48,7 +48,6 @@ Future importRecipeWebsiteDialog(BuildContext context) {
                       });
                     },
                     initialValue: splitInstructions,
-                    activeColor: Theme.of(context).primaryColor,
                     decoration: const InputDecoration(
                         border: InputBorder.none
                     ),

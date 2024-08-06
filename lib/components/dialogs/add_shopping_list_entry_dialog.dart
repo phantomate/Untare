@@ -44,7 +44,6 @@ Future addShoppingListEntryDialog(BuildContext context) {
                                 });
                               },
                               initialValue: simpleMode,
-                              activeColor: Theme.of(context).primaryColor,
                               decoration: const InputDecoration(
                                   border: InputBorder.none
                               ),

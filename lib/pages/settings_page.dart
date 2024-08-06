@@ -180,7 +180,6 @@ class SettingsPageState extends State<SettingsPage> {
                               onToggle: (bool value) {
 
                               },
-                              activeSwitchColor: Theme.of(context).primaryColor,
                               initialValue: setting.userServerSetting!.mealPlanAutoAddShopping,
                               title: Text('Auto add meal plan'),
                               description: Text('Automatically add meal plan ingredients to shopping list'),
@@ -227,7 +226,6 @@ class SettingsPageState extends State<SettingsPage> {
                               newUserSetting = setting.userServerSetting!.copyWith(useFractions: value);
                               settingsCubit.updateServerSetting(newUserSetting);
                             },
-                            activeSwitchColor: Theme.of(context).primaryColor,
                             initialValue: useFraction,
                             title: Text(AppLocalizations.of(context)!.useFractions),
                           ),
