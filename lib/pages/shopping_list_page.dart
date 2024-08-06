@@ -269,7 +269,7 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                       groupSeparatorBuilder: (String groupByValue) {
                                         return Padding(
                                           padding: const EdgeInsets.fromLTRB(15, 25, 15, 5),
-                                          child: Text(groupByValue.toUpperCase(), style: const TextStyle(color: Colors.grey, fontWeight: FontWeight.bold)),
+                                          child: Text(groupByValue.toUpperCase(), style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold)),
                                         );
                                       },
                                       itemComparator: (item1, item2) {
@@ -311,7 +311,7 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                                             scale: 1.2,
                                                             child: Checkbox(
                                                                 value: checkBoxValue,
-                                                                activeColor: Theme.of(context).primaryColor,
+                                                                activeColor: Theme.of(context).colorScheme.secondary,
                                                                 shape: RoundedRectangleBorder(
                                                                     borderRadius: BorderRadius.circular(3)
                                                                 ),
@@ -333,7 +333,7 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                                         title: Text(
                                                             groupedList.first.food!.name,
                                                             style: (checkBoxValue)
-                                                                ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
+                                                                ? const TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
                                                                 : const TextStyle(fontWeight: FontWeight.bold)
                                                         ),
                                                         leading: const Icon(Icons.keyboard_arrow_up),
@@ -345,7 +345,7 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                                             decoration: BoxDecoration(
                                                                 border: Border(
                                                                     bottom: BorderSide(
-                                                                        color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                                                                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                                                                         width: 0.8
                                                                     )
                                                                 )
@@ -358,7 +358,7 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                                                   scale: 1.2,
                                                                   child: Checkbox(
                                                                       value: checkBoxValue,
-                                                                      activeColor: Theme.of(context).primaryColor,
+                                                                      activeColor: Theme.of(context).colorScheme.secondary,
                                                                       shape: RoundedRectangleBorder(
                                                                           borderRadius: BorderRadius.circular(3)
                                                                       ),
@@ -380,7 +380,7 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                                               title: Text(
                                                                   groupedList.first.food!.name,
                                                                   style: (checkBoxValue)
-                                                                      ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
+                                                                      ? const TextStyle(fontWeight: FontWeight.bold, decoration: TextDecoration.lineThrough)
                                                                       : const TextStyle(fontWeight: FontWeight.bold)
                                                               ),
                                                               leading: const Icon(Icons.keyboard_arrow_down),
@@ -460,7 +460,7 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
             decoration: BoxDecoration(
                 border: Border(
                     bottom: BorderSide(
-                        color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                         width: 0.8
                     )
                 )
@@ -480,19 +480,19 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                                     TextSpan(text: food, style: TextStyle(color: Theme.of(context).primaryTextTheme.bodyMedium!.color, fontWeight: (shoppingListEntry.food != null && shoppingListEntry.food!.recipe != null) ? FontWeight.bold : FontWeight.w400)),
                                   ],
                                   style: (checkBoxValue)
-                                      ? TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!, decoration: TextDecoration.lineThrough)
+                                      ? const TextStyle(decoration: TextDecoration.lineThrough)
                                       : null
                               )
                           )
                         ]
                     ),
                     subtitle: (shoppingListEntry.recipeMealPlan != null)
-                        ? Padding(padding: const EdgeInsets.only(top: 4), child: Text(shoppingListEntry.recipeMealPlan!.name, style: TextStyle(color: Colors.grey[600]!)))
+                        ? Padding(padding: const EdgeInsets.only(top: 4), child: Text(shoppingListEntry.recipeMealPlan!.name))
                         : null,
                     trailing: Transform.scale(
                       scale: 1.2,
                       child: Checkbox(
-                        activeColor: Theme.of(context).primaryColor,
+                        activeColor: Theme.of(context).colorScheme.secondary,
                         value: checkBoxValue,
                         onChanged: (bool? value) {
                           setState(() {
