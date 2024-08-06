@@ -166,7 +166,7 @@ class MealPlanPageState extends State<MealPlanPage> with WidgetsBindingObserver 
                       },
                       icon: Icon(
                         Icons.more_vert_outlined,
-                        color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
+                        color: Theme.of(context).textTheme.bodyMedium!.color,
                       )
                   )
                 ],
@@ -198,7 +198,7 @@ class MealPlanPageState extends State<MealPlanPage> with WidgetsBindingObserver 
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 18,
-                              color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
+                              color: Theme.of(context).textTheme.bodyMedium!.color,
                             ),
                           ),
                         ),
@@ -308,7 +308,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
     decoration: BoxDecoration(
         border: Border(
             bottom: BorderSide(
-                color: Theme.of(context).primaryTextTheme.labelMedium!.color!,
+                color: Theme.of(context).textTheme.labelMedium!.color!,
                 width: 0.8
             )
         )
@@ -323,13 +323,13 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                   DateFormat('EEEE', Platform.localeName).format(day),
                   style: TextStyle(
                       fontWeight: (dailyMealPlanList.isNotEmpty) ? FontWeight.bold : FontWeight.normal,
-                      color: (dailyMealPlanList.isNotEmpty) ? Theme.of(context).primaryTextTheme.bodyMedium!.color : Theme.of(context).primaryTextTheme.bodySmall!.color
+                      color: (dailyMealPlanList.isNotEmpty) ? Theme.of(context).textTheme.bodyMedium!.color : Theme.of(context).textTheme.bodySmall!.color
                   )
               ),
               const SizedBox(width: 8),
               (isToday)
                   ? Text(AppLocalizations.of(context)!.mealPlanToday.toLowerCase(), style: TextStyle(color: Theme.of(context).primaryColor))
-                  : Text(DateFormat('d. MMM', Platform.localeName).format(day), style: TextStyle(color: Theme.of(context).primaryTextTheme.bodySmall!.color))
+                  : Text(DateFormat('d. MMM', Platform.localeName).format(day), style: TextStyle(color: Theme.of(context).textTheme.bodySmall!.color))
             ],
           ),
           trailing: IconButton(
