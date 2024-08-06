@@ -250,25 +250,21 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
         ),
       ),
     ),
-    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
     pinned: true,
     stretch: true,
     forceElevated: innerBoxIsScrolled,
     elevation: 1.5,
     bottom: PreferredSize(
-      preferredSize: const Size(double.maxFinite, 42),
+      preferredSize: const Size(double.maxFinite, 50),
       child: Container(
-        height: 42,
-        padding: const EdgeInsets.fromLTRB(40, 0, 30, 10),
-        child:  Row(
-          children: [
-            Flexible(
-              child: SearchBar(
-                controller: searchTextController,
-              ),
-            ),
-            IconButton(
-                padding: const EdgeInsets.fromLTRB(8, 4, 8, 8),
+        height: 50,
+        padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
+        child: SearchBar(
+          controller: searchTextController,
+          elevation: WidgetStateProperty.all(0),
+          leading: Icon(Icons.search_rounded, color: Theme.of(context).colorScheme.secondary),
+          trailing: <Widget>[
+              IconButton(
                 tooltip: AppLocalizations.of(context)!.sort,
                 splashRadius: 20,
                 onPressed: () {
@@ -280,7 +276,7 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
                 )
             )
           ],
-        )
+        ),
       ),
     ),
     actions: [
