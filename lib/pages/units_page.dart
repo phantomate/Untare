@@ -145,7 +145,7 @@ class UnitsPageState extends State<UnitsPage> {
                                 ),
                               ),
                               separatorBuilder: (context, index) => Divider(
-                                color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                                color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                                 height: 4,
                               ),
                               itemCount: units.length
