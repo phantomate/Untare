@@ -263,32 +263,8 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
         child:  Row(
           children: [
             Flexible(
-              child: TextField(
+              child: SearchBar(
                 controller: searchTextController,
-                cursorColor: Theme.of(context).primaryColor,
-                decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.search,
-                  contentPadding: const EdgeInsets.only(top: 10),
-                  prefixIcon: const Icon(Icons.search_outlined),
-                  suffixIcon: showSearchClear ? IconButton(
-                    splashRadius: 1,
-                    padding: const EdgeInsets.fromLTRB(8, 7, 8, 8),
-                    icon: const Icon(Icons.clear_outlined),
-                    onPressed: () {
-                      searchTextController.clear();
-                    },
-                  ) : null,
-                  fillColor: (Theme.of(context).brightness.name == 'light') ? Colors.grey[200] : Colors.grey[700],
-                  focusedBorder:  const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.transparent, width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  ),
-                  filled: true,
-                  enabledBorder: const OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.transparent, width: 0.0),
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                  ),
-                ),
               ),
             ),
             IconButton(
