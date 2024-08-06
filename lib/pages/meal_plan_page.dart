@@ -353,10 +353,10 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                       Container(
                         padding: const EdgeInsets.fromLTRB(10, 0, 12, 0),
                         decoration: BoxDecoration(
-                          color: (Theme.of(context).brightness.name == 'light') ? Colors.white : Colors.grey[800],
+                          color: Theme.of(context).colorScheme.surfaceContainer,
                             border: Border(
                                 bottom: BorderSide(
-                                    color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[100]! : Colors.grey[700]!,
+                                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
                                     width: 1
                                 )
                             )
@@ -385,10 +385,10 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                           child: Container(
                             padding: const EdgeInsets.fromLTRB(10, 0, 12, 0),
                             decoration: BoxDecoration(
-                                color: (Theme.of(context).brightness.name == 'light') ? Colors.white : Colors.grey[800],
+                              color: Theme.of(context).colorScheme.surfaceContainer,
                                 border: Border(
                                     bottom: BorderSide(
-                                        color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[100]! : Colors.grey[700]!,
+                                        color: Theme.of(context).colorScheme.surfaceContainerHigh,
                                         width: 1
                                     )
                                 )
@@ -405,13 +405,13 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                                   height: 100,
                                   width: double.maxFinite,
                                   decoration: BoxDecoration(
-                                    color: (Theme.of(context).brightness.name == 'light') ? Colors.black12 : Colors.grey[700],
+                                    color: Theme.of(context).colorScheme.secondary,
                                     borderRadius: const BorderRadius.all(Radius.circular(10)),
                                   ),
                                   child: Center(
                                     child: Icon(
                                       Icons.restaurant_menu_outlined,
-                                      color: (Theme.of(context).brightness.name == 'light') ? Colors.black38 : Colors.grey[400],
+                                      color: Theme.of(context).colorScheme.onSecondary,
                                     ),
                                   ),
                                 ),
@@ -420,7 +420,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                               subtitle: Row(
                                 children: [
                                   Flexible(
-                                      child: Text(mealPlan.mealType.name, style: TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey, fontSize: 12))
+                                      child: Text(mealPlan.mealType.name, style: TextStyle(color: Theme.of(context).colorScheme.secondary.withOpacity(0.8), fontSize: 12))
                                   )
                                 ],
                               ),

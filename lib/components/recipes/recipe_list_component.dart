@@ -50,7 +50,7 @@ Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer
           rating(recipe, context),
           if (mealPlan != null)
             Flexible(
-                child: Text(mealPlan.mealType.name, style: TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey, fontSize: 12))
+                child: Text(mealPlan.mealType.name, style: TextStyle(color: Theme.of(context).colorScheme.secondary.withOpacity(0.8), fontSize: 12))
             )
         ],
       ) : null,
