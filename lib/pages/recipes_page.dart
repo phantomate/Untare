@@ -260,6 +260,7 @@ Widget sliverAppBarWidget(BuildContext context, bool innerBoxIsScrolled, TextEdi
         height: 50,
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 10),
         child: SearchBar(
+          backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.surfaceContainer),
           controller: searchTextController,
           elevation: WidgetStateProperty.all(0),
           leading: Icon(Icons.search_rounded, color: Theme.of(context).colorScheme.secondary),
