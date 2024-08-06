@@ -88,9 +88,8 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                   onPressed: () => {
                     decrement()
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.remove_circle_outline,
-                    color: Theme.of(context).primaryColor,
                   ),
                 ),
                 Text(newServings.toString()),
@@ -98,9 +97,8 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                     onPressed: () => {
                       increment()
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.add_circle_outline_outlined,
-                      color: Theme.of(context).primaryColor,
                     )
                 )
               ],
@@ -154,9 +152,9 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                   ),
                   title: Text(
                     recipe.steps[i].stepRecipeData!.name,
-                    style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w600),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
-                  trailing: Icon(Icons.arrow_forward_outlined, color: Theme.of(context).primaryColor),
+                  trailing: const Icon(Icons.arrow_forward_outlined),
                 ),
               )
             );
@@ -234,9 +232,9 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+                            border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
                           ),
-                          child:Text((stepNumber).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+                          child: Text((stepNumber).toString(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                         )
                     ),
                     if (stepName != null && stepName != '')
@@ -254,11 +252,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                           Icon(Icons.timer_outlined, size: 15.5, color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!),
                           Text(
                               ' $stepTime min',
-                              style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
-                                  fontSize: 15.5
-                              )
+                              style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 15.5)
                           )
                         ],
                       )
@@ -266,7 +260,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.check),
-                  color: (collapsed) ? Theme.of(context).primaryColor : ((Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!),
+                  color: (collapsed) ? Theme.of(context).colorScheme.secondary.withOpacity(0.5) : Theme.of(context).colorScheme.secondary,
                   onPressed: () {
                     setState(() {
                       collapsed = !collapsed;
@@ -280,7 +274,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
               decoration: BoxDecoration(
                   border: Border(
                       left: BorderSide(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).colorScheme.secondary,
                           width: 1
                       )
                   )
@@ -356,7 +350,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                     ),
                     child: Text(
                       food,
-                      style: TextStyle(color: Theme.of(context).primaryColor, fontWeight: FontWeight.w600),
+                      style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ),
                 if (recipe == null)
