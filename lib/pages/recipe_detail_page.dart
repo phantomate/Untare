@@ -398,10 +398,10 @@ Widget? getKeywordWidget(BuildContext context, Keyword keyword) {
         padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
         margin: const EdgeInsets.fromLTRB(5, 5, 0, 5),
         decoration: BoxDecoration(
-            color: (Theme.of(context).brightness.name == 'light') ? Colors.white.withOpacity(0.8) : Colors.grey[800]!.withOpacity(0.8),
+            color: Theme.of(context).colorScheme.tertiaryContainer,
             borderRadius: BorderRadius.circular(30)
         ),
-        child: Text(text, style: const TextStyle(fontSize: 11))
+        child: Text(text, style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onTertiaryContainer))
     );
   }
 
