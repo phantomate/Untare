@@ -294,7 +294,7 @@ class RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
             decoration: BoxDecoration(
                 border: Border(
                     bottom: BorderSide(
-                        color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                         width: 0.8
                     )
                 )
@@ -310,7 +310,7 @@ class RecipeUpsertStepsWidgetState extends State<RecipeUpsertStepsWidget> {
                     Text(
                         note,
                         style: TextStyle(
-                          color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                          color: Theme.of(context).colorScheme.secondary.withOpacity(0.8),
                           fontStyle: FontStyle.italic,
                           fontSize: 15
                         )
