@@ -48,15 +48,13 @@ Future importRecipeWebsiteDialog(BuildContext context) {
                       });
                     },
                     initialValue: splitInstructions,
-                    activeColor: Theme.of(context).primaryColor,
                     decoration: const InputDecoration(
                         border: InputBorder.none
                     ),
                   ),
                   Container(
                       alignment: Alignment.bottomRight,
-                      child: MaterialButton(
-                          color: Theme.of(context).primaryColor,
+                      child: ElevatedButton(
                           onPressed: () {
                             formBuilderKey.currentState!.save();
 

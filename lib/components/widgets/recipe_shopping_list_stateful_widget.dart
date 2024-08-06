@@ -146,9 +146,8 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                               onPressed: () => {
                                 decrement()
                               },
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.remove_circle_outline,
-                                color: Theme.of(context).primaryColor,
                               ),
                             ),
                             Text(newServings.toString()),
@@ -156,9 +155,8 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                                 onPressed: () => {
                                   increment()
                                 },
-                                icon: Icon(
+                                icon: const Icon(
                                   Icons.add_circle_outline_outlined,
-                                  color: Theme.of(context).primaryColor,
                                 )
                             )
                           ],
@@ -185,17 +183,7 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                       ),
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                top: BorderSide(
-                                    color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
-                                    width: 1
-                                )
-                            )
-                        ),
-                        child: MaterialButton(
-                          color: Theme.of(context).primaryColor,
-                          minWidth: double.maxFinite,
+                        child: ElevatedButton(
                           child: Text(AppLocalizations.of(context)!.add),
                           onPressed: () {
                             recipeBloc.add(AddIngredientsToShoppingList(
@@ -259,7 +247,7 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
-                  color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                  color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                   width: 0.8
               )
           )
@@ -270,12 +258,8 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
             visualDensity: const VisualDensity(horizontal: 0, vertical: -3),
             contentPadding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
             leading: Transform.scale(
-                scale: 1.2,
-                child: Checkbox(
-                activeColor: Theme.of(context).primaryColor,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(3)
-                ),
+              scale: 1.2,
+              child: Checkbox(
                 onChanged: (bool? value) {
                   setState(() {
                     checkBoxValue = value;
@@ -330,7 +314,7 @@ class RecipeShoppingListWidgetState extends State<RecipeShoppingListWidget> {
                     icon: Icon(
                       Icons.home_outlined,
                       size: 21,
-                      color: (ingredient.food != null && ingredient.food!.onHand!) ? Theme.of(context).primaryColor : null,
+                      color: (ingredient.food != null && ingredient.food!.onHand!) ? Theme.of(context).colorScheme.secondary.withOpacity(0.5) : Theme.of(context).colorScheme.secondary,
                     )
                 ),
               ],

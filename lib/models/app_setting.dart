@@ -16,13 +16,16 @@ class AppSetting {
   final int materialHexColor;
   @HiveField(4)
   final UserSetting? userServerSetting;
+  @HiveField(5)
+  final bool dynamicColor;
 
   AppSetting({
     required this.layout,
     this.theme,
     required this.defaultPage,
     required this.materialHexColor,
-    this.userServerSetting
+    this.userServerSetting,
+    this.dynamicColor = true
   });
 
   AppSetting copyWith({
@@ -30,14 +33,16 @@ class AppSetting {
     String? theme,
     String? defaultPage,
     int? materialHexColor,
-    UserSetting? userServerSetting
+    UserSetting? userServerSetting,
+    bool? dynamicColor
   }) {
     return AppSetting(
       layout: layout ?? this.layout,
       theme: theme ?? this.theme,
       defaultPage: defaultPage ?? this.defaultPage,
       materialHexColor: materialHexColor ?? this.materialHexColor,
-      userServerSetting: userServerSetting ?? this.userServerSetting
+      userServerSetting: userServerSetting ?? this.userServerSetting,
+      dynamicColor: dynamicColor ?? this.dynamicColor
     );
   }
 }

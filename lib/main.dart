@@ -1,3 +1,5 @@
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -160,7 +162,8 @@ class Tare extends StatelessWidget {
                 themeMode = ThemeMode.system;
             }
 
-            return MaterialApp(
+            return DynamicColorBuilder(builder: (lightColorScheme, darkColorScheme) {
+              return MaterialApp(
                 localizationsDelegates: const [
                   AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,
@@ -178,13 +181,14 @@ class Tare extends StatelessWidget {
                 ],
                 debugShowCheckedModeBanner: false,
                 title: 'UnTaRe App',
-                theme: AppTheme.lightTheme.copyWith(primaryColor: Color(settingsCubit.state.materialHexColor), useMaterial3: false),
-                darkTheme: AppTheme.darkTheme.copyWith(primaryColor: Color(settingsCubit.state.materialHexColor), useMaterial3: false),
+                theme: settingsCubit.state.dynamicColor && lightColorScheme != null ? AppTheme.fromScheme(lightColorScheme) : AppTheme.fromColor(Color(settingsCubit.state.materialHexColor), Brightness.light),
+                darkTheme: settingsCubit.state.dynamicColor && darkColorScheme != null ? AppTheme.fromScheme(darkColorScheme) : AppTheme.fromColor(Color(settingsCubit.state.materialHexColor), Brightness.dark),
                 themeMode: themeMode,
                 home: (state is AuthenticationAuthenticated)
                     ? const TarePage()
                     : const StartingPage()
-            );
+              );
+            });
           },
         )
     );
@@ -342,36 +346,15 @@ class TarePageState extends State<TarePage> with SingleTickerProviderStateMixin 
                 index: _selectedScreenIndex,
                 children: _pages
             ),
-            bottomNavigationBar: Container(
-              decoration: BoxDecoration(
-                boxShadow:[
-                  BoxShadow(
-                      color: Colors.black12.withOpacity(0.4), //color of shadow
-                      spreadRadius: 0.5, //spread radius
-                      blurRadius: 1, // blur radius
-                      offset: const Offset(0, 0)
-                  ),
-                ],
-              ),
-              child: SizeTransition(
-                  sizeFactor: _animationController,
-                  axisAlignment: -1.0,
-                  child: BottomNavigationBar(
-                    type: BottomNavigationBarType.fixed,
-                    currentIndex: _selectedScreenIndex,
-                    selectedItemColor: Theme.of(context).primaryColor,
-                    unselectedItemColor: Colors.grey,
-                    showSelectedLabels: true,
-                    showUnselectedLabels: false,
-                    onTap: _selectScreen,
-                    items: [
-                      BottomNavigationBarItem(icon: const Icon(Icons.restaurant_menu_outlined), label: AppLocalizations.of(context)!.recipesTitle),
-                      BottomNavigationBarItem(icon: const Icon(Icons.calendar_today_outlined), label: AppLocalizations.of(context)!.mealPlanTitle),
-                      BottomNavigationBarItem(icon: const Icon(Icons.shopping_cart_outlined), label: AppLocalizations.of(context)!.shoppingListTitle),
-                      BottomNavigationBarItem(icon: const Icon(Icons.settings), label: AppLocalizations.of(context)!.settingsTitle),
-                    ],
-                  )
-              ),
+            bottomNavigationBar: NavigationBar(
+              selectedIndex: _selectedScreenIndex,
+              onDestinationSelected: _selectScreen,
+              destinations: [
+                NavigationDestination(icon: const Icon(Icons.restaurant_menu_outlined), label: AppLocalizations.of(context)!.recipesTitle),
+                NavigationDestination(icon: const Icon(Icons.calendar_today_outlined), label: AppLocalizations.of(context)!.mealPlanTitle),
+                NavigationDestination(icon: const Icon(Icons.shopping_cart_outlined), label: AppLocalizations.of(context)!.shoppingListTitle),
+                NavigationDestination(icon: const Icon(Icons.settings), label: AppLocalizations.of(context)!.settingsTitle),
+              ],
             )
         )
     );

@@ -12,7 +12,7 @@ Widget buildRecipesList(List<Widget> recipesWidgetList) {
              padding: const EdgeInsets.only(left: 10, right: 10),
               child: Divider(
                thickness: 0.5,
-               color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+               color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
              ),
             ),
         ],

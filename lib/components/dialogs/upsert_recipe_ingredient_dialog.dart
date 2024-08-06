@@ -48,8 +48,7 @@ Future upsertRecipeIngredientDialog(BuildContext context, int stepIndex, int ing
                     const SizedBox(height: 10),
                     Container(
                       alignment: Alignment.bottomRight,
-                      child: MaterialButton(
-                        color: Theme.of(context).primaryColor,
+                      child: ElevatedButton(
                         child: Text((ingredient != null) ? AppLocalizations.of(context)!.edit : AppLocalizations.of(context)!.add),
                         onPressed: () {
 

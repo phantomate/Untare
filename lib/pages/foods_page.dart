@@ -48,7 +48,6 @@ class FoodsPageState extends State<FoodsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.foods),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 1.5,
       ),
       body: BlocProvider<FoodBloc>(
@@ -151,7 +150,7 @@ class FoodsPageState extends State<FoodsPage> {
                             ),
                           ),
                           separatorBuilder: (context, index) => Divider(
-                            color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                            color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                             height: 4,
                           ),
                           itemCount: foods.length

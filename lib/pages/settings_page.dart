@@ -58,7 +58,6 @@ class SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 elevation: 1.5,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 pinned: true,
               )
             ];
@@ -97,7 +96,16 @@ class SettingsPageState extends State<SettingsPage> {
                             title: Text(AppLocalizations.of(context)!.settingsThemeMode),
                             value: Text((setting.theme != 'system') ? ((setting.theme == 'light') ? AppLocalizations.of(context)!.settingsLightMode : AppLocalizations.of(context)!.settingsDarkMode) : AppLocalizations.of(context)!.settingsSystemMode),
                           ),
+                          SettingsTile.switchTile(
+                            leading: const Icon(Icons.style_outlined),
+                            onToggle: (bool value) {
+                              settingsCubit.changeDynamicColorTo(value);
+                            },
+                            initialValue: setting.dynamicColor,
+                            title: Text(AppLocalizations.of(context)!.dynamicColor),
+                          ),
                           SettingsTile.navigation(
+                              enabled: !setting.dynamicColor,
                               onPressed: (context) {
                                 Color pickedColor = Color(setting.materialHexColor);
                                 showDialog(context: context, builder: (BuildContext dContext) {
@@ -148,7 +156,7 @@ class SettingsPageState extends State<SettingsPage> {
                               },
                               leading: const Icon(Icons.color_lens_outlined),
                               title: Text(AppLocalizations.of(context)!.accentColor),
-                              trailing: Icon(Icons.circle, color: Color(setting.materialHexColor))
+                              trailing: Icon(Icons.circle, color: Color(setting.materialHexColor).withOpacity(setting.dynamicColor ? 0.5 : 1.0))
                           )
                         ]
                     ),
@@ -180,7 +188,6 @@ class SettingsPageState extends State<SettingsPage> {
                               onToggle: (bool value) {
 
                               },
-                              activeSwitchColor: Theme.of(context).primaryColor,
                               initialValue: setting.userServerSetting!.mealPlanAutoAddShopping,
                               title: Text('Auto add meal plan'),
                               description: Text('Automatically add meal plan ingredients to shopping list'),
@@ -227,7 +234,6 @@ class SettingsPageState extends State<SettingsPage> {
                               newUserSetting = setting.userServerSetting!.copyWith(useFractions: value);
                               settingsCubit.updateServerSetting(newUserSetting);
                             },
-                            activeSwitchColor: Theme.of(context).primaryColor,
                             initialValue: useFraction,
                             title: Text(AppLocalizations.of(context)!.useFractions),
                           ),
@@ -271,13 +277,13 @@ class SettingsPageState extends State<SettingsPage> {
                   ],
                   physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                   lightTheme: SettingsThemeData(
-                      tileHighlightColor: Theme.of(context).primaryColor,
-                      titleTextColor: Theme.of(context).primaryColor,
+                      tileHighlightColor: Theme.of(context).colorScheme.primary,
+                      titleTextColor: Theme.of(context).colorScheme.primary,
                       settingsListBackground: Theme.of(context).scaffoldBackgroundColor
                   ),
                   darkTheme: SettingsThemeData(
-                      tileHighlightColor: Theme.of(context).primaryColor,
-                      titleTextColor: Theme.of(context).primaryColor,
+                      tileHighlightColor: Theme.of(context).colorScheme.primary,
+                      titleTextColor: Theme.of(context).colorScheme.primary,
                       settingsListBackground: Theme.of(context).scaffoldBackgroundColor
                   ),
                 );

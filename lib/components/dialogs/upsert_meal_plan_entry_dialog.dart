@@ -124,7 +124,7 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                           const SizedBox(height: 15),
                           FormBuilderFilterChip (
                             name: 'share',
-                            checkmarkColor: Theme.of(context).primaryColor,
+                            checkmarkColor: Theme.of(context).colorScheme.primary,
                             initialValue: sharedUsers.map((user) => user.id).toList(),
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(context)!.shareWith,
@@ -136,8 +136,7 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                           const SizedBox(height: 15),
                           Container(
                               alignment: Alignment.bottomRight,
-                              child: MaterialButton(
-                                  color: Theme.of(context).primaryColor,
+                              child: ElevatedButton(
                                   onPressed: () {
                                     formBuilderKey.currentState!.save();
                                     if (formBuilderKey.currentState!.validate()) {

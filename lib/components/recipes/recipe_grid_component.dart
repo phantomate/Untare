@@ -11,7 +11,7 @@ import 'package:untare/pages/recipe_detail_page.dart';
 
 Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer, MealPlanEntry? mealPlan, bool? disabled}) {
   BoxDecoration recipeTimeDecoration = BoxDecoration(
-      color: (Theme.of(context).brightness.name == 'light') ? Colors.white.withOpacity(0.8) : Colors.grey[800]!.withOpacity(0.8),
+      color: Theme.of(context).colorScheme.tertiaryContainer,
       borderRadius: BorderRadius.circular(30)
   );
 
@@ -28,7 +28,7 @@ Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer
   }
   if (mealPlan != null) {
     widgets.add(
-      Flexible(child: Text(mealPlan.mealType.name, style: const TextStyle(fontSize: 11)))
+      Flexible(child: Text(mealPlan.mealType.name, style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onTertiaryContainer)))
     );
   }
 
@@ -88,7 +88,7 @@ Widget recipeGridComponent(Recipe recipe, BuildContext context, {String? referer
                         padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
                         margin: const EdgeInsets.all(5),
                         decoration: BoxDecoration(
-                            color: (Theme.of(context).brightness.name == 'light') ? Colors.white.withOpacity(0.8) : Colors.grey[800]!.withOpacity(0.8),
+                            color: Theme.of(context).colorScheme.tertiaryContainer,
                             borderRadius: BorderRadius.circular(30)
                         ),
                         child: Row(

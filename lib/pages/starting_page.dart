@@ -49,7 +49,7 @@ class StartingPage extends StatelessWidget {
               return Center(
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: Theme.of(context).primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               );
             },
@@ -116,7 +116,7 @@ class __SignInFormState extends State<_SignInForm> {
             return Center(
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).colorScheme.primary,
               ),
             );
           }
@@ -167,24 +167,17 @@ class __SignInFormState extends State<_SignInForm> {
                                         ])),
                                   )),
                                   const SizedBox(width: 10),
-                                  SizedBox(
-                                    width: 80,
-                                    child: MaterialButton(
-                                      color: Theme.of(context).primaryColor,
-                                      minWidth: double.maxFinite,
-                                      padding: const EdgeInsets.fromLTRB(
-                                          8, 4.5, 8, 4.5),
+                                  ElevatedButton(
                                       child: Text(
                                           AppLocalizations.of(context)!
                                               .officialServer,
                                           style: const TextStyle(fontSize: 13),
-                                          textAlign: TextAlign.center),
+                                        ),
                                       onPressed: () {
                                         _urlController.text =
                                             'https://app.tandoor.dev';
                                       },
                                     ),
-                                  )
                                 ],
                               ),
                               const SizedBox(height: 15),
@@ -226,10 +219,7 @@ class __SignInFormState extends State<_SignInForm> {
                                 ),
                               ),
                               const SizedBox(height: 15),
-                              MaterialButton(
-                                color: Theme.of(context).primaryColor,
-                                minWidth: double.maxFinite,
-                                padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
+                              ElevatedButton(
                                 onPressed: onLoginButtonPressed,
                                 child: const Text('LOGIN'),
                               ),

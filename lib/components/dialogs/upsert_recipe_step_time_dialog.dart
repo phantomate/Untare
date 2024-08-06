@@ -36,8 +36,7 @@ Future upsertRecipeStepTimeDialog(BuildContext context, int stepIndex, Function(
                     const SizedBox(height: 15),
                     Container(
                         alignment: Alignment.bottomRight,
-                        child: MaterialButton(
-                            color: Theme.of(context).primaryColor,
+                        child: ElevatedButton(
                             onPressed: () {
                               formKey.currentState!.setInternalFieldValue('stepIndex', stepIndex);
                               formKey.currentState!.save();

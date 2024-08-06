@@ -44,7 +44,6 @@ Future addShoppingListEntryDialog(BuildContext context) {
                                 });
                               },
                               initialValue: simpleMode,
-                              activeColor: Theme.of(context).primaryColor,
                               decoration: const InputDecoration(
                                   border: InputBorder.none
                               ),
@@ -72,8 +71,7 @@ Future addShoppingListEntryDialog(BuildContext context) {
                                 )
                             ),
                             const SizedBox(height: 15),
-                            MaterialButton(
-                              color: Theme.of(context).primaryColor,
+                            ElevatedButton(
                               child: Text(AppLocalizations.of(context)!.add),
                               onPressed: () {
                                 formBuilderKey.currentState!.save();

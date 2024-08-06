@@ -76,8 +76,7 @@ Future editMealTypeDialog(BuildContext context) async {
                           const SizedBox(height: 15),
                           Container(
                               alignment: Alignment.bottomRight,
-                              child: MaterialButton(
-                                  color: Theme.of(context).primaryColor,
+                              child: ElevatedButton(
                                   onPressed: isVisible ? () {
                                     formBuilderKey.currentState!.save();
 

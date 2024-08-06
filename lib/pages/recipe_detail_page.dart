@@ -187,7 +187,6 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                     )
                   ],
                   elevation: (scrolled) ? 1.5 : 0,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   pinned: true,
                 );
               });
@@ -239,9 +238,9 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                               const SizedBox(height: 3),
                               Text(
                                 AppLocalizations.of(context)!.lastCooked,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 10,
-                                    color: Colors.grey
+                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)
                                 ),
                               )
                             ],
@@ -266,9 +265,9 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                               const SizedBox(height: 3),
                               Text(
                                 AppLocalizations.of(context)!.rating,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 10,
-                                    color: Colors.grey
+                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)
                                 ),
                               )
                             ],
@@ -292,9 +291,9 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                               const SizedBox(height: 3),
                               Text(
                                 AppLocalizations.of(context)!.prepTime,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 10,
-                                    color: Colors.grey
+                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)
                                 ),
                               )
                             ],
@@ -320,9 +319,9 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                               const SizedBox(height: 3),
                               Text(
                                 AppLocalizations.of(context)!.waitingTime,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 10,
-                                    color: Colors.grey
+                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)
                                 ),
                               )
                             ],
@@ -336,9 +335,6 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
           SliverPersistentHeader(
             delegate: _SliverAppBarDelegate(
               TabBar(
-                indicatorColor: Theme.of(context).primaryColor,
-                unselectedLabelColor: Colors.grey,
-                labelColor: (Theme.of(context).brightness.name == 'dark') ? Colors.white : Colors.black,
                 tabs: [
                   Tab(text: AppLocalizations.of(context)!.ingredients),
                   Tab(text: AppLocalizations.of(context)!.directions),
@@ -398,10 +394,10 @@ Widget? getKeywordWidget(BuildContext context, Keyword keyword) {
         padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
         margin: const EdgeInsets.fromLTRB(5, 5, 0, 5),
         decoration: BoxDecoration(
-            color: (Theme.of(context).brightness.name == 'light') ? Colors.white.withOpacity(0.8) : Colors.grey[800]!.withOpacity(0.8),
+            color: Theme.of(context).colorScheme.tertiaryContainer,
             borderRadius: BorderRadius.circular(30)
         ),
-        child: Text(text, style: const TextStyle(fontSize: 11))
+        child: Text(text, style: TextStyle(fontSize: 11, color: Theme.of(context).colorScheme.onTertiaryContainer))
     );
   }
 

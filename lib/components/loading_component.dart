@@ -9,7 +9,7 @@ Widget buildLoading() {
         child: Center(
           child: CircularProgressIndicator(
               strokeWidth: 2,
-              color: Theme.of(context).primaryColor
+              color: Theme.of(context).colorScheme.primary
           ),
         )
     );

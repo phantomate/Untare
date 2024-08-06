@@ -229,6 +229,7 @@
   "@settingsRecentDaysDescription": {},
   "settingsLogout": "Déconnexion",
   "@settingsLogout": {},
+  "dynamicColor": "Couleurs dynamiques",
   "accentColor": "Palette de couleur",
   "@accentColor": {},
   "pickColor": "Choisir une couleur",

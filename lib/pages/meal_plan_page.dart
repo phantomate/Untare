@@ -166,12 +166,11 @@ class MealPlanPageState extends State<MealPlanPage> with WidgetsBindingObserver 
                       },
                       icon: Icon(
                         Icons.more_vert_outlined,
-                        color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
+                        color: Theme.of(context).textTheme.bodyMedium!.color,
                       )
                   )
                 ],
                 elevation: (scrolled) ? 1.5 : 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 pinned: true,
                 forceElevated: true,
                 bottom: PreferredSize(
@@ -198,7 +197,7 @@ class MealPlanPageState extends State<MealPlanPage> with WidgetsBindingObserver 
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 18,
-                              color: Theme.of(context).primaryTextTheme.bodyMedium!.color,
+                              color: Theme.of(context).textTheme.bodyMedium!.color,
                             ),
                           ),
                         ),
@@ -308,7 +307,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
     decoration: BoxDecoration(
         border: Border(
             bottom: BorderSide(
-                color: Theme.of(context).primaryTextTheme.labelMedium!.color!,
+                color: Theme.of(context).textTheme.labelMedium!.color!,
                 width: 0.8
             )
         )
@@ -323,13 +322,13 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                   DateFormat('EEEE', Platform.localeName).format(day),
                   style: TextStyle(
                       fontWeight: (dailyMealPlanList.isNotEmpty) ? FontWeight.bold : FontWeight.normal,
-                      color: (dailyMealPlanList.isNotEmpty) ? Theme.of(context).primaryTextTheme.bodyMedium!.color : Theme.of(context).primaryTextTheme.bodySmall!.color
+                      color: (dailyMealPlanList.isNotEmpty) ? Theme.of(context).textTheme.bodyMedium!.color : Theme.of(context).textTheme.bodySmall!.color
                   )
               ),
               const SizedBox(width: 8),
               (isToday)
-                  ? Text(AppLocalizations.of(context)!.mealPlanToday.toLowerCase(), style: TextStyle(color: Theme.of(context).primaryColor))
-                  : Text(DateFormat('d. MMM', Platform.localeName).format(day), style: TextStyle(color: Theme.of(context).primaryTextTheme.bodySmall!.color))
+                  ? Text(AppLocalizations.of(context)!.mealPlanToday.toLowerCase(), style: TextStyle(color: Theme.of(context).colorScheme.primary))
+                  : Text(DateFormat('d. MMM', Platform.localeName).format(day), style: TextStyle(color: Theme.of(context).textTheme.bodySmall!.color))
             ],
           ),
           trailing: IconButton(
@@ -353,10 +352,10 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                       Container(
                         padding: const EdgeInsets.fromLTRB(10, 0, 12, 0),
                         decoration: BoxDecoration(
-                          color: (Theme.of(context).brightness.name == 'light') ? Colors.white : Colors.grey[800],
+                          color: Theme.of(context).colorScheme.surfaceContainer,
                             border: Border(
                                 bottom: BorderSide(
-                                    color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[100]! : Colors.grey[700]!,
+                                    color: Theme.of(context).colorScheme.surfaceContainerHigh,
                                     width: 1
                                 )
                             )
@@ -385,10 +384,10 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                           child: Container(
                             padding: const EdgeInsets.fromLTRB(10, 0, 12, 0),
                             decoration: BoxDecoration(
-                                color: (Theme.of(context).brightness.name == 'light') ? Colors.white : Colors.grey[800],
+                              color: Theme.of(context).colorScheme.surfaceContainer,
                                 border: Border(
                                     bottom: BorderSide(
-                                        color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[100]! : Colors.grey[700]!,
+                                        color: Theme.of(context).colorScheme.surfaceContainerHigh,
                                         width: 1
                                     )
                                 )
@@ -405,13 +404,13 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                                   height: 100,
                                   width: double.maxFinite,
                                   decoration: BoxDecoration(
-                                    color: (Theme.of(context).brightness.name == 'light') ? Colors.black12 : Colors.grey[700],
+                                    color: Theme.of(context).colorScheme.secondary,
                                     borderRadius: const BorderRadius.all(Radius.circular(10)),
                                   ),
                                   child: Center(
                                     child: Icon(
                                       Icons.restaurant_menu_outlined,
-                                      color: (Theme.of(context).brightness.name == 'light') ? Colors.black38 : Colors.grey[400],
+                                      color: Theme.of(context).colorScheme.onSecondary,
                                     ),
                                   ),
                                 ),
@@ -420,7 +419,7 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                               subtitle: Row(
                                 children: [
                                   Flexible(
-                                      child: Text(mealPlan.mealType.name, style: TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey, fontSize: 12))
+                                      child: Text(mealPlan.mealType.name, style: TextStyle(color: Theme.of(context).colorScheme.secondary.withOpacity(0.8), fontSize: 12))
                                   )
                                 ],
                               ),
@@ -449,13 +448,13 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                                             height: 140,
                                             width: double.maxFinite,
                                             decoration: BoxDecoration(
-                                              color: (Theme.of(context).brightness.name == 'light') ? Colors.black12 : Colors.grey[700],
+                                              color: Theme.of(context).colorScheme.secondary,
                                               borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                                             ),
                                             child: Center(
                                               child: Icon(
                                                 Icons.restaurant_menu_outlined,
-                                                color: (Theme.of(context).brightness.name == 'light') ? Colors.black38 : Colors.grey[400],
+                                                color: Theme.of(context).colorScheme.onSecondary,
                                               ),
                                             ),
                                           ),
@@ -468,14 +467,14 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                                               padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
                                               margin: const EdgeInsets.all(5),
                                               decoration: BoxDecoration(
-                                                  color: (Theme.of(context).brightness.name == 'light') ? Colors.white.withOpacity(0.8) : Colors.grey[800]!.withOpacity(0.8),
+                                                  color: Theme.of(context).colorScheme.tertiaryContainer,
                                                   borderRadius: BorderRadius.circular(30)
                                               ),
                                               child: Row(
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 mainAxisSize: MainAxisSize.min,
-                                                children: [Flexible(child: Text(mealPlan.mealType.name, style: const TextStyle(fontSize: 11)))],
+                                                children: [Flexible(child: Text(mealPlan.mealType.name, style: TextStyle(color: Theme.of(context).colorScheme.onTertiaryContainer, fontSize: 11)))],
                                               ),
                                             ),
                                           )

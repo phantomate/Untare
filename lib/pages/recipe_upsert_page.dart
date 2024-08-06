@@ -599,7 +599,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+                    border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2),
                   ),
                   child: IconButton(
                     padding: const EdgeInsets.all(0),
@@ -607,7 +607,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                     visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
                     icon: Icon(
                       Icons.add,
-                      color: Theme.of(context).primaryColor,
+                      color: Theme.of(context).colorScheme.primary,
                     ),
                     onPressed: () {
                       FocusManager.instance.primaryFocus?.unfocus();
@@ -665,9 +665,9 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            border: Border.all(color: Theme.of(context).primaryColor, width: 2),
+                            border: Border.all(color: Theme.of(context).colorScheme.primary, width: 2),
                           ),
-                          child: Text((stepIndex+1).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor)),
+                          child: Text((stepIndex+1).toString(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary)),
                         )
                     ),
                     if (step.name != null && step.name != '')
@@ -675,19 +675,19 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                           '${step.name} ',
                           style: TextStyle(
                               fontStyle: FontStyle.italic,
-                              color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                              color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                               fontSize: 15.5
                           )
                       ),
                     if (step.time != null && step.time != 0)
                     Row(
                       children: [
-                        Icon(Icons.timer_outlined, size: 15.5, color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!),
+                        Icon(Icons.timer_outlined, size: 15.5, color: Theme.of(context).colorScheme.secondary.withOpacity(0.5)),
                         Text(
                             ' ${step.time} min',
                             style: TextStyle(
                                 fontStyle: FontStyle.italic,
-                                color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                                color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                                 fontSize: 15.5
                             )
                         )
@@ -757,7 +757,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
               decoration: BoxDecoration(
                   border: Border(
                       left: BorderSide(
-                          color: Theme.of(context).primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                           width: 1
                       )
                   )
@@ -770,7 +770,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                   splashRadius: 20,
                   icon: Icon(
                     Icons.add,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   onPressed: () {
                     FocusManager.instance.primaryFocus?.unfocus();
@@ -788,7 +788,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
         decoration: BoxDecoration(
             border: Border(
                 left: BorderSide(
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).colorScheme.primary,
                     width: 1
                 )
             )
@@ -840,7 +840,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
             decoration: BoxDecoration(
                 border: Border(
                     bottom: BorderSide(
-                        color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                         width: 0.8
                     )
                 )
@@ -851,7 +851,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
               title: RichText(
                 overflow: TextOverflow.ellipsis,
                 text: TextSpan(
-                  style: TextStyle(fontSize: 15, color: Theme.of(context).primaryTextTheme.bodyMedium!.color),
+                  style: TextStyle(fontSize: 15, color: Theme.of(context).textTheme.bodyMedium!.color),
                   children: [
                     TextSpan(text: amount, style: const TextStyle(fontWeight: FontWeight.bold)),
                     TextSpan(text: unit, style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -859,7 +859,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                     TextSpan(
                       text: note,
                       style: TextStyle(
-                          color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                          color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                           fontStyle: FontStyle.italic
                       )
                     )

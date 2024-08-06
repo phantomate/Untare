@@ -45,8 +45,7 @@ Future editShoppingListRefreshDialog(BuildContext context, UserSetting userSetti
                           const SizedBox(height: 15),
                           Container(
                               alignment: Alignment.bottomRight,
-                              child: MaterialButton(
-                                  color: Theme.of(context).primaryColor,
+                              child: ElevatedButton(
                                   onPressed: () {
                                     formBuilderKey.currentState!.save();
 

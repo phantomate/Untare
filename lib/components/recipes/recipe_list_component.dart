@@ -50,7 +50,7 @@ Widget recipeListComponent(Recipe recipe, BuildContext context, {String? referer
           rating(recipe, context),
           if (mealPlan != null)
             Flexible(
-                child: Text(mealPlan.mealType.name, style: TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey, fontSize: 12))
+                child: Text(mealPlan.mealType.name, style: TextStyle(color: Theme.of(context).colorScheme.secondary.withOpacity(0.8), fontSize: 12))
             )
         ],
       ) : null,
@@ -65,12 +65,12 @@ Widget lastCooked(Recipe recipe, BuildContext context) {
         Icon(
           Icons.restaurant_outlined,
           size: 12,
-          color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey
+          color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)
         ),
         const SizedBox(width: 2),
         Text(
             DateFormat('dd.MM.yy').format(DateTime.parse(recipe.lastCooked!).toLocal()),
-            style: TextStyle(color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey, fontSize: 12)
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary.withOpacity(0.8), fontSize: 12)
         ),
         const SizedBox(width: 8)
       ],
@@ -87,7 +87,7 @@ Widget rating (Recipe recipe, BuildContext context) {
             recipe.rating.toString(),
             style: TextStyle(
               fontSize: 12,
-              color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[600] : Colors.grey
+              color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)
             )
         ),
         const SizedBox(width: 2),
