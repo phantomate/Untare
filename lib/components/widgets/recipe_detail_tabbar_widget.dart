@@ -240,16 +240,15 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                     if (stepName != null && stepName != '')
                       Text(
                           '$stepName ',
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontStyle: FontStyle.italic,
-                              color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
                               fontSize: 15.5
                           )
                       ),
                     if (stepTime != null && stepTime != 0)
                       Row(
                         children: [
-                          Icon(Icons.timer_outlined, size: 15.5, color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!),
+                          Icon(Icons.timer_outlined, size: 15.5, color: Theme.of(context).colorScheme.secondary),
                           Text(
                               ' $stepTime min',
                               style: const TextStyle(fontStyle: FontStyle.italic, fontSize: 15.5)
@@ -329,7 +328,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
         decoration: BoxDecoration(
             border: Border(
                 bottom: BorderSide(
-                    color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                     width: 0.8
                 )
             )
@@ -358,7 +357,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
                 Text(
                     note,
                     style: TextStyle(
-                        color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                         fontStyle: FontStyle.italic,
                         fontSize: 15
                     )
@@ -378,7 +377,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
             decoration: BoxDecoration(
                 border: Border(
                     bottom: BorderSide(
-                        color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                         width: 0.8
                     )
                 )
@@ -421,7 +420,7 @@ class RecipeDetailTabBarWidgetState extends State<RecipeDetailTabBarWidget> {
         decoration: BoxDecoration(
             border: Border(
                 bottom: BorderSide(
-                    color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                     width: 0.8
                 )
             )
