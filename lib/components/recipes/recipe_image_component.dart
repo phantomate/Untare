@@ -16,7 +16,7 @@ Widget buildRecipeImage(Recipe recipe, BorderRadius borderRadius, double height,
             height: height,
             width: double.maxFinite,
             decoration: BoxDecoration(
-              color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[100]! : Colors.grey[700],
+              color: Theme.of(context).colorScheme.secondary,
               borderRadius: borderRadius,
               boxShadow: [
                 if (boxShadow != null) boxShadow
@@ -29,13 +29,13 @@ Widget buildRecipeImage(Recipe recipe, BorderRadius borderRadius, double height,
           ),
           placeholder: (context, url) => Shimmer.fromColors(
             enabled: true,
-            baseColor: (Theme.of(context).brightness.name == 'light') ? Colors.grey[100]! : Colors.grey[700]!,
-            highlightColor: (Theme.of(context).brightness.name == 'light') ? Colors.grey[200]! : Colors.grey[600]!,
+            baseColor: Theme.of(context).colorScheme.secondary,
+            highlightColor: Theme.of(context).colorScheme.onSecondary,
             child: Container(
               height: height,
               width: double.maxFinite,
               decoration: BoxDecoration(
-                color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[100] : Colors.grey[700],
+                color: Theme.of(context).colorScheme.secondary,
                 borderRadius: borderRadius,
               ),
             ),
@@ -45,13 +45,13 @@ Widget buildRecipeImage(Recipe recipe, BorderRadius borderRadius, double height,
               height: height,
               width: double.maxFinite,
               decoration: BoxDecoration(
-                color: (Theme.of(context).brightness.name == 'light') ? Colors.black12 : Colors.grey[700],
+                color: Theme.of(context).colorScheme.secondary,
                 borderRadius: borderRadius,
               ),
               child: Center(
                 child: Icon(
                   Icons.restaurant_menu_outlined,
-                  color: (Theme.of(context).brightness.name == 'light') ? Colors.black38 : Colors.grey[400],
+                  color: Theme.of(context).colorScheme.onSecondary,
                 ),
               ),
             );
@@ -65,14 +65,14 @@ Widget buildRecipeImage(Recipe recipe, BorderRadius borderRadius, double height,
       height: height,
       width: double.maxFinite,
       decoration: BoxDecoration(
-        color: (Theme.of(context).brightness.name == 'light') ? Colors.black12 : Colors.grey[700],
+        color: Theme.of(context).colorScheme.secondary,
         borderRadius: borderRadius,
       ),
       child: Container(
         alignment: Alignment.center,
         child: Icon(
           Icons.restaurant_menu_outlined,
-          color: (Theme.of(context).brightness.name == 'light') ? Colors.black38 : Colors.grey[400],
+          color: Theme.of(context).colorScheme.onSecondary,
         ),
       ),
     );
