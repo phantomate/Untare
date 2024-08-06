@@ -97,7 +97,16 @@ class SettingsPageState extends State<SettingsPage> {
                             title: Text(AppLocalizations.of(context)!.settingsThemeMode),
                             value: Text((setting.theme != 'system') ? ((setting.theme == 'light') ? AppLocalizations.of(context)!.settingsLightMode : AppLocalizations.of(context)!.settingsDarkMode) : AppLocalizations.of(context)!.settingsSystemMode),
                           ),
+                          SettingsTile.switchTile(
+                            leading: const Icon(Icons.style_outlined),
+                            onToggle: (bool value) {
+                              settingsCubit.changeDynamicColorTo(value);
+                            },
+                            initialValue: setting.dynamicColor,
+                            title: Text(AppLocalizations.of(context)!.dynamicColor),
+                          ),
                           SettingsTile.navigation(
+                              enabled: !setting.dynamicColor,
                               onPressed: (context) {
                                 Color pickedColor = Color(setting.materialHexColor);
                                 showDialog(context: context, builder: (BuildContext dContext) {
@@ -148,7 +157,7 @@ class SettingsPageState extends State<SettingsPage> {
                               },
                               leading: const Icon(Icons.color_lens_outlined),
                               title: Text(AppLocalizations.of(context)!.accentColor),
-                              trailing: Icon(Icons.circle, color: Color(setting.materialHexColor))
+                              trailing: Icon(Icons.circle, color: Color(setting.materialHexColor).withOpacity(setting.dynamicColor ? 0.5 : 1.0))
                           )
                         ]
                     ),

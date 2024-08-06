@@ -120,6 +120,7 @@
   "settingsRecentDays": "Recent days",
   "settingsRecentDaysDescription": "Displays the last %s days of the shopping list",
   "settingsLogout": "Logout",
+  "dynamicColor": "Dynamic color",
   "accentColor": "Accent color",
   "pickColor": "Pick a color",
 

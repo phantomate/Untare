@@ -16,6 +16,12 @@ class SettingsCubit extends Cubit<AppSetting> {
 
   SettingsCubit({required this.apiUser, required this.cacheUserService}) : super(AppSetting(layout: 'card', defaultPage: 'recipes', materialHexColor: 0xffceb27c));
 
+  void changeDynamicColorTo(bool dynamicColor) {
+    AppSetting newState = state.copyWith(dynamicColor: dynamicColor);
+    emit(newState);
+    box.put('settings', newState);
+  }
+
   void changeLayoutTo(String? layout) {
     if (['list', 'card'].contains(layout)) {
       AppSetting newState = state.copyWith(layout: layout);

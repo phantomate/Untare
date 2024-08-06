@@ -1,3 +1,5 @@
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -160,7 +162,8 @@ class Tare extends StatelessWidget {
                 themeMode = ThemeMode.system;
             }
 
-            return MaterialApp(
+            return DynamicColorBuilder(builder: (lightColorScheme, darkColorScheme) {
+              return MaterialApp(
                 localizationsDelegates: const [
                   AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,
@@ -178,13 +181,14 @@ class Tare extends StatelessWidget {
                 ],
                 debugShowCheckedModeBanner: false,
                 title: 'UnTaRe App',
-                theme: AppTheme.lightTheme(Color(settingsCubit.state.materialHexColor)),
-                darkTheme: AppTheme.darkTheme(Color(settingsCubit.state.materialHexColor)),
+                theme: settingsCubit.state.dynamicColor && lightColorScheme != null ? AppTheme.fromScheme(lightColorScheme) : AppTheme.fromColor(Color(settingsCubit.state.materialHexColor), Brightness.light),
+                darkTheme: settingsCubit.state.dynamicColor && darkColorScheme != null ? AppTheme.fromScheme(darkColorScheme) : AppTheme.fromColor(Color(settingsCubit.state.materialHexColor), Brightness.dark),
                 themeMode: themeMode,
                 home: (state is AuthenticationAuthenticated)
                     ? const TarePage()
                     : const StartingPage()
-            );
+              );
+            });
           },
         )
     );
