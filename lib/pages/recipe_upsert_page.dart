@@ -675,19 +675,19 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                           '${step.name} ',
                           style: TextStyle(
                               fontStyle: FontStyle.italic,
-                              color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                              color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                               fontSize: 15.5
                           )
                       ),
                     if (step.time != null && step.time != 0)
                     Row(
                       children: [
-                        Icon(Icons.timer_outlined, size: 15.5, color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!),
+                        Icon(Icons.timer_outlined, size: 15.5, color: Theme.of(context).colorScheme.secondary.withOpacity(0.5)),
                         Text(
                             ' ${step.time} min',
                             style: TextStyle(
                                 fontStyle: FontStyle.italic,
-                                color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                                color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                                 fontSize: 15.5
                             )
                         )
@@ -840,7 +840,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
             decoration: BoxDecoration(
                 border: Border(
                     bottom: BorderSide(
-                        color: (Theme.of(context).brightness.name == 'light') ? Colors.grey[300]! : Colors.grey[700]!,
+                        color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                         width: 0.8
                     )
                 )
@@ -859,7 +859,7 @@ class RecipeUpsertPageState extends State<RecipeUpsertPage> {
                     TextSpan(
                       text: note,
                       style: TextStyle(
-                          color: (Theme.of(context).brightness.name == 'light') ? Colors.black45 : Colors.grey[600]!,
+                          color: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
                           fontStyle: FontStyle.italic
                       )
                     )
