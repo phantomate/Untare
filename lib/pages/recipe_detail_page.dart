@@ -239,9 +239,9 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                               const SizedBox(height: 3),
                               Text(
                                 AppLocalizations.of(context)!.lastCooked,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 10,
-                                    color: Colors.grey
+                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)
                                 ),
                               )
                             ],
@@ -266,9 +266,9 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                               const SizedBox(height: 3),
                               Text(
                                 AppLocalizations.of(context)!.rating,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 10,
-                                    color: Colors.grey
+                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)
                                 ),
                               )
                             ],
@@ -292,9 +292,9 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                               const SizedBox(height: 3),
                               Text(
                                 AppLocalizations.of(context)!.prepTime,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 10,
-                                    color: Colors.grey
+                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)
                                 ),
                               )
                             ],
@@ -320,9 +320,9 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                               const SizedBox(height: 3),
                               Text(
                                 AppLocalizations.of(context)!.waitingTime,
-                                style: const TextStyle(
+                                style: TextStyle(
                                     fontSize: 10,
-                                    color: Colors.grey
+                                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)
                                 ),
                               )
                             ],
@@ -336,9 +336,6 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
           SliverPersistentHeader(
             delegate: _SliverAppBarDelegate(
               TabBar(
-                indicatorColor: Theme.of(context).primaryColor,
-                unselectedLabelColor: Colors.grey,
-                labelColor: (Theme.of(context).brightness.name == 'dark') ? Colors.white : Colors.black,
                 tabs: [
                   Tab(text: AppLocalizations.of(context)!.ingredients),
                   Tab(text: AppLocalizations.of(context)!.directions),
