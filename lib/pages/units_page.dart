@@ -46,7 +46,6 @@ class UnitsPageState extends State<UnitsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.units),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 1.5,
       ),
       body: BlocProvider<UnitBloc>(

@@ -48,7 +48,6 @@ class FoodsPageState extends State<FoodsPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.foods),
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 1.5,
       ),
       body: BlocProvider<FoodBloc>(

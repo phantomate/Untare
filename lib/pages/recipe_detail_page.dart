@@ -187,7 +187,6 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                     )
                   ],
                   elevation: (scrolled) ? 1.5 : 0,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   pinned: true,
                 );
               });

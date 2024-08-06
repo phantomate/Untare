@@ -155,7 +155,6 @@ class ShoppingListPageState extends State<ShoppingListPage> with TickerProviderS
                     )
                   ],
                   elevation: (scrolled) ? 1.5 : 0,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   pinned: true,
                   forceElevated: true,
                 );

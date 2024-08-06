@@ -171,7 +171,6 @@ class MealPlanPageState extends State<MealPlanPage> with WidgetsBindingObserver 
                   )
                 ],
                 elevation: (scrolled) ? 1.5 : 0,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 pinned: true,
                 forceElevated: true,
                 bottom: PreferredSize(

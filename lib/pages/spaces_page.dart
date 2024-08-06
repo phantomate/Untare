@@ -32,7 +32,6 @@ class SpacesPageState extends State<SpacesPage> {
           return Scaffold(
             appBar: AppBar(
               title: Text(AppLocalizations.of(context)!.spaces),
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               elevation: 1.5,
             ),
             body: ListView.separated(

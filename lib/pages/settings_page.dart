@@ -58,7 +58,6 @@ class SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
                 elevation: 1.5,
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 pinned: true,
               )
             ];
