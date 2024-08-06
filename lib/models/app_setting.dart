@@ -25,7 +25,7 @@ class AppSetting {
     required this.defaultPage,
     required this.materialHexColor,
     this.userServerSetting,
-    this.dynamicColor = false
+    this.dynamicColor = true
   });
 
   AppSetting copyWith({
