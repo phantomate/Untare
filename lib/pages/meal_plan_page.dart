@@ -449,13 +449,13 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                                             height: 140,
                                             width: double.maxFinite,
                                             decoration: BoxDecoration(
-                                              color: (Theme.of(context).brightness.name == 'light') ? Colors.black12 : Colors.grey[700],
+                                              color: Theme.of(context).colorScheme.secondary,
                                               borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                                             ),
                                             child: Center(
                                               child: Icon(
                                                 Icons.restaurant_menu_outlined,
-                                                color: (Theme.of(context).brightness.name == 'light') ? Colors.black38 : Colors.grey[400],
+                                                color: Theme.of(context).colorScheme.onSecondary,
                                               ),
                                             ),
                                           ),
@@ -468,14 +468,14 @@ Widget buildDayLayout(BuildContext context, List<MealPlanEntry> mealPlanList, Da
                                               padding: const EdgeInsets.fromLTRB(5, 3, 5, 3),
                                               margin: const EdgeInsets.all(5),
                                               decoration: BoxDecoration(
-                                                  color: (Theme.of(context).brightness.name == 'light') ? Colors.white.withOpacity(0.8) : Colors.grey[800]!.withOpacity(0.8),
+                                                  color: Theme.of(context).colorScheme.tertiaryContainer,
                                                   borderRadius: BorderRadius.circular(30)
                                               ),
                                               child: Row(
                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 mainAxisSize: MainAxisSize.min,
-                                                children: [Flexible(child: Text(mealPlan.mealType.name, style: const TextStyle(fontSize: 11)))],
+                                                children: [Flexible(child: Text(mealPlan.mealType.name, style: TextStyle(color: Theme.of(context).colorScheme.onTertiaryContainer, fontSize: 11)))],
                                               ),
                                             ),
                                           )
