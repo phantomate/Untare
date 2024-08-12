@@ -1,0 +1,45 @@
+name: Build Debug
+
+env:
+  FLUTTER_VERSION: 3.22.2
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v4
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: ${{env.FLUTTER_VERSION}}
+    - run: flutter pub get
+    - run: flutter test
+    - run: flutter build apk --debug
+
+  ios:
+    runs-on: macos-latest
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v4
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        channel: stable
+        flutter-version: ${{env.FLUTTER_VERSION}}
+    - run: flutter pub get
+    - run: flutter test
+    - run: flutter build ios --debug --no-codesign
