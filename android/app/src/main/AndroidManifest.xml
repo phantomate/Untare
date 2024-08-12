@@ -13,7 +13,7 @@
         </intent>
     </queries>
     <application
-        android:label="Untare"
+        android:label="@string/app_name"
         android:icon="@mipmap/app_icon">
         <activity
             android:name=".MainActivity"
