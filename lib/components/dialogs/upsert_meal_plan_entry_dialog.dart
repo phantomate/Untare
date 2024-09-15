@@ -93,9 +93,6 @@ Future upsertMealPlanEntryDialog(BuildContext context, {MealPlanEntry? mealPlan,
                                     decoration: InputDecoration(
                                       labelText: AppLocalizations.of(context)!.alternativeTitle,
                                     ),
-                                    validator: FormBuilderValidators.compose([
-                                      FormBuilderValidators.maxLength(64),
-                                    ]),
                                   )
                               ),
                               const SizedBox(width: 15),
