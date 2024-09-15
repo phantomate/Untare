@@ -13,7 +13,7 @@ import 'package:untare/components/loading_component.dart';
 import 'package:untare/models/keyword.dart';
 import 'package:untare/models/recipe.dart';
 import 'package:untare/extensions/int_extension.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class RecipeDetailPage extends StatefulWidget {
   final Recipe recipe;
@@ -36,7 +36,7 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
     recipe = widget.recipe;
     recipeBloc = BlocProvider.of<RecipeBloc>(context);
     recipeBloc.add(FetchRecipe(id: recipe.id!));
-    Wakelock.disable();
+    WakelockPlus.disable();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -63,7 +63,7 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: () async {
-          Wakelock.disable();
+          WakelockPlus.disable();
           return true;
         },
         child: Scaffold(
@@ -144,7 +144,7 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                     iconSize: 30,
                     padding: const EdgeInsets.all(0),
                     onPressed: () {
-                      Wakelock.disable();
+                      WakelockPlus.disable();
                       Navigator.pop(hsbContext);
                     },
                     splashRadius: 20,
@@ -173,7 +173,7 @@ class RecipeDetailPageState extends State<RecipeDetailPage> with WidgetsBindingO
                           ),
                         );
 
-                        Wakelock.toggle(enable: isScreenLocked);
+                        WakelockPlus.toggle(enable: isScreenLocked);
                       },
                       icon: isScreenLocked ? const Icon(Icons.lock_outline) : const Icon(Icons.lock_open_outlined),
                     ),
