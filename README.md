@@ -1,3 +1,6 @@
+## Discontinued
+You can use the app as long as it works with the new Tandoor versions. If it's no longer working, please use the official Tandoor web app or have a look at [kitshn](https://github.com/aimok04/kitshn)
+
 # Untare
 
 ### Unofficial [Tandoor Recipes](https://github.com/TandoorRecipes/recipes) App
